@@ -12,6 +12,7 @@ return [
     */
     'home' => 'Home',
     'welcome_message' => 'Welcome :name,',
+    'Custom_welcome_message' => 'Welcome',
     'total_sell' => 'Total Sales',
     'total_purchase' => 'Total purchase',
     'invoice_due' => 'Invoice due',

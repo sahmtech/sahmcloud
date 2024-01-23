@@ -18,6 +18,10 @@ use DB;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Modules\Accounting\Entities\AccountingAccountsTransaction;
+use Modules\Accounting\Entities\AccountingAccTransMapping;
+use Modules\Accounting\Entities\AccountingAccTransMappingSettingAutoMigration;
+use Modules\Accounting\Entities\AccountingMappingSettingAutoMigration;
 use Spatie\Permission\Models\Role;
 
 class Util
@@ -1726,6 +1730,57 @@ class Util
                 }
 
                 $user->revokePermissionTo($revoke_permissions);
+            }
+        }
+    }
+
+       public function saveAutoMigration($request, $transaction, $business_id, $user_id)
+    {
+        // find accounting mapping setting (automated migration)by:{type,status,methode,active}
+        $accountMappingSetting = AccountingMappingSettingAutoMigration::where('type', $transaction->type)
+            ->where('status', $transaction->status)
+            ->where('method', $request->payment['0']['method'])
+            ->where('active', true)->first();
+            
+        if ($accountMappingSetting) {
+            // find account transaction mapping setting by accounting mapping setting
+            $accTransMappingSetting = AccountingAccTransMappingSettingAutoMigration::where('mapping_setting_id', $accountMappingSetting->id)->get();
+
+            if (count($accTransMappingSetting) > 0) {
+                $ref_no = $request->get('ref_no');
+
+                $ref_count = $this->setAndGetReferenceCount('journal_entry');
+                if (empty($ref_no)) {
+                    $prefix = !empty($accounting_settings['journal_entry_prefix']) ?
+                        $accounting_settings['journal_entry_prefix'] : '';
+
+                    //Generate reference number
+                    $ref_no = $this->generateReferenceNumber('journal_entry', $ref_count, $business_id, $prefix);
+                }
+                $acc_trans_mapping = new AccountingAccTransMapping();
+                $acc_trans_mapping->business_id = $business_id;
+                $acc_trans_mapping->ref_no = $ref_no;
+                $acc_trans_mapping->note = $request->get('note');
+                $acc_trans_mapping->type = 'journal_entry';
+                $acc_trans_mapping->created_by = $user_id;
+                $acc_trans_mapping->operation_date =  $this->uf_date($request->input('transaction_date'), true);
+                $acc_trans_mapping->save();
+
+                foreach ($accTransMappingSetting as $accTrans) {
+                    $transaction_row = [];
+                    $transaction_row['accounting_account_id'] = $accTrans->accounting_account_id;
+                    $test_type = $accTrans->amount;
+                    $transaction_row['amount'] = $transaction->$test_type;
+                    $transaction_row['type'] = $accTrans->type;
+                    $transaction_row['created_by'] = $user_id;
+                    $transaction_row['operation_date'] = $this->uf_date($request->input('transaction_date'), true);
+                    $transaction_row['sub_type'] = 'journal_entry';
+                    $transaction_row['acc_trans_mapping_id'] = $acc_trans_mapping->id;
+
+                    $accounts_transactions = new AccountingAccountsTransaction();
+                    $accounts_transactions->fill($transaction_row);
+                    $accounts_transactions->save();
+                }
             }
         }
     }

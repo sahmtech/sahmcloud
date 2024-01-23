@@ -16,6 +16,7 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
 
     Route::get('accounts-dropdown', [\Modules\Accounting\Http\Controllers\AccountingController::class, 'AccountsDropdown'])->name('accounts-dropdown');
 
+    Route::get('open-create-dialog/{id}', [\Modules\Accounting\Http\Controllers\CoaController::class, 'open_create_dialog'])->name('open_create_dialog');
     Route::get('get-account-sub-types', [\Modules\Accounting\Http\Controllers\CoaController::class, 'getAccountSubTypes']);
     Route::get('get-account-details-types', [\Modules\Accounting\Http\Controllers\CoaController::class, 'getAccountDetailsType']);
     Route::resource('chart-of-accounts', \Modules\Accounting\Http\Controllers\CoaController::class);
@@ -25,6 +26,13 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
 
     Route::resource('journal-entry', \Modules\Accounting\Http\Controllers\JournalEntryController::class);
 
+    
+    Route::resource('automated-migration', \Modules\Accounting\Http\Controllers\AutomatedMigrationController::class);
+    Route::get('automated-migration-delete-dialog/{id}',[\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class,'delete_dialog']);
+    Route::get('automated-migration-active-toggle/{id}', [\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class,'active_toggle']);
+    Route::get('automated-migration-delete-acc-trans-mapping/{id}', [\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class,'destroy_acc_trans_mapping_setting']);
+
+    
     Route::get('settings', [\Modules\Accounting\Http\Controllers\SettingsController::class, 'index']);
     Route::get('reset-data', [\Modules\Accounting\Http\Controllers\SettingsController::class, 'resetData']);
 
@@ -37,15 +45,23 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
     Route::get('reports', [\Modules\Accounting\Http\Controllers\ReportController::class, 'index']);
     Route::get('reports/trial-balance', [\Modules\Accounting\Http\Controllers\ReportController::class, 'trialBalance'])->name('accounting.trialBalance');
     Route::get('reports/balance-sheet', [\Modules\Accounting\Http\Controllers\ReportController::class, 'balanceSheet'])->name('accounting.balanceSheet');
-    Route::get('reports/account-receivable-ageing-report',
-    [\Modules\Accounting\Http\Controllers\ReportController::class, 'accountReceivableAgeingReport'])->name('accounting.account_receivable_ageing_report');
-    Route::get('reports/account-receivable-ageing-details',
-    [\Modules\Accounting\Http\Controllers\ReportController::class, 'accountReceivableAgeingDetails'])->name('accounting.account_receivable_ageing_details');
+    Route::get(
+        'reports/account-receivable-ageing-report',
+        [\Modules\Accounting\Http\Controllers\ReportController::class, 'accountReceivableAgeingReport']
+    )->name('accounting.account_receivable_ageing_report');
+    Route::get(
+        'reports/account-receivable-ageing-details',
+        [\Modules\Accounting\Http\Controllers\ReportController::class, 'accountReceivableAgeingDetails']
+    )->name('accounting.account_receivable_ageing_details');
 
-    Route::get('reports/account-payable-ageing-report',
-    [\Modules\Accounting\Http\Controllers\ReportController::class, 'accountPayableAgeingReport'])->name('accounting.account_payable_ageing_report');
-    Route::get('reports/account-payable-ageing-details',
-    [\Modules\Accounting\Http\Controllers\ReportController::class, 'accountPayableAgeingDetails'])->name('accounting.account_payable_ageing_details');
+    Route::get(
+        'reports/account-payable-ageing-report',
+        [\Modules\Accounting\Http\Controllers\ReportController::class, 'accountPayableAgeingReport']
+    )->name('accounting.account_payable_ageing_report');
+    Route::get(
+        'reports/account-payable-ageing-details',
+        [\Modules\Accounting\Http\Controllers\ReportController::class, 'accountPayableAgeingDetails']
+    )->name('accounting.account_payable_ageing_details');
 
     Route::get('transactions', [\Modules\Accounting\Http\Controllers\TransactionController::class, 'index']);
     Route::get('transactions/map', [\Modules\Accounting\Http\Controllers\TransactionController::class, 'map']);

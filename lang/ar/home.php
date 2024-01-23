@@ -2,6 +2,7 @@
  return [ 
 "home" => "الرئيسية",
 "welcome_message" => ",:name مرحبا",
+"Custom_welcome_message" => "مرحبا",
 "total_sell" => "إجمالي المبيعات",
 "total_purchase" => "إجمالي المشتريات",
 "invoice_due" => "الفواتير الغير مدفوعة",
