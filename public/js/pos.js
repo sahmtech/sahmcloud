@@ -154,6 +154,8 @@ $(document).ready(function () {
       $("#price_group").change();
     } else {
       $("#price_group").val("");
+      $("#price_group").val($("#price_group option:first").val());
+
       $("#price_group").change();
     }
     if ($(".contact_due_text").length) {
@@ -169,7 +171,7 @@ $(document).ready(function () {
       .autocomplete({
         delay: 1000,
         source: function (request, response) {
-          var price_group = '';
+          var price_group = "";
           var search_fields = [];
           $(".search_fields:checked").each(function (i) {
             search_fields[i] = $(this).val();
