@@ -22,6 +22,20 @@
                     ]) !!}
                     @component('components.widget', ['class' => 'box-primary'])
                         <div class="row">
+                            <div class="col-sm-3" style="margin-bottom: 5px;">
+                                {!! Form::label('business_location', __('accounting::lang.autoMigration.business_location') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
+                                <select class="form-control" name="business_location_id"
+                                    id="business_location"style="padding: 3px" required>
+                                    <option value="">@lang('messages.please_select')</option>
+                                    @foreach ($business_locations as $business_location)
+                                        <option value="{{ $business_location->id }}"
+                                            @if ($mappingSetting->business_locations_id == $business_location->id) selected @endif>{{ $business_location->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     {!! Form::label('name_ar', __('اسم الترحيل') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
@@ -111,9 +125,10 @@
                                             <tr>
                                                 <th class="col-md-1">#
                                                 </th>
-                                                <th class="col-md-3">@lang('accounting::lang.account')</th>
-                                                <th class="col-md-3">@lang('accounting::lang.debit') / @lang('accounting::lang.credit')</th>
+                                                <th class="col-md-3">@lang('accounting::lang.payment_account')</th>
+                                                <th class="col-md-2">@lang('accounting::lang.debit') / @lang('accounting::lang.credit')</th>
                                                 <th class="col-md-3">@lang('accounting::lang.amount')</th>
+                                                <th class="col-md-3">@lang('accounting::lang.deposetTo_account')</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbody1">
@@ -182,6 +197,24 @@
                                                             <option value="discount_amount"
                                                                 @if ($journal_entry->amount == 'discount_amount') selected @endif>
                                                                 @lang('accounting::lang.autoMigration.discount_amount')</option>
+                                                        </select>
+                                                    </td>
+
+                                                    <td>
+
+                                                        <select class="form-control accounts-dropdown account_id"
+                                                            style="width: 100%;" name="account_id1[{{ $index + 1 }}]">
+                                                            <option value="">يرجى الاختيار
+                                                            </option>
+                                                            <option value="{{ $journal_entry->accounting_account_id }}"
+                                                                selected>
+
+                                                                {{ $journal_entry->account_name }} - <small
+                                                                    class="text-muted">
+                                                                    @lang('accounting::lang.' . $journal_entry->account_primary_type)
+                                                                    -
+                                                                    @lang('accounting::lang.' . $journal_entry->account_sub_type)</small>
+                                                            </option>
                                                         </select>
                                                     </td>
                                                 </tr>

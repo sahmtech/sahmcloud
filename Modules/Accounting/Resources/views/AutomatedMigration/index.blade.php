@@ -34,10 +34,11 @@
                                     <th class="col-md-1">#
                                     </th>
                                     <th class="col-md-3">اسم الترحيل</th>
-                                    <th class="col-md-3">نوع العملية</th>
-                                    <th class="col-md-3">حالة الدفع</th>
-                                    <th class="col-md-3">طريقة الدفع</th>
-                                    <th class="col-md-3">الحالة</th>
+                                    <th class="col-sm-3">نوع العملية</th>
+                                    <th class="col-sm-3" style="width: 12%;">حالة الدفع</th>
+                                    <th class="col-sm-2">طريقة الدفع</th>
+                                    <th class="col-sm-3">@lang('accounting::lang.autoMigration.business_location')</th>
+                                    <th class="col-md-2">الحالة</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody">
@@ -99,6 +100,10 @@
                                         </td>
                                         <td>
                                             @lang('accounting::lang.autoMigration.' . $row->method)
+
+                                        </td>
+                                        <td>
+                                            {{ $row?->businessLocation?->name }}
 
                                         </td>
 
