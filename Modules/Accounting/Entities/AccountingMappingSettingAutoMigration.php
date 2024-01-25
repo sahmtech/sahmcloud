@@ -10,10 +10,10 @@ class AccountingMappingSettingAutoMigration extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'type', 'status', 'payment_status', 'method', 'active', 'created_by', 'business_locations_id'];
+    protected $fillable = ['name', 'type', 'status', 'payment_status', 'method', 'active', 'created_by', 'location_id'];
 
     public function businessLocation()
     {
-        return $this->belongsTo(BusinessLocation::class, 'business_locations_id');
+        return $this->belongsTo(BusinessLocation::class, 'location_id');
     }
 }

@@ -14,8 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('accounting_mapping_setting_auto_migrations', function (Blueprint $table) {
+            $table->bigInteger('location_id')->unsigned()->after('id');
+            $table->foreign('location_id')->references('id')->on('business_locations');
 
-            $table->string('business_locations_id');
+           
         });
     }
 
@@ -27,7 +29,6 @@ return new class extends Migration
     public function down()
     {
         Schema::table('accounting_mapping_setting_auto_migrations', function (Blueprint $table) {
-
         });
     }
 };

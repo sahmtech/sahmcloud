@@ -29,7 +29,7 @@
                                     <option value="">@lang('messages.please_select')</option>
                                     @foreach ($business_locations as $business_location)
                                         <option value="{{ $business_location->id }}"
-                                            @if ($mappingSetting->business_locations_id == $business_location->id) selected @endif>{{ $business_location->name }}
+                                            @if ($mappingSetting->location_id == $business_location->id) selected @endif>{{ $business_location->name }}
                                         </option>
                                     @endforeach
                                 </select>
