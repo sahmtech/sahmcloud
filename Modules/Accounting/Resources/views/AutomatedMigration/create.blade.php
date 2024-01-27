@@ -25,8 +25,8 @@
                             <div class="row">
                                 <div class="col-sm-3" style="margin-bottom: 5px;">
                                     {!! Form::label('business_location', __('accounting::lang.autoMigration.business_location') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
-                                    <select class="form-control" name="business_location_id" id="business_location"style="padding: 3px"
-                                        required>
+                                    <select class="form-control" name="business_location_id"
+                                        id="business_location"style="padding: 3px" required>
                                         <option value="">@lang('messages.please_select')</option>
                                         @foreach ($business_locations as $business_location)
                                             <option value="{{ $business_location->id }}">{{ $business_location->name }}
@@ -103,7 +103,9 @@
 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <h4 style="text-align: start">@lang('accounting::lang.first_journal')</h4>
+                                        <h4 style="text-align: start">@lang('accounting::lang.first_journal')<span
+                                                style="color: red; font-size:10px"> *</span></h4>
+
 
                                         <table class="table table-bordered table-striped hide-footer" id="journal_table1">
                                             <thead>
@@ -130,7 +132,7 @@
                                                                 'style' => 'width: 100%; padding:3px;',
                                                             ]) !!} --}}
                                                         <select class="form-control accounts-dropdown account_id"
-                                                            style="width: 100%;" name="account_id1[1]">
+                                                            style="width: 100%;" name="account_id1[1]" required>
                                                             <option selected="selected" value="">يرجى الاختيار
                                                             </option>
                                                         </select>

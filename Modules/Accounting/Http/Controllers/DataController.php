@@ -123,6 +123,35 @@ class DataController extends Controller
                 'label' => __('accounting::lang.view_reports'),
                 'default' => false,
             ],
+            [
+                'value' => 'accounting.autoMigration',
+                'label' => __('accounting::lang.autoMigration'),
+                'default' => false,
+            ],
+            [
+                'value' => 'accounting.index_autoMigration',
+                'label' => __('accounting::lang.index_autoMigration'),
+                'default' => false,
+            ],
+            [
+                'value' => 'accounting.create_autoMigration',
+                'label' => __('accounting::lang.create_autoMigration'),
+                'default' => false,
+            ],
+            [
+                'value' => 'accounting.edit_autoMigration',
+                'label' => __('accounting::lang.edit_autoMigration'),
+                'default' => false,
+            ],
+            [
+                'value' => 'accounting.destroy_acc_trans_mapping_setting',
+                'label' => __('accounting::lang.destroy_acc_trans_mapping_setting'),
+                'default' => false,
+            ],
+
+            
+            
+            
         ];
     }
 }

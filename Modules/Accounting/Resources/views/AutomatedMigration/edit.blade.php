@@ -118,7 +118,8 @@
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <h4 style="text-align: start">@lang('accounting::lang.first_journal')</h4>
+                                    <h4 style="text-align: start">@lang('accounting::lang.first_journal')<span style="color: red; font-size:10px">
+                                            *</span></h4>
 
                                     <table class="table table-bordered table-striped hide-footer" id="journal_table1">
                                         <thead>
@@ -135,12 +136,15 @@
                                             @foreach ($journal_entry_1 as $index => $journal_entry)
                                                 <tr>
                                                     <td style="display: flex;font-size: smaller;align-items:center">
-                                                        <a type="button" class="fa fa-trash fa-2x cursor-pointer"
-                                                            href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"
-                                                            data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"
-                                                            data-id="1" name="1" value="{{ $journal_entry->id }}"
-                                                            style="background: transparent; border: 0px;color: red;
+                                                        @if (auth()->user()->can('superadmin') ||
+                                                                auth()->user()->can('accounting.destroy_acc_trans_mapping_setting'))
+                                                            <a type="button" class="fa fa-trash fa-2x cursor-pointer"
+                                                                href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"
+                                                                data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"
+                                                                data-id="1" name="1" value="{{ $journal_entry->id }}"
+                                                                style="background: transparent; border: 0px;color: red;
                                                             font-size: small;"></a>
+                                                        @endif
                                                         <button type="button"
                                                             class="fa fa-plus-square fa-2x text-primary cursor-pointer"
                                                             data-id="1" name="1" value="1"
@@ -255,12 +259,15 @@
                                             @foreach ($journal_entry_2 as $index => $journal_entry)
                                                 <tr>
                                                     <td style="display: flex;font-size: smaller;align-items:center">
+                                                        @if (auth()->user()->can('superadmin') ||
+                                                                auth()->user()->can('accounting.destroy_acc_trans_mapping_setting'))
                                                         <a type="button" class="fa fa-trash fa-2x cursor-pointer"
                                                             href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"
                                                             data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"
                                                             data-id="2" name="2" value="{{ $journal_entry->id }}"
                                                             style="background: transparent; border: 0px;color: red;
                                                             font-size: small;"></a>
+                                                            @endif
                                                         <button type="button"
                                                             class="fa fa-plus-square fa-2x text-primary cursor-pointer"
                                                             data-id="1" name="2" value="2"

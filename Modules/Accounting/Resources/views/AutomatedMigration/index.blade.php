@@ -228,7 +228,7 @@
                 '<tr><td><button type="button" class="fa fa-plus-square fa-2x text-primary cursor-pointer" data-id="' +
                 counter +
                 '" name="' + tbode_number + '" value="' + tbode_number +
-                '" style="background: transparent; border: 0px;"></button></td><td><select class="form-control accounts-dropdown account_id" style="width: 100%;" name="account_id' +
+                '" style="background: transparent; border: 0px;"></button></td><td><select class="form-control accounts-dropdown account_id" required style="width: 100%;" name="account_id' +
                 tbode_number + '[' +
                 counter +
                 ']"><option selected="selected" value="">يرجى الاختيار</option></select> </td> <td><label class="radio-inline"><input value="debit" type="radio" name="type' +

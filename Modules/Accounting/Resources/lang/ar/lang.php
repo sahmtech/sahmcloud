@@ -558,5 +558,9 @@ return [
     'amount' => 'المبلغ',
     'debtor' => 'مدين',
     'creditor' => 'دائن',
-
+    'autoMigration' => 'صفحة الترحيل الالي',
+    'index_autoMigration' => 'استعراض الترحيل الالي',
+    'create_autoMigration' => 'إنشاء ترحيل الي',
+    'edit_autoMigration' => 'تعديل ترحيل الي',
+    'destroy_acc_trans_mapping_setting' => 'حذف اطراف القيد في الترحيل الالي',
 ];
