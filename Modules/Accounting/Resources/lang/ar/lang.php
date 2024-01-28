@@ -558,7 +558,7 @@ return [
     'amount' => 'المبلغ',
     'debtor' => 'مدين',
     'creditor' => 'دائن',
-    'autoMigration' => 'صفحة الترحيل الالي',
+    'autoMigration_page' => 'صفحة الترحيل الالي',
     'index_autoMigration' => 'استعراض الترحيل الالي',
     'create_autoMigration' => 'إنشاء ترحيل الي',
     'edit_autoMigration' => 'تعديل ترحيل الي',

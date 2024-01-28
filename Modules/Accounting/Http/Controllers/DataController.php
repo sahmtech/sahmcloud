@@ -125,7 +125,7 @@ class DataController extends Controller
             ],
             [
                 'value' => 'accounting.autoMigration',
-                'label' => __('accounting::lang.autoMigration'),
+                'label' => __('accounting::lang.autoMigration_page'),
                 'default' => false,
             ],
             [
@@ -149,9 +149,9 @@ class DataController extends Controller
                 'default' => false,
             ],
 
-            
-            
-            
+
+
+
         ];
     }
 }

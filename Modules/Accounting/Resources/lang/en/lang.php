@@ -593,7 +593,7 @@ return [
     'amount' => 'amount',
     'debtor' => 'debtor',
     'creditor' => 'creditor',
-    'autoMigration' => 'Automated migration page',
+    'autoMigration_page' => 'Automated migration page',
     'index_autoMigration' => 'Index automated migration',
     'create_autoMigration' => 'Create automated migration',
     'edit_autoMigration' => 'Edit automated migration',
