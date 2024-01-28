@@ -119,7 +119,11 @@
                                             </thead>
                                             <tbody id="tbody1">
                                                 <tr>
-                                                    <td>
+                                                    <td style="display: flex;font-size: smaller;align-items:center">
+                                                        {{-- <a type="button" class="fa fa-trash fa-2x cursor-pointer"
+                                                            data-id="1" name="1"
+                                                            style="background: transparent; border: 0px;color: red;
+                                                    font-size: small;"></a> --}}
                                                         <button type="button"
                                                             class="fa fa-plus-square fa-2x text-primary cursor-pointer"
                                                             data-id="1" name="1" value="1"
@@ -196,7 +200,13 @@
                                             </thead>
                                             <tbody id="tbody2">
                                                 <tr>
-                                                    <td><button type="button"
+
+                                                    <td style="display: flex;font-size: smaller;align-items:center">
+                                                        {{-- <a type="button" class="fa fa-trash fa-2x cursor-pointer"
+                                                            data-id="2" name="2"
+                                                            style="background: transparent; border: 0px;color: red;
+                                                        font-size: small;"></a> --}}
+                                                        <button type="button"
                                                             class="fa fa-plus-square fa-2x text-primary cursor-pointer"
                                                             data-id="1" name="2" value="2"
                                                             style="    background: transparent; border: 0px;"></button>

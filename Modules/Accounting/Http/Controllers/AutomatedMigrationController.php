@@ -37,7 +37,7 @@ class AutomatedMigrationController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.index_autoMigration')) {
-            abort(403, 'Unauthorized action.');
+            // abort(403, 'Unauthorized action.');
         }
         $mappingSetting = AccountingMappingSettingAutoMigration::all();
         return view('accounting::AutomatedMigration.index', compact('mappingSetting'));
@@ -52,7 +52,7 @@ class AutomatedMigrationController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.create_autoMigration')) {
-            abort(403, 'Unauthorized action.');
+            // abort(403, 'Unauthorized action.');
         }
 
         $business_locations = BusinessLocation::where('business_id', $business_id)->get();
@@ -181,7 +181,7 @@ class AutomatedMigrationController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.edit_autoMigration')) {
-            abort(403, 'Unauthorized action.');
+            // abort(403, 'Unauthorized action.');
         }
         $mappingSetting = AccountingMappingSettingAutoMigration::find($id);
 

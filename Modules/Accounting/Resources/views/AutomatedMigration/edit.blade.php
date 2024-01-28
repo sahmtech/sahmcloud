@@ -126,10 +126,10 @@
                                             <tr>
                                                 <th class="col-md-1">#
                                                 </th>
-                                                <th class="col-md-3">@lang('accounting::lang.payment_account')</th>
+                                                <th class="col-md-3">@lang('accounting::lang.account')</th>
                                                 <th class="col-md-2">@lang('accounting::lang.debit') / @lang('accounting::lang.credit')</th>
                                                 <th class="col-md-3">@lang('accounting::lang.amount')</th>
-                                                <th class="col-md-3">@lang('accounting::lang.deposetTo_account')</th>
+                                                {{-- <th class="col-md-3">@lang('accounting::lang.deposetTo_account')</th> --}}
                                             </tr>
                                         </thead>
                                         <tbody id="tbody1">
@@ -204,7 +204,7 @@
                                                         </select>
                                                     </td>
 
-                                                    <td>
+                                                    {{-- <td>
 
                                                         <select class="form-control accounts-dropdown account_id"
                                                             style="width: 100%;" name="account_id1[{{ $index + 1 }}]">
@@ -220,7 +220,7 @@
                                                                     @lang('accounting::lang.' . $journal_entry->account_sub_type)</small>
                                                             </option>
                                                         </select>
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                             @endforeach
                                         </tbody>
