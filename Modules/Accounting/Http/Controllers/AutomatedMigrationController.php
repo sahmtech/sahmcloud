@@ -2,6 +2,7 @@
 
 namespace Modules\Accounting\Http\Controllers;
 
+use App\BusinessLocation;
 use App\Utils\ModuleUtil;
 use App\Utils\Util;
 use Illuminate\Contracts\Support\Renderable;
@@ -17,6 +18,8 @@ use Modules\Accounting\Utils\AccountingUtil;
 class AutomatedMigrationController extends Controller
 {
     protected $util;
+    protected $moduleUtil;
+    protected $accountingUtil;
 
     public function __construct(Util $util, ModuleUtil $moduleUtil, AccountingUtil $accountingUtil)
     {
@@ -31,6 +34,11 @@ class AutomatedMigrationController extends Controller
      */
     public function index()
     {
+        $business_id = request()->session()->get('user.business_id');
+
+        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.index_autoMigration')) {
+            abort(403, 'Unauthorized action.');
+        }
         $mappingSetting = AccountingMappingSettingAutoMigration::all();
         return view('accounting::AutomatedMigration.index', compact('mappingSetting'));
     }
@@ -41,7 +49,14 @@ class AutomatedMigrationController extends Controller
      */
     public function create()
     {
-        return view('accounting::AutomatedMigration.create');
+        $business_id = request()->session()->get('user.business_id');
+
+        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.create_autoMigration')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_locations = BusinessLocation::where('business_id', $business_id)->get();
+        return view('accounting::AutomatedMigration.create', compact('business_locations'));
     }
 
     /**
@@ -52,14 +67,6 @@ class AutomatedMigrationController extends Controller
     public function store(Request $request)
     {
         $business_id = request()->session()->get('user.business_id');
-
-        if (
-            !(auth()->user()->can('superadmin') ||
-                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-            !(auth()->user()->can('accounting.add_journal'))
-        ) {
-            abort(403, 'Unauthorized action.');
-        }
         // try {
         DB::beginTransaction();
 
@@ -86,6 +93,7 @@ class AutomatedMigrationController extends Controller
         $mappingSetting = AccountingMappingSettingAutoMigration::create([
             'name' => $request->get('migration_name'),
             'type' => $request->get('type'),
+            'location_id' => $request->input('business_location_id'),
             'status' => 'final',
             'payment_status' => $request->get('payment_status'),
             'method' => $request->get('method'),
@@ -170,6 +178,11 @@ class AutomatedMigrationController extends Controller
      */
     public function edit($id)
     {
+        $business_id = request()->session()->get('user.business_id');
+
+        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.edit_autoMigration')) {
+            abort(403, 'Unauthorized action.');
+        }
         $mappingSetting = AccountingMappingSettingAutoMigration::find($id);
 
         $AccTransMappingSetting =  AccountingAccTransMappingSettingAutoMigration::where('mapping_setting_id', $mappingSetting->id)->get();
@@ -189,7 +202,10 @@ class AutomatedMigrationController extends Controller
                 array_push($journal_entry_2, $trans);
         }
 
-        return view('accounting::AutomatedMigration.edit', compact('mappingSetting', 'journal_entry_1', 'journal_entry_2'));
+
+        $business_locations = BusinessLocation::where('business_id', $business_id)->get();
+
+        return view('accounting::AutomatedMigration.edit', compact('mappingSetting', 'business_locations', 'journal_entry_1', 'journal_entry_2'));
     }
 
     /**
@@ -238,6 +254,8 @@ class AutomatedMigrationController extends Controller
             'type' => $request->get('type'),
             'payment_status' => $request->get('payment_status'),
             'method' => $request->get('method'),
+            'location_id' => $request->input('business_location_id'),
+
         ]);
 
         AccountingAccTransMappingSettingAutoMigration::where('mapping_setting_id', $id)->delete();

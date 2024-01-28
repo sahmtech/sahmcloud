@@ -593,4 +593,9 @@ return [
     'amount' => 'amount',
     'debtor' => 'debtor',
     'creditor' => 'creditor',
+    'autoMigration' => 'Automated migration page',
+    'index_autoMigration' => 'Index automated migration',
+    'create_autoMigration' => 'Create automated migration',
+    'edit_autoMigration' => 'Edit automated migration',
+    'destroy_acc_trans_mapping_setting' => 'Delete the ends of the journal entry in the automated migration',
 ];

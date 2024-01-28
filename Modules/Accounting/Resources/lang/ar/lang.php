@@ -298,6 +298,8 @@ return [
     'account_type' => 'نوع الحساب',
     'detail_type' => 'تفاصيل الحساب',
     'account' => 'الحساب',
+    'payment_account' => 'حساب الدفع',
+    'deposetTo_account' => 'حساب الإيداع',
     'parent_account' => 'الحساب الرئيسي',
     'as_of' => 'As of',
     'gl_code_help' => 'All General Ledger accounts have a 6-digit number. 1xxxxxx = Assets, 2xxxxx = Liabilities, 3xxxxx = Net Assets, 4xxxxx = Revenue, 5xxxxx = Revenue, 8xxxxx = Allocations',
@@ -432,6 +434,7 @@ return [
     'second_journal' => 'القيد الثاني',
     'third_journal' => 'القيد الثالث',
     'autoMigration' => [
+        'business_location' => 'فرع الشركة',
         'sell' => 'مبيعات',
         'sell_return' => 'بيع العائد',
         'opening_stock' => 'افتتاح المخزون',
@@ -555,5 +558,9 @@ return [
     'amount' => 'المبلغ',
     'debtor' => 'مدين',
     'creditor' => 'دائن',
-
+    'autoMigration' => 'صفحة الترحيل الالي',
+    'index_autoMigration' => 'استعراض الترحيل الالي',
+    'create_autoMigration' => 'إنشاء ترحيل الي',
+    'edit_autoMigration' => 'تعديل ترحيل الي',
+    'destroy_acc_trans_mapping_setting' => 'حذف اطراف القيد في الترحيل الالي',
 ];

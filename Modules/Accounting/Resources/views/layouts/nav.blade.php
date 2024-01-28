@@ -29,7 +29,7 @@
                                 href="{{ action([\Modules\Accounting\Http\Controllers\JournalEntryController::class, 'index']) }}">@lang('accounting::lang.journal_entry')</a>
                         </li>
                     @endif
-                    @if (auth()->user()->can('accounting.AutomatedMigration'))
+                    @if (auth()->user()->can('accounting.autoMigration'))
                         <li @if (request()->segment(2) == 'AutomatedMigration') class="active" @endif><a
                                 href="{{ action([\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class, 'index']) }}">@lang('accounting::lang.automatedMigration')</a>
                         </li>
