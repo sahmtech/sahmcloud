@@ -221,11 +221,26 @@
             $('.total_credit').text(__currency_trans_from_en(total_credit));
             $('.total_debit').text(__currency_trans_from_en(total_debit));
         }
+        $(document).on("click", ".fa-trash", function() {
+            // console.log("amen");
+            var tbode_number = $(this).val();
+            let counter = $('#journal_table' + tbode_number + ' tr').length - 1;
+            console.log(counter);
+            if (counter > 1) {
+                $(this).parents("tr").remove();
+
+
+            }
+
+        })
         $(document).on('click', '.fa-plus-square', function() {
             var tbode_number = $(this).val();
             let counter = $('#journal_table' + tbode_number + ' tr').length - 1;
             $('#tbody' + tbode_number).append(
-                '<tr><td><button type="button" class="fa fa-plus-square fa-2x text-primary cursor-pointer" data-id="' +
+                '<tr><td style="display: flex;font-size: smaller;align-items:center"><button type="button" class="fa fa-trash fa-2x cursor-pointer" data-id="' +
+                counter +
+                '" name="' + tbode_number + '" value="' + tbode_number +
+                '" style="background: transparent; border: 0px;color: red;font-size: small;"></button><button type="button" class="fa fa-plus-square fa-2x text-primary cursor-pointer" data-id="' +
                 counter +
                 '" name="' + tbode_number + '" value="' + tbode_number +
                 '" style="background: transparent; border: 0px;"></button></td><td><select class="form-control accounts-dropdown account_id" required style="width: 100%;" name="account_id' +
