@@ -123,7 +123,19 @@
 
                                     </tr>
                                 @endforeach
-
+                                @if ($mappingSetting->isEmpty())
+                                    <tr>
+                                        <td colspan="10" class="text-center">
+                                            <h3>@lang('accounting::lang.no_auto_migration')</h3>
+                                            <p>@lang('accounting::lang.add_auto_migration_help')</p>
+                                            <a href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create') }}"
+                                                data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create') }}"
+                                                data-container="#create_account_modal" class="btn btn-success btn-xs btn-modal">
+                                                <i class="fas fa-plus"></i> @lang('accounting::lang.add_new_auto_migration')
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endif
                             </tbody>
 
                             {{-- <tfoot>

@@ -563,4 +563,7 @@ return [
     'create_autoMigration' => 'إنشاء ترحيل الي',
     'edit_autoMigration' => 'تعديل ترحيل الي',
     'destroy_acc_trans_mapping_setting' => 'حذف اطراف القيد في الترحيل الالي',
+    'no_auto_migration' => 'لا توجد ترحيلات',
+    'add_auto_migration_help' => 'يمكنك إنشاء إعدادات خاصة بالترحيل الالي للقيود ',
+    'add_new_auto_migration'=>'إضافة إعدادات ترحيل جديدة',
 ];
