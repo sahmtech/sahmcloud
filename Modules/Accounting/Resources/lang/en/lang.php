@@ -598,4 +598,7 @@ return [
     'create_autoMigration' => 'Create automated migration',
     'edit_autoMigration' => 'Edit automated migration',
     'destroy_acc_trans_mapping_setting' => 'Delete the ends of the journal entry in the automated migration',
+     'no_auto_migration' => 'No automated migrations',
+    'add_auto_migration_help' => 'You can create settings for automatic posting of entries',
+    'add_new_auto_migration'=>'Add new migration settings',
 ];
