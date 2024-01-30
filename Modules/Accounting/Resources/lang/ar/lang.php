@@ -602,5 +602,8 @@ return [
     'main_cost_center' => 'مركز التكلفة الرئيسي',
     'auto_mapping' => 'الترحيل التلقائي',
     'business_location' => 'المستودع',
+    'operation_type' => 'نوع العملية',
+    'create_opening_balance' => 'إنشاء رصيد افتتاحي',
+    'charge_value' => 'قيمة الرصيد',
 
 ];

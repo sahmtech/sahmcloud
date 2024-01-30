@@ -69,7 +69,14 @@ class DataController extends Controller
                                     ['icon' => 'fa fas fa-plus-circle', 'active' =>  request()->segment(2) == 'cost_centers']
                                 );
                             // }
-
+                              // if (auth()->user()->can('chart-of-accounts')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\OpeningBalanceController::class, 'index']),
+                                    __('accounting::lang.opening_balances'),
+                                    ['icon' => 'fa fas fa-plus-circle', 'active' =>  request()->segment(2) == 'opening_balances']
+                                );
+                            // }
+                           
                             if (auth()->user()->can('accounting.view_journal')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\JournalEntryController::class, 'index']),
