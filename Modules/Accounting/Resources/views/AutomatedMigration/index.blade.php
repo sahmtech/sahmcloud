@@ -30,7 +30,7 @@
 
                             </div>
                             <div class="col-sm-4">
-                                {!! Form::label('type_fillter_lable', __('نوع العملية')) !!}
+                                {!! Form::label('type_fillter_lable', __('accounting::lang.operatio_type')) !!}
                                 <select class="form-control" name="type_fillter" id="type_fillter"style="padding: 3px" required>
                                     <option value="all" selected>@lang('lang_v1.all')</option>
                                     <option value="sell">@lang('accounting::lang.autoMigration.sell')</option>
@@ -50,7 +50,7 @@
                             </div>
 
                             <div class="col-sm-4">
-                                {!! Form::label('mappingSetting_fillter', __('اسم الترحيل')) !!}
+                                {!! Form::label('mappingSetting_fillter', __('accounting::lang.migration_name')) !!}
 
                                 <select class="form-control" name="mappingSetting_fillter" id='mappingSetting_fillter'
                                     style="padding: 2px;">
@@ -95,7 +95,7 @@
                         @endslot
 
                         <div class="col-sm-12">
-                            <h4 style="text-align: start">قائمة الترحيلات</h4>
+                            <h4 style="text-align: start">@lang('accounting::lang.migration_list')</h4>
 
 
                             <table class="table table-bordered table-striped hide-footer" id="auto_migration_table">
@@ -103,12 +103,12 @@
                                     <tr>
                                         <th class="col-md-1">#
                                         </th>
-                                        <th class="col-md-3">اسم الترحيل</th>
-                                        <th class="col-sm-3">نوع العملية</th>
-                                        <th class="col-sm-3" style="width: 12%;">حالة الدفع</th>
-                                        <th class="col-sm-2">طريقة الدفع</th>
+                                        <th class="col-md-3">@lang('accounting::lang.migration_name')</th>
+                                        <th class="col-sm-3">@lang('accounting::lang.operatio_type')</th>
+                                        <th class="col-sm-3" style="width: 12%;">@lang('accounting::lang.payment_stauts')</th>
+                                        <th class="col-sm-2">@lang('accounting::lang.payment_method')</th>
                                         <th class="col-sm-3">@lang('accounting::lang.autoMigration.business_location')</th>
-                                        <th class="col-md-2">الحالة</th>
+                                        <th class="col-md-2">@lang('accounting::lang.migratio_status')</th>
                                     </tr>
                                 </thead>
 

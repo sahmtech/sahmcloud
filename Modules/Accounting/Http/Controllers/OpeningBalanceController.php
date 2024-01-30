@@ -29,7 +29,7 @@ class OpeningBalanceController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
         $is_admin = auth()->user()->hasRole('Admin#1') ? true : false;
-        $can_opening_balances= auth()->user()->can('accounting.opening_balances');
+        $can_opening_balances = auth()->user()->can('accounting.opening_balances');
         if (!($is_admin || $can_opening_balances)) {
             return redirect()->route('home')->with('status', [
                 'success' => false,
@@ -113,37 +113,39 @@ class OpeningBalanceController extends Controller
         if ($validator->fails()) {
 
             $failedRules = $validator->failed();
-            //            if (isset($failedRules['ar_name']['min']) || isset($failedRules['ar_name']['max'])) {
-            //                return response()->json(['fail' => __("messages.something_went_wrong")]);
-            //            }
 
-            return response()->json([
+            return redirect()->back()->with([
                 'success' => false,
                 'msg' => __("messages.something_went_wrong")
             ]);
         }
         try {
-            DB::beginTransaction();
-
-            $validated = $validator->validated();
-            $validated['created_by'] = auth()->user()->id;
-            $validated['business_id'] = $request->session()->get('user.business_id');
-            $transaction = AccountingAccountsTransaction::query()->create([
-                'accounting_account_id' => $validated['accounting_account_id'],
-                'amount' => $validated['value'],
-                'type' => $validated['type'] == 'credit' ? 'credit' : 'debit',
-                'sub_type' => 'opening_balance'
-            ]);
-            $validated['accounts_account_transaction_id'] = $transaction->id;
-            OpeningBalance::query()->create([
-                'year' => date('Y-m-d'),
-                'business_id' => $validated['business_id'],
-                'type' => $validated['type'],
-                'accounts_account_transaction_id' => $validated['accounts_account_transaction_id']
-            ]);
-            DB::commit();
+        DB::beginTransaction();
+        $user_id = request()->session()->get('user.id');
+        $validated = $validator->validated();
+        $validated['created_by'] = auth()->user()->id;
+        $validated['business_id'] = $request->session()->get('user.business_id');
+        $transaction = AccountingAccountsTransaction::query()->create([
+            'accounting_account_id' => $validated['accounting_account_id'],
+            'amount' => $validated['value'],
+            'type' => $validated['type'] == 'credit' ? 'credit' : 'debit',
+            'sub_type' => 'opening_balance'
+        ]);
+        $validated['acc_transaction_id'] = $transaction->id;
+        OpeningBalance::query()->create([
+            'year' => date('Y-m-d'),
+            'business_id' => $validated['business_id'],
+            'type' => $validated['type'],
+            'created_by' => $user_id,
+            'acc_transaction_id' => $validated['acc_transaction_id']
+        ]);
+        DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            return redirect()->back()->with([
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ]);
         }
         // return redirect()->back();
         return redirect()->back()->with([
@@ -169,7 +171,7 @@ class OpeningBalanceController extends Controller
             //            if (isset($failedRules['ar_name']['min']) || isset($failedRules['ar_name']['max'])) {
             //                return response()->json(['fail' => __("messages.something_went_wrong")]);
             //            }
-            return response()->json([
+            return redirect()->back()->with([
                 'success' => false,
                 'msg' => __("messages.something_went_wrong")
             ]);
@@ -184,23 +186,24 @@ class OpeningBalanceController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            return redirect()->back()->with([
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ]);
         }
         // return redirect()->back();
         return redirect()->back()->with([
             'success' => true,
             'msg' => __("lang_v1.updated_success")
         ]);
-        // return response()->json([
-        //     'success' => true,
-        //     'msg' => __("lang_v1.updated_success")
-        // ]);
+       
     }
 
     protected function destroy($id)
     {
         if (\request()->ajax()) {
             AccountingAccountsTransaction::query()->find($id)->delete();
-            OpeningBalance::query()->where('accounts_account_transaction_id', $id)->first()->delete();
+            OpeningBalance::query()->where('acc_transaction_id', $id)->first()->delete();
             return [
                 'success' => true,
                 'msg' => __("lang_v1.deleted_success")

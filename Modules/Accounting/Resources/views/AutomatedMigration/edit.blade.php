@@ -41,11 +41,11 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    {!! Form::label('name_ar', __('اسم الترحيل') . '  ') !!}
+                                    {!! Form::label('name_ar', __('accounting::lang.migration_name') . '  ') !!}
                                     {!! Form::text('migration_name', __('accounting::lang.' . $mappingSetting->name), [
                                         'class' => 'form-control',
                                         'required',
-                                        'placeholder' => __('اسم الترحيل'),
+                                        'placeholder' => __('accounting::lang.migration_name'),
                                         'id' => 'name_ar',
                                         'readonly',
                                     ]) !!}
@@ -62,7 +62,7 @@
 
                             <div class="col-sm-3">
 
-                                {!! Form::label('account_sub_type', __('نوع العملية') . '  ') !!}
+                                {!! Form::label('account_sub_type', __('accounting::lang.operatio_type') . '  ') !!}
                                 {!! Form::text('type', __('accounting::lang.autoMigration.' . $mappingSetting->type), [
                                     'class' => 'form-control',
                                     'required',
@@ -70,36 +70,11 @@
                                     'id' => 'type',
                                     'readonly',
                                 ]) !!}
-                                {{-- <select class="form-control" name="type" readonly id="account_sub_type"style="padding: 3px" required>
-                                    <option value="">@lang('messages.please_select')</option>
-                                    <option value="sell" @if ($mappingSetting->type == 'sell') selected @endif>
-                                        @lang('accounting::lang.autoMigration.sell')
-                                    </option>
-                                    <option value="sell_return" @if ($mappingSetting->type == 'sell_return') selected @endif>
-                                        @lang('accounting::lang.autoMigration.sell_return')</option>
-                                    <option value="opening_stock" @if ($mappingSetting->type == 'opening_stock') selected @endif>
-                                        @lang('accounting::lang.autoMigration.opening_stock')</option>
-                                    <option value="purchase" @if ($mappingSetting->type == 'purchase') selected @endif>
-                                        @lang('accounting::lang.autoMigration.purchase_')</option>
-                                    <option value="purchase_order" @if ($mappingSetting->type == 'purchase_order') selected @endif>
-                                        @lang('accounting::lang.autoMigration.purchase_order')</option>
-                                    <option value="purchase_return" @if ($mappingSetting->type == 'purchase_return') selected @endif>
-                                        @lang('accounting::lang.autoMigration.purchase_return')</option>
-                                    <option value="expens" @if ($mappingSetting->type == 'expens') selected @endif>
-                                        @lang('accounting::lang.autoMigration.expens_')</option>
-                                    <option value="sell_transfer" @if ($mappingSetting->type == 'sell_transfer') selected @endif>
-                                        @lang('accounting::lang.autoMigration.sell_transfer')</option>
-                                    <option value="purchase_transfer" @if ($mappingSetting->type == 'purchase_transfer') selected @endif>
-                                        @lang('accounting::lang.autoMigration.purchase_transfer')</option>
-                                    <option value="payroll" @if ($mappingSetting->type == 'payroll') selected @endif>
-                                        @lang('accounting::lang.autoMigration.payroll')</option>
-                                    <option value="opening_balance" @if ($mappingSetting->type == 'opening_balance') selected @endif>
-                                        @lang('accounting::lang.autoMigration.opening_balance')</option>
-                                </select> --}}
+
                             </div>
 
                             <div class="col-sm-3">
-                                {!! Form::label('account_sub_type', __('حالة الدفع') . '  ') !!}
+                                {!! Form::label('account_sub_type', __('accounting::lang.payment_stauts') . '  ') !!}
                                 {!! Form::text('payment_status', __('accounting::lang.autoMigration.' . $mappingSetting->payment_status), [
                                     'class' => 'form-control',
                                     'required',
@@ -107,20 +82,11 @@
                                     'id' => 'payment_status',
                                     'readonly',
                                 ]) !!}
-                                {{-- <select class="form-control" name="payment_status" id="account_sub_type" style="padding: 3px"
-                                    required>
-                                    <option value="">@lang('messages.please_select')</option>
-                                    <option value="paid" @if ($mappingSetting->payment_status == 'paid') selected @endif>
-                                        @lang('accounting::lang.autoMigration.paid')</option>
-                                    <option value="due" @if ($mappingSetting->payment_status == 'due') selected @endif>
-                                        @lang('accounting::lang.autoMigration.due')</option>
-                                    <option value="partial" @if ($mappingSetting->payment_status == 'partial') selected @endif>
-                                        @lang('accounting::lang.autoMigration.partial')</option>
-                                </select> --}}
+
                             </div>
 
                             <div class="col-sm-3">
-                                {!! Form::label('account_sub_type', __('طريقة الدفع') . '  ') !!}
+                                {!! Form::label('account_sub_type', __('accounting::lang.payment_method') . '  ') !!}
                                 {!! Form::text('method', __('accounting::lang.autoMigration.' . $mappingSetting->method), [
                                     'class' => 'form-control',
                                     'required',
@@ -128,17 +94,7 @@
                                     'id' => 'method',
                                     'readonly',
                                 ]) !!}
-                                {{-- <select class="form-control" name="method" id="account_sub_type"style="padding: 3px" required>
-                                    <option value="">@lang('messages.please_select')</option>
-                                    <option value="cash" @if ($mappingSetting->method == 'cash') selected @endif>
-                                        @lang('accounting::lang.autoMigration.cash')</option>
-                                    <option value="card" @if ($mappingSetting->method == 'card') selected @endif>
-                                        @lang('accounting::lang.autoMigration.card')</option>
-                                    <option value="bank_transfer" @if ($mappingSetting->method == 'bank_transfer') selected @endif>
-                                        @lang('accounting::lang.autoMigration.bank_transfer')</option>
-                                    <option value="cheque" @if ($mappingSetting->method == 'cheque') selected @endif>
-                                        @lang('accounting::lang.autoMigration.cheque')</option>
-                                </select> --}}
+
                             </div>
 
                             <div class="row">

@@ -262,85 +262,18 @@ class CoaController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    // public function store(Request $request)
-    // {
-    //     $business_id = $request->session()->get('user.business_id');
-    //     if (
-    //         !(auth()->user()->can('superadmin') ||
-    //             $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-    //         !(auth()->user()->can('accounting.manage_accounts'))
-    //     ) {
-    //         abort(403, 'Unauthorized action.');
-    //     }
 
-    //     try {
-    //         DB::beginTransaction();
-
-    //         $input = $request->only([
-    //             'name', 'account_primary_type', 'account_sub_type_id', 'detail_type_id',
-    //             'parent_account_id', 'description', 'gl_code',
-    //         ]);
-
-    //         $account_type = AccountingAccountType::find($input['account_sub_type_id']);
-
-    //         $input['parent_account_id'] = !empty($input['parent_account_id'])
-    //             && $input['parent_account_id'] !== 'null' ? $input['parent_account_id'] : null;
-    //         $input['created_by'] = auth()->user()->id;
-    //         $input['business_id'] = $request->session()->get('user.business_id');
-    //         $input['status'] = 'active';
-
-    //         $account = AccountingAccount::create($input);
-
-    //         if ($account_type->show_balance == 1 && !empty($request->input('balance'))) {
-    //             //Opening balance
-    //             $data = [
-    //                 'amount' => $this->accountingUtil->num_uf($request->input('balance')),
-    //                 'accounting_account_id' => $account->id,
-    //                 'created_by' => auth()->user()->id,
-    //                 'operation_date' => !empty($request->input('balance_as_of')) ?
-    //                     $this->accountingUtil->uf_date($request->input('balance_as_of')) :
-    //                     \Carbon::today()->format('Y-m-d'),
-    //             ];
-
-    //             //Opening balance
-    //             $data['type'] = in_array($input['account_primary_type'], ['asset', 'expenses']) ? 'debit' : 'credit';
-    //             $data['sub_type'] = 'opening_balance';
-    //             AccountingAccountsTransaction::createTransaction($data);
-    //         }
-
-    //         DB::commit();
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-
-    //         \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
-    //     }
-
-    //     return redirect()->back();
-    // }
 
     public function store(Request $request)
     {
         $business_id = $request->session()->get('user.business_id');
-
-
         try {
             DB::beginTransaction();
 
             $input = $request->only([
                 'name', 'account_category', 'parent_account_id'
             ]);
-
-
-
             $account_account = AccountingAccount::find($input['parent_account_id']);
-
-
             $input['account_primary_type'] = $account_account->account_primary_type;
             $input['account_sub_type_id'] = $account_account->account_sub_type_id;
             $input['detail_type_id'] = $account_account->detail_type_id;
@@ -367,7 +300,7 @@ class CoaController extends Controller
                 $data['sub_type'] = 'opening_balance';
                 $trans = AccountingAccountsTransaction::query()->create($data);
                 $opBalance = [
-                    'accounts_account_transaction_id' => $trans->id,
+                    'acc_transaction_id' => $trans->id,
                     'type' => $data['type'] == 'debit' ? 'debit' : 'credit',
                     'business_id' => $business_id,
                     'year' => Carbon::today()->format('Y')
@@ -380,6 +313,10 @@ class CoaController extends Controller
             DB::rollBack();
 
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+            return redirect()->back()->with([
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ]);
         }
 
         return redirect()->back();
@@ -472,6 +409,10 @@ class CoaController extends Controller
             DB::rollBack();
 
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+            return redirect()->back()->with([
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ]);
         }
 
         return redirect()->back();

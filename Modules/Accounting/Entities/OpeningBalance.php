@@ -11,6 +11,6 @@ class OpeningBalance extends Model
     protected $guarded = [];
     protected $table ="accounting_opening_balances";
     public function transaction(){
-        return $this->hasOne(AccountingAccountsTransaction::class, 'id','accounts_account_transaction_id');
+        return $this->hasOne(AccountingAccountsTransaction::class, 'id','acc_transaction_id');
     }
 }

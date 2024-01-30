@@ -304,7 +304,7 @@ class AutomatedMigrationController extends Controller
             DB::rollBack();
             $output = [
                 'success' => 1,
-                'msg' => __('خطأ تقني الرجاء المحاولة مجددا')
+                'msg' => __('accounting::lang.technical_erorr')
             ];
 
 
