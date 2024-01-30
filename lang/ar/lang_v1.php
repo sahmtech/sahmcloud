@@ -1415,5 +1415,6 @@ return [
 'English name' => 'الاسم الانكليزي',
 'Parent name' => 'اسم الحساب الرئيسي',
 'Parent account' => ' الحساب الرئيسي',
-'Actions' => 'العمليات'
+'Actions' => 'العمليات',
+'enable_fast_store'=>'تفعيل التخزين السريع',
 ];
