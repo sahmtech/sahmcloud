@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('cost_centers', function (Blueprint $table) {
+        Schema::create('accounting_cost_centers', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
             $table->integer('business_id')->nullable();
-            $table->unsignedBigInteger('business_location_id');
+            $table->unsignedBigInteger('business_location_id')->nullable();
             $table->string('ar_name');
             $table->string('en_name');
             $table->string('account_center_number');
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cost_centers');
+        Schema::dropIfExists('accounting_cost_centers');
     }
 };

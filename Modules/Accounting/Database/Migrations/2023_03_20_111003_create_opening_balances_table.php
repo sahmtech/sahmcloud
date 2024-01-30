@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('opening_balances', function (Blueprint $table) {
+        Schema::create('accounting_opening_balances', function (Blueprint $table) {
             $table->id();
             $table->date('year');
             $table->integer('business_id')->nullable();
@@ -21,6 +21,9 @@ return new class extends Migration
             $table->unsignedBigInteger('accounting_account_id');
             $table->enum('type',['creditor', 'debtor']);
             $table->float('value');
+            $table->dropColumn('accounting_account_id');
+            $table->dropColumn('value');
+            $table->unsignedBigInteger('accounts_account_transaction_id');
             $table->timestamps();
         });
     }
@@ -32,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('opening_balances');
+        Schema::dropIfExists('accounting_opening_balances');
     }
 };
