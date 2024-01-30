@@ -17,7 +17,7 @@
 				<ul class="nav nav-tabs">
 					<li class="active">
 						<a href="#account_setting" data-toggle="tab" aria-expanded="true">
-							@lang('accounting::lang.account_setting') / @lang('accounting::lang.map_transactions')
+							@lang('accounting::lang.account_setting') 
 						</a>
 					</li>
 
@@ -67,9 +67,9 @@
 
 						<hr />
 
-						<h3>@lang('accounting::lang.map_transactions') @show_tooltip(__('accounting::lang.map_transactions_help'))</h3>
+						{{-- <h3>@lang('accounting::lang.map_transactions') @show_tooltip(__('accounting::lang.map_transactions_help'))</h3> --}}
 
-						@foreach($business_locations as $business_location)
+						{{-- @foreach($business_locations as $business_location)
 						@component('components.widget', ['title' => $business_location->name])
 
 						@php
@@ -233,7 +233,7 @@
 						@endforeach
 						</div>
 						@endcomponent
-						@endforeach
+						@endforeach --}}
 
 						<div class="row">
 							<div class="col-md-12 text-center">

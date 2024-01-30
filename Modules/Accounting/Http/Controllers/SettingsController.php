@@ -127,11 +127,11 @@ class SettingsController extends Controller
                         ->update(['accounting_settings' => json_encode($accounting_settings)]);
             
             //Update accounting_default_map for each locations
-            $accounting_default_map = $request->get('accounting_default_map');
-            foreach($accounting_default_map as $location_id => $details){
-                BusinessLocation::where('id', $location_id)
-                    ->update(['accounting_default_map' => json_encode($details)]);
-            }
+            // $accounting_default_map = $request->get('accounting_default_map');
+            // foreach($accounting_default_map as $location_id => $details){
+            //     BusinessLocation::where('id', $location_id)
+            //         ->update(['accounting_default_map' => json_encode($details)]);
+            // }
 
             $output = ['success' => true,
                 'msg' => __('lang_v1.updated_success'),
