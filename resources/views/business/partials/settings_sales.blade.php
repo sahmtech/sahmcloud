@@ -169,12 +169,12 @@
                 {!! Form::text('pos_settings[razor_pay_key_id]', $pos_settings['razor_pay_key_id'] ?? '', ['class' => 'form-control', 'id' => 'razor_pay_key_id']); !!}
             </div>
         </div>
-        <div class="col-sm-4">
+        {{-- <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('razor_pay_key_secret', 'Key Secret:') !!}
                 {!! Form::text('pos_settings[razor_pay_key_secret]', $pos_settings['razor_pay_key_secret'] ?? '', ['class' => 'form-control', 'id' => 'razor_pay_key_secret']); !!}
             </div>
-        </div>
+        </div> --}}
 
         <div class="col-md-12">
             <h4>Stripe:</h4>
