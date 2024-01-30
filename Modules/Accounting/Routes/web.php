@@ -31,7 +31,9 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
     Route::get('automated-migration-delete-dialog/{id}',[\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class,'delete_dialog']);
     Route::get('automated-migration-active-toggle/{id}', [\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class,'active_toggle']);
     Route::get('automated-migration-delete-acc-trans-mapping/{id}', [\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class,'destroy_acc_trans_mapping_setting']);
-
+    Route::post('store-deflute-auto-migration',[\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class,'store_deflute_auto_migration'])->name('store_deflute_auto_migration');
+    Route::get('create-deflute-auto-migration',[\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class,'create_deflute_auto_migration'])->name('create_deflute_auto_migration');
+    
     
     Route::get('settings', [\Modules\Accounting\Http\Controllers\SettingsController::class, 'index']);
     Route::get('reset-data', [\Modules\Accounting\Http\Controllers\SettingsController::class, 'resetData']);

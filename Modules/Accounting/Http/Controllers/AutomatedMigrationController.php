@@ -5,6 +5,7 @@ namespace Modules\Accounting\Http\Controllers;
 use App\BusinessLocation;
 use App\Utils\ModuleUtil;
 use App\Utils\Util;
+use Exception;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -14,6 +15,7 @@ use Modules\Accounting\Entities\AccountingAccountType;
 use Modules\Accounting\Entities\AccountingAccTransMappingSettingAutoMigration;
 use Modules\Accounting\Entities\AccountingMappingSettingAutoMigration;
 use Modules\Accounting\Utils\AccountingUtil;
+use Yajra\DataTables\Facades\DataTables;
 
 class AutomatedMigrationController extends Controller
 {
@@ -39,8 +41,126 @@ class AutomatedMigrationController extends Controller
         if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.index_autoMigration')) {
             // abort(403, 'Unauthorized action.');
         }
-        $mappingSetting = AccountingMappingSettingAutoMigration::all();
-        return view('accounting::AutomatedMigration.index', compact('mappingSetting'));
+        $mappingSetting = AccountingMappingSettingAutoMigration::where('business_id', $business_id)->get();
+        if (request()->ajax()) {
+
+            if (!empty(request()->input('mappingSetting_fillter')) && request()->input('mappingSetting_fillter') !== 'all') {
+
+
+                $mappingSetting = $mappingSetting->where('name', request()->input('mappingSetting_fillter'));
+            }
+            if (!empty(request()->input('location_id')) && request()->input('location_id') !== 'all') {
+
+
+                $mappingSetting = $mappingSetting->where('location_id', request()->input('location_id'));
+            }
+
+            
+            if (!empty(request()->input('type_fillter')) && request()->input('type_fillter') !== 'all') {
+
+
+                $mappingSetting = $mappingSetting->where('type', request()->input('type_fillter'));
+            }
+
+
+            return DataTables::of($mappingSetting)
+
+
+                ->addColumn(
+                    'action',
+                    function ($row) {
+
+                        $html = '';
+                        $html .=  ' <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button"
+                            style="background-color: transparent;
+                        font-size: x-large;
+                        padding: 0px 20px;"
+                            class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-cog" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" style="margin: 2px;" title="' . __('messages.edit') . '"
+                                href="' . action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@edit', $row->id) . '"
+                                data-href="' . action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@edit', $row->id) . '">
+                                <i class="fas fa-edit" style="padding: 2px;color:rgb(8, 158, 16);"></i>
+                                ' . __('messages.edit') . ' </a>
+
+                            <a class="dropdown-item" style="margin: 2px;"
+                                href="' . action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@active_toggle', $row->id) . '"
+                                data-href="' . action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@active_toggle', $row->id) . '"
+                                >';
+                        if (!$row->active) {
+                            $html .= '<i class="fa fa-bullseye" style="padding: 2px;color: green;"
+                                        title="state of automated migration is active"
+                                        aria-hidden="true"></i>
+                                    ' . __('accounting::lang.active') . '
+
+                                    <i class=""></i>';
+                        } else {
+                            $html .= '    ( <i class="fa fa-ban" style="padding: 2px;color:red;"
+                                        title="state of automated migration is inactive"></i>
+                                    ' . __('accounting::lang.inactive') . '';
+                        }
+
+                        $html .= ' 
+                            </a>
+                            
+                        </div>
+                    </div>';
+
+
+                        return $html;
+                    }
+                )
+
+                ->editColumn('name', function ($row) {
+                    return  __('accounting::lang.' . $row->name) ?? '';
+                })
+
+                ->editColumn('type', function ($row) {
+
+                    return  __('accounting::lang.autoMigration.' . $row->type) ?? '';
+                })
+                ->editColumn('payment_status', function ($row) {
+                    return __('accounting::lang.autoMigration.' . $row->payment_status) ?? '';
+                })
+                ->editColumn('method', function ($row) {
+                    return  __('accounting::lang.autoMigration.' . $row->method) ?? '';
+                })
+                ->editColumn('businessLocation_name', function ($row) {
+                    return $row?->businessLocation?->name ?? '';
+                })
+
+                ->addColumn(
+                    'active',
+                    function ($row) {
+
+                        $html = '';
+
+                        if ($row->active) {
+                            $html .=  '<i class="fa fa-bullseye" title="state of automated migration is active"
+                            aria-hidden="true" style="color: green"></i>';
+                        } else {
+                            $html .=  '<i class="fa fa-ban" title="state of automated migration is inactive"
+                            aria-hidden="true" style="color:red"></i>';
+                        }
+
+
+                        return $html;
+                    }
+                )
+
+
+                ->rawColumns(['action', 'businessLocation_name', 'active'])
+                ->make(true);
+        }
+        $business_locations = BusinessLocation::where('business_id', $business_id)->get();
+        $mappingSettings = AccountingMappingSettingAutoMigration::where('business_id', $business_id)->get();
+        $mappingSetting_fillter = AccountingMappingSettingAutoMigration::where('business_id', $business_id)->groupby('name')->get();
+
+        return view('accounting::AutomatedMigration.index', compact('mappingSettings', 'mappingSetting_fillter', 'business_locations'));
     }
 
     /**
@@ -54,8 +174,9 @@ class AutomatedMigrationController extends Controller
         if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.create_autoMigration')) {
             // abort(403, 'Unauthorized action.');
         }
+        $mappingSetting_ids = AccountingMappingSettingAutoMigration::pluck('id');
 
-        $business_locations = BusinessLocation::where('business_id', $business_id)->get();
+        $business_locations = BusinessLocation::where('business_id', $business_id)->whereNotIn('mappingSetting_ids')->get();
         return view('accounting::AutomatedMigration.create', compact('business_locations'));
     }
 
@@ -166,9 +287,44 @@ class AutomatedMigrationController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function show($id)
+    public function store_deflute_auto_migration(Request $request)
     {
-        return view('accounting::show');
+        try {
+            DB::beginTransaction();
+            $this->accountingUtil->deflute_auto_migration($request);
+
+            $output = [
+                'success' => 1,
+                'msg' => __('lang_v1.added_success')
+            ];
+            DB::commit();
+
+            return redirect()->route('automated-migration.index')->with('status', $output);
+        } catch (Exception $e) {
+            DB::rollBack();
+            $output = [
+                'success' => 1,
+                'msg' => __('خطأ تقني الرجاء المحاولة مجددا')
+            ];
+
+
+            return redirect()->route('automated-migration.index')->with('status', $output);
+        }
+    }
+
+    public function create_deflute_auto_migration()
+    {
+        $business_id = request()->session()->get('user.business_id');
+
+        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.create_autoMigration')) {
+            // abort(403, 'Unauthorized action.');
+        }
+      
+        $mappingSetting_location_ids = AccountingMappingSettingAutoMigration::pluck('location_id');
+
+        $business_locations = BusinessLocation::where('business_id', $business_id)->whereNotIn('id', $mappingSetting_location_ids)->get();
+        // $business_locations = BusinessLocation::where('business_id', $business_id)->get();
+        return view('accounting::AutomatedMigration.create_defulat', compact('business_locations'));
     }
 
     /**
@@ -189,18 +345,20 @@ class AutomatedMigrationController extends Controller
         $journal_entry_1 = [];
         $journal_entry_2 = [];
 
-
-        foreach ($AccTransMappingSetting as $trans) {
-            $account =  AccountingAccount::find($trans->accounting_account_id);
-            $AccountType = AccountingAccountType::find($account->account_sub_type_id);
-            $trans['account_name'] =  $account->name;
-            $trans['account_primary_type'] =  $account->account_primary_type;
-            $trans['account_sub_type'] =  $AccountType->name;
-            if ($trans->journal_entry_number == 1)
-                array_push($journal_entry_1, $trans);
-            else
-                array_push($journal_entry_2, $trans);
+        if ($AccTransMappingSetting) {
+            foreach ($AccTransMappingSetting as $trans) {
+                $account =  AccountingAccount::find($trans->accounting_account_id);
+                $AccountType = AccountingAccountType::find($account->account_sub_type_id);
+                $trans['account_name'] =  $account->name;
+                $trans['account_primary_type'] =  $account->account_primary_type;
+                $trans['account_sub_type'] =  $AccountType->name;
+                if ($trans->journal_entry_number == 1)
+                    array_push($journal_entry_1, $trans);
+                else
+                    array_push($journal_entry_2, $trans);
+            }
         }
+
 
 
         $business_locations = BusinessLocation::where('business_id', $business_id)->get();
@@ -249,14 +407,7 @@ class AutomatedMigrationController extends Controller
 
 
         $mappingSetting = AccountingMappingSettingAutoMigration::find($id);
-        $mappingSetting->update([
-            'name' => $request->get('migration_name'),
-            'type' => $request->get('type'),
-            'payment_status' => $request->get('payment_status'),
-            'method' => $request->get('method'),
-            'location_id' => $request->input('business_location_id'),
 
-        ]);
 
         AccountingAccTransMappingSettingAutoMigration::where('mapping_setting_id', $id)->delete();
         $ref_no = $this->util->generateReferenceNumber('journal_entry', $ref_count, $business_id, $prefix);

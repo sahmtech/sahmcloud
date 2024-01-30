@@ -10,7 +10,7 @@ class AccountingMappingSettingAutoMigration extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'type', 'status', 'payment_status', 'method', 'active', 'created_by', 'location_id'];
+    protected $fillable = ['name','business_id', 'type', 'status', 'payment_status', 'method', 'active', 'created_by', 'location_id'];
 
     public function businessLocation()
     {

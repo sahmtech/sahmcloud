@@ -12,150 +12,118 @@
     </section>
 
     <section class="content">
+        @if (!$mappingSettings->isEmpty())
+            <div class="row">
+                <div class="col-md-12">
+                    @component('components.filters', ['title' => __('report.filters'), 'class' => 'box-solid'])
+                        <div class="row">
+                            <div class="col-sm-4">
+                                {!! Form::label('locations', __('accounting::lang.autoMigration.business_location')) !!}
+
+                                <select class="form-control" name="location_id" id='location_id' style="padding: 2px;">
+                                    <option value="all" selected>@lang('lang_v1.all')</option>
+                                    @foreach ($business_locations as $locations)
+                                        <option value="{{ $locations->id }}">
+                                            {{ $locations->name }}</option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+                            <div class="col-sm-4">
+                                {!! Form::label('type_fillter_lable', __('نوع العملية')) !!}
+                                <select class="form-control" name="type_fillter" id="type_fillter"style="padding: 3px" required>
+                                    <option value="all" selected>@lang('lang_v1.all')</option>
+                                    <option value="sell">@lang('accounting::lang.autoMigration.sell')</option>
+                                    <option value="sell_return">@lang('accounting::lang.autoMigration.sell_return')</option>
+                                    <option value="opening_stock">@lang('accounting::lang.autoMigration.opening_stock')</option>
+                                    <option value="purchase">@lang('accounting::lang.autoMigration.purchase')</option>
+                                    <option value="purchase_order">@lang('accounting::lang.autoMigration.purchase_order')</option>
+                                    <option value="purchase_return">@lang('accounting::lang.autoMigration.purchase_return')</option>
+                                    <option value="expens">@lang('accounting::lang.autoMigration.expens')</option>
+                                    <option value="sell_transfer">@lang('accounting::lang.autoMigration.sell_transfer')</option>
+                                    <option value="purchase_transfer">@lang('accounting::lang.autoMigration.purchase_transfer')</option>
+                                    <option value="payroll">@lang('accounting::lang.autoMigration.payroll')</option>
+                                    <option value="opening_balance">@lang('accounting::lang.autoMigration.opening_balance')</option>
+                                </select>
+
+
+                            </div>
+
+                            <div class="col-sm-4">
+                                {!! Form::label('mappingSetting_fillter', __('اسم الترحيل')) !!}
+
+                                <select class="form-control" name="mappingSetting_fillter" id='mappingSetting_fillter'
+                                    style="padding: 2px;">
+                                    <option value="all" selected>@lang('lang_v1.all')</option>
+                                    @foreach ($mappingSetting_fillter as $mappingSetting)
+                                        <option value="{{ $mappingSetting->name }}">
+                                            @lang('accounting::lang.' . $mappingSetting->name) </option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+
+
+                        </div>
+                    @endcomponent
+                </div>
+            </div>
+        @endif
+
         <div class="row">
             <div class="col-md-12">
                 @component('components.widget', ['class' => 'box-solid'])
-                    @slot('tool')
-                        <div class="box-tools">
-                            <a class="btn btn-primary pull-right m-5 btn-modal"
-                                href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create') }}"
-                                data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create') }}"
-                                data-container="#create_account_modal">
-                                <i class="fas fa-plus"></i> @lang('messages.add')</a>
+                    @if ($mappingSettings->isEmpty())
+                        <div style="text-align: center; ">
+                            <h3>@lang('accounting::lang.no_auto_migration')</h3>
+                            <p>@lang('accounting::lang.add_auto_migration_help')</p>
+                            <a href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create_deflute_auto_migration') }}"
+                                data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create_deflute_auto_migration') }}"
+                                data-container="#create_defulat_account_modal" class="btn btn-success btn-xs btn-modal">
+                                <i class="fas fa-plus"></i> @lang('accounting::lang.add_new_auto_migration')
+                            </a>
                         </div>
-                    @endslot
+                    @else
+                        @slot('tool')
+                            <div class="box-tools">
+                                <a class="btn btn-primary pull-right m-5 btn-modal"
+                                    href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create_deflute_auto_migration') }}"
+                                    data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create_deflute_auto_migration') }}"
+                                    data-container="#create_account_modal">
+                                    <i class="fas fa-plus"></i> @lang('messages.add')</a>
+                            </div>
+                        @endslot
 
-                    <div class="col-sm-12">
-                        <h4 style="text-align: start">قائمة الترحيلات</h4>
+                        <div class="col-sm-12">
+                            <h4 style="text-align: start">قائمة الترحيلات</h4>
 
-                        <table class="table table-bordered table-striped hide-footer" id="journal_table">
-                            <thead>
-                                <tr>
-                                    <th class="col-md-1">#
-                                    </th>
-                                    <th class="col-md-3">اسم الترحيل</th>
-                                    <th class="col-sm-3">نوع العملية</th>
-                                    <th class="col-sm-3" style="width: 12%;">حالة الدفع</th>
-                                    <th class="col-sm-2">طريقة الدفع</th>
-                                    <th class="col-sm-3">@lang('accounting::lang.autoMigration.business_location')</th>
-                                    <th class="col-md-2">الحالة</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody">
-                                @foreach ($mappingSetting as $row)
+
+                            <table class="table table-bordered table-striped hide-footer" id="auto_migration_table">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <button id="btnGroupDrop1" type="button"
-                                                    style="background-color: transparent;
-                                                font-size: x-large;
-                                                padding: 0px 20px;"
-                                                    class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                                                    aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-cog" aria-hidden="true"></i>
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" style="margin: 2px;" title="@lang('messages.edit')"
-                                                        href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@edit', $row->id) }}"
-                                                        data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@edit', $row->id) }}">
-                                                        <i class="fas fa-edit" style="padding: 2px;color:rgb(8, 158, 16);"></i>
-                                                        @lang('messages.edit') </a>
-
-                                                    <a class="dropdown-item" style="margin: 2px;" {{-- title="{{ $row->active ? @lang('accounting::lang.active') : @lang('accounting::lang.inactive') }}" --}}
-                                                        href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@active_toggle', $row->id) }}"
-                                                        data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@active_toggle', $row->id) }}"
-                                                        {{-- data-target="#active_auto_migration" data-toggle="modal" --}} {{-- id="delete_auto_migration" --}}>
-                                                        @if (!$row->active)
-                                                            <i class="fa fa-bullseye" style="padding: 2px;color: green;"
-                                                                title="state of automated migration is active"
-                                                                aria-hidden="true"></i>
-                                                            @lang('accounting::lang.active')
-
-                                                            <i class=""></i>
-                                                        @else
-                                                            <i class="fa fa-ban" style="padding: 2px;color:red;"
-                                                                title="state of automated migration is inactive"></i>
-                                                            @lang('accounting::lang.inactive')
-                                                        @endif
-                                                    </a>
-                                                </div>
-                                            </div>
-
-
-
-
-                                        </td>
-                                        <td>
-                                            {{ $row->name }}
-
-                                        </td>
-                                        <td>
-                                            @lang('accounting::lang.autoMigration.' . $row->type)
-
-                                        </td>
-                                        <td>
-
-                                            @lang('accounting::lang.autoMigration.' . $row->payment_status)
-
-                                        </td>
-                                        <td>
-                                            @lang('accounting::lang.autoMigration.' . $row->method)
-
-                                        </td>
-                                        <td>
-                                            {{ $row?->businessLocation?->name }}
-
-                                        </td>
-
-                                        <td>
-                                            @if ($row->active)
-                                                <i class="fa fa-bullseye" title="state of automated migration is active"
-                                                    aria-hidden="true" style="color: green"></i>
-                                            @else
-                                                <i class="fa fa-ban" title="state of automated migration is inactive"
-                                                    aria-hidden="true" style="color:red"></i>
-                                            @endif
-
-                                        </td>
-
-
-
-
+                                        <th class="col-md-1">#
+                                        </th>
+                                        <th class="col-md-3">اسم الترحيل</th>
+                                        <th class="col-sm-3">نوع العملية</th>
+                                        <th class="col-sm-3" style="width: 12%;">حالة الدفع</th>
+                                        <th class="col-sm-2">طريقة الدفع</th>
+                                        <th class="col-sm-3">@lang('accounting::lang.autoMigration.business_location')</th>
+                                        <th class="col-md-2">الحالة</th>
                                     </tr>
-                                @endforeach
-                                @if ($mappingSetting->isEmpty())
-                                    <tr>
-                                        <td colspan="10" class="text-center">
-                                            <h3>@lang('accounting::lang.no_auto_migration')</h3>
-                                            <p>@lang('accounting::lang.add_auto_migration_help')</p>
-                                            <a href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create') }}"
-                                                data-href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@create') }}"
-                                                data-container="#create_account_modal" class="btn btn-success btn-xs btn-modal">
-                                                <i class="fas fa-plus"></i> @lang('accounting::lang.add_new_auto_migration')
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endif
-                            </tbody>
+                                </thead>
 
-                            {{-- <tfoot>
-                                <tr>
-                                    <th></th>
-                                    <th class="text-center">@lang('accounting::lang.total')</th>
-                                    <th><input type="hidden" class="total_debit_hidden"><span class="total_debit"></span></th>
-                                    <th><input type="hidden" class="total_credit_hidden"><span class="total_credit"></span>
-                                    </th>
-                                </tr>
-                            </tfoot> --}}
-                        </table>
 
-                    </div>
-                @endcomponent
-            </div>
+
+                            </table>
+                    @endif
+                </div>
+            @endcomponent
+        </div>
         </div>
     </section>
 
     <div class="modal fade" id="create_account_modal" tabindex="-1" role="dialog"></div>
+    <div class="modal fade" id="create_defulat_account_modal" tabindex="-1" role="dialog"></div>
     <div class="modal fade" id="delete_auto_migration" tabindex="-1" role="dialog">
         @include('accounting::AutomatedMigration.deleteDialog')
     </div>
@@ -167,7 +135,58 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#journal_table tbody').append($(
+
+            auto_migration_table = $('#auto_migration_table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ route('automated-migration.index') }}',
+                    data: function(d) {
+                        if ($('#mappingSetting_fillter').val()) {
+                            d.mappingSetting_fillter = $('#mappingSetting_fillter').val();
+
+                        }
+                        if ($('#location_id').val()) {
+                            d.location_id = $('#location_id').val();
+
+                        }
+                        if ($('#type_fillter').val()) {
+                            d.type_fillter = $('#type_fillter').val();
+
+                        }
+                    }
+                },
+
+                columns: [{
+                        "data": "action"
+                    },
+                    {
+                        "data": "name"
+                    },
+                    {
+                        "data": "type"
+                    },
+                    {
+                        "data": "payment_status"
+                    },
+                    {
+                        "data": "method"
+                    },
+                    {
+                        "data": "businessLocation_name"
+                    },
+                    {
+                        "data": "active"
+                    }
+                ]
+            });
+
+
+            $('#mappingSetting_fillter,#location_id,#type_fillter').on('change',
+                function() {
+                    auto_migration_table.ajax.reload();
+                });
+            $('#auto_migration_table tbody').append($(
                 "<tr><td class=\"containter\"></td>td class=\"containter\"></td>td class=\"containter\"></td></tr>"
             ));
             $('.journal_add_btn').click(function(e) {
@@ -236,7 +255,7 @@
         $(document).on("click", ".fa-trash", function() {
             // console.log("amen");
             var tbode_number = $(this).val();
-            let counter = $('#journal_table' + tbode_number + ' tr').length - 1;
+            let counter = $('#auto_migration_table' + tbode_number + ' tr').length - 1;
             console.log(counter);
             if (counter > 1) {
                 $(this).parents("tr").remove();
@@ -247,7 +266,7 @@
         })
         $(document).on('click', '.fa-plus-square', function() {
             var tbode_number = $(this).val();
-            let counter = $('#journal_table' + tbode_number + ' tr').length - 1;
+            let counter = $('#auto_migration_table' + tbode_number + ' tr').length - 1;
             $('#tbody' + tbode_number).append(
                 '<tr><td style="display: flex;font-size: smaller;align-items:center"><button type="button" class="fa fa-trash fa-2x cursor-pointer" data-id="' +
                 counter +

@@ -10,12 +10,14 @@ use Carbon\Carbon;
 use DB;
 use Modules\Accounting\Entities\AccountingAccount;
 use Modules\Accounting\Entities\AccountingAccountsTransaction;
+use Modules\Accounting\Entities\AccountingMappingSettingAutoMigration;
 
 class AccountingUtil extends Util
 {
-    public function balanceFormula($accounting_accounts_alias = 'accounting_accounts',
-                                 $accounting_account_transaction_alias = 'AAT')
-    {
+    public function balanceFormula(
+        $accounting_accounts_alias = 'accounting_accounts',
+        $accounting_account_transaction_alias = 'AAT'
+    ) {
         return "SUM( IF(
             ($accounting_accounts_alias.account_primary_type='asset' AND $accounting_account_transaction_alias.type='debit')
             OR ($accounting_accounts_alias.account_primary_type='expense' AND $accounting_account_transaction_alias.type='debit')
@@ -28,9 +30,9 @@ class AccountingUtil extends Util
     public function getAccountingSettings($business_id)
     {
         $accounting_settings = Business::where('id', $business_id)
-                                ->value('accounting_settings');
+            ->value('accounting_settings');
 
-        $accounting_settings = ! empty($accounting_settings) ? json_decode($accounting_settings, true) : [];
+        $accounting_settings = !empty($accounting_settings) ? json_decode($accounting_settings, true) : [];
 
         return $accounting_settings;
     }
@@ -42,53 +44,53 @@ class AccountingUtil extends Util
 
         if ($type == 'sell') {
             $query->where('transactions.type', 'sell')
-            ->where('transactions.status', 'final');
+                ->where('transactions.status', 'final');
         } elseif ($type == 'purchase') {
             $query->where('transactions.type', 'purchase')
                 ->where('transactions.status', 'received');
         }
 
-        if (! empty($location_id)) {
+        if (!empty($location_id)) {
             $query->where('transactions.location_id', $location_id);
         }
 
         $dues = $query->whereNotNull('transactions.pay_term_number')
-                ->whereIn('transactions.payment_status', ['partial', 'due'])
-                ->join('contacts as c', 'c.id', '=', 'transactions.contact_id')
-                ->select(
-                    DB::raw(
-                        'DATEDIFF(
-                            "'.$today.'", 
+            ->whereIn('transactions.payment_status', ['partial', 'due'])
+            ->join('contacts as c', 'c.id', '=', 'transactions.contact_id')
+            ->select(
+                DB::raw(
+                    'DATEDIFF(
+                            "' . $today . '", 
                             IF(
                                 transactions.pay_term_type="days",
                                 DATE_ADD(transactions.transaction_date, INTERVAL transactions.pay_term_number DAY),
                                 DATE_ADD(transactions.transaction_date, INTERVAL transactions.pay_term_number MONTH)
                             )
                         ) as diff'
-                    ),
-                    DB::raw('SUM(transactions.final_total - 
+                ),
+                DB::raw('SUM(transactions.final_total - 
                         (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) 
                         FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  
                         as total_due'),
 
-                    'c.name as contact_name',
-                    'transactions.contact_id',
-                    'transactions.invoice_no',
-                    'transactions.ref_no',
-                    'transactions.transaction_date',
-                    DB::raw('IF(
+                'c.name as contact_name',
+                'transactions.contact_id',
+                'transactions.invoice_no',
+                'transactions.ref_no',
+                'transactions.transaction_date',
+                DB::raw('IF(
                         transactions.pay_term_type="days",
                         DATE_ADD(transactions.transaction_date, INTERVAL transactions.pay_term_number DAY),
                         DATE_ADD(transactions.transaction_date, INTERVAL transactions.pay_term_number MONTH)
                     ) as due_date')
-                )
-                ->groupBy('transactions.id')
-                ->get();
+            )
+            ->groupBy('transactions.id')
+            ->get();
 
         $report_details = [];
         if ($group_by == 'contact') {
             foreach ($dues as $due) {
-                if (! isset($report_details[$due->contact_id])) {
+                if (!isset($report_details[$due->contact_id])) {
                     $report_details[$due->contact_id] = [
                         'name' => $due->contact_name,
                         '<1' => 0,
@@ -151,7 +153,8 @@ class AccountingUtil extends Util
     /**
      * Function to delete a mapping
      */
-    public function deleteMap($transaction_id, $transaction_payment_id){
+    public function deleteMap($transaction_id, $transaction_payment_id)
+    {
         AccountingAccountsTransaction::where('transaction_id', $transaction_id)
             ->whereIn('map_type', ['payment_account', 'deposit_to'])
             ->where('transaction_payment_id', $transaction_payment_id)
@@ -161,7 +164,8 @@ class AccountingUtil extends Util
     /**
      * Function to save a mapping
      */
-    public function saveMap($type, $id, $user_id, $business_id, $deposit_to, $payment_account){
+    public function saveMap($type, $id, $user_id, $business_id, $deposit_to, $payment_account)
+    {
         if ($type == 'sell') {
             $transaction = Transaction::where('business_id', $business_id)->where('id', $id)->firstorFail();
 
@@ -192,7 +196,7 @@ class AccountingUtil extends Util
             ];
         } elseif (in_array($type, ['purchase_payment', 'sell_payment'])) {
             $transaction_payment = TransactionPayment::where('id', $id)->where('business_id', $business_id)
-                            ->firstorFail();
+                ->firstorFail();
 
             //$payment_account will increase = sales = credit
             $payment_data = [
@@ -247,8 +251,8 @@ class AccountingUtil extends Util
                 'created_by' => $user_id,
                 'operation_date' => \Carbon::now(),
             ];
-        }elseif ($type == 'expense') {
-            $transaction = Transaction::where('business_id', $business_id)->where('id', $id)->firstorFail();            
+        } elseif ($type == 'expense') {
+            $transaction = Transaction::where('business_id', $business_id)->where('id', $id)->firstorFail();
             $payment_data = [
                 'accounting_account_id' => $payment_account,
                 'transaction_id' => $id,
@@ -1377,5 +1381,67 @@ class AccountingUtil extends Util
             ),
 
         );
+    }
+
+    public function deflute_auto_migration($request)
+    {
+        $user_id = request()->session()->get('user.id');
+        $business_id = request()->session()->get('user.business_id');
+        $names = [
+            'sales_bill',
+            'sell_return_bill',
+            'opening_stock',
+            'purchase_bill',
+            'purchase_order_bill',
+            'purchase_return_bill',
+            'expens_bill',
+            'sell_transfer',
+            'purchase_transfer',
+            'payroll',
+            'opening_balance',
+        ];
+        $types = [
+            'sell',
+            'sell_return',
+            'opening_stock',
+            'purchase',
+            'purchase_order',
+            'purchase_return',
+            'expens',
+            'sell_transfer',
+            'purchase_transfer',
+            'payroll',
+            'opening_balance',
+        ];
+        $payment_status = [
+            'paid',
+            'due',
+            'partial',
+        ];
+
+        $methods = [
+            'cash',
+            'card',
+            'bank_transfer',
+            'cheque',
+        ];
+
+        foreach ($types as $key => $value) {
+            foreach ($payment_status as $paymentStatus) {
+                foreach ($methods as $method) {
+                    AccountingMappingSettingAutoMigration::create([
+                        'name' => $names[$key],
+                        'type' => $value,
+                        'location_id' => $request->input('business_location_id'),
+                        'status' => 'final',
+                        'payment_status' => $paymentStatus,
+                        'method' => $method,
+                        'created_by' => $user_id,
+                        'business_id' => $business_id,
+                        'active' => false,
+                    ]);
+                }
+            }
+        }
     }
 }

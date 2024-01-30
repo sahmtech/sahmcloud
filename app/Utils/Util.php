@@ -1740,6 +1740,7 @@ class Util
         $accountMappingSetting = AccountingMappingSettingAutoMigration::where('type', $transaction->type)
             ->where('status', $transaction->status)
             ->where('method', $request->payment['0']['method'])
+            ->where('location_id',$transaction->location_id)
             ->where('active', true)->first();
             
         if ($accountMappingSetting) {
