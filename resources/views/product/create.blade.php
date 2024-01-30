@@ -37,7 +37,7 @@
                 'placeholder' => __('product.sku')]); !!}
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4" hidden>
             <div class="form-group">
                 {!! Form::label('barcode_type', __('product.barcode_type') . ':*') !!}
                 {!! Form::select('barcode_type', $barcode_types, !empty($duplicate_product->barcode_type) ? $duplicate_product->barcode_type : $barcode_default, ['class' => 'form-control select2', 'required']); !!}
@@ -57,23 +57,23 @@
             </div>
         </div>
 
-        <div class="col-sm-4 @if(!session('business.enable_sub_units')) hide @endif">
+        {{-- <div class="col-sm-4 @if(!session('business.enable_sub_units')) hide @endif">
             <div class="form-group">
                 {!! Form::label('sub_unit_ids', __('lang_v1.related_sub_units') . ':') !!} @show_tooltip(__('lang_v1.sub_units_tooltip'))
 
                 {!! Form::select('sub_unit_ids[]', [], !empty($duplicate_product->sub_unit_ids) ? $duplicate_product->sub_unit_ids : null, ['class' => 'form-control select2', 'multiple', 'id' => 'sub_unit_ids']); !!}
             </div>
-        </div>
-        @if(!empty($common_settings['enable_secondary_unit']))
+        </div> --}}
+        {{-- @if(!empty($common_settings['enable_secondary_unit']))
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('secondary_unit_id', __('lang_v1.secondary_unit') . ':') !!} @show_tooltip(__('lang_v1.secondary_unit_help'))
                 {!! Form::select('secondary_unit_id', $units, !empty($duplicate_product->secondary_unit_id) ? $duplicate_product->secondary_unit_id : null, ['class' => 'form-control select2']); !!}
             </div>
         </div>
-        @endif
+        @endif --}}
 
-        <div class="col-sm-4 @if(!session('business.enable_brand')) hide @endif">
+        {{-- <div class="col-sm-4 @if(!session('business.enable_brand')) hide @endif">
             <div class="form-group">
                 {!! Form::label('brand_id', __('product.brand') . ':') !!}
                 <div class="input-group">
@@ -83,7 +83,7 @@
                     </span>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-sm-4 @if(!session('business.enable_category')) hide @endif">
             <div class="form-group">
                 {!! Form::label('category_id', __('product.category') . ':') !!}
@@ -91,12 +91,12 @@
             </div>
         </div>
 
-        <div class="col-sm-4 @if(!(session('business.enable_category') && session('business.enable_sub_category'))) hide @endif">
+        {{-- <div class="col-sm-4 @if(!(session('business.enable_category') && session('business.enable_sub_category'))) hide @endif">
             <div class="form-group">
                 {!! Form::label('sub_category_id', __('product.sub_category') . ':') !!}
                 {!! Form::select('sub_category_id', $sub_categories, !empty($duplicate_product->sub_category_id) ? $duplicate_product->sub_category_id : null, ['placeholder' => __('messages.please_select'), 'class' => 'form-control select2']); !!}
             </div>
-        </div>
+        </div> --}}
 
         @php
         $default_location = null;
@@ -122,37 +122,37 @@
                 </label>@show_tooltip(__('tooltip.enable_stock')) <p class="help-block"><i>@lang('product.enable_stock_help')</i></p>
             </div>
         </div>
-        <div class="col-sm-4 @if(!empty($duplicate_product) && $duplicate_product->enable_stock == 0) hide @endif" id="alert_quantity_div">
+        {{-- <div class="col-sm-4 @if(!empty($duplicate_product) && $duplicate_product->enable_stock == 0) hide @endif" id="alert_quantity_div">
             <div class="form-group">
                 {!! Form::label('alert_quantity', __('product.alert_quantity') . ':') !!} @show_tooltip(__('tooltip.alert_quantity'))
                 {!! Form::text('alert_quantity', !empty($duplicate_product->alert_quantity) ? @format_quantity($duplicate_product->alert_quantity) : null , ['class' => 'form-control input_number',
                 'placeholder' => __('product.alert_quantity'), 'min' => '0']); !!}
             </div>
-        </div>
-        @if(!empty($common_settings['enable_product_warranty']))
+        </div> --}}
+        {{-- @if(!empty($common_settings['enable_product_warranty']))
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('warranty_id', __('lang_v1.warranty') . ':') !!}
                 {!! Form::select('warranty_id', $warranties, null, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select')]); !!}
             </div>
         </div>
-        @endif
+        @endif --}}
         <!-- include module fields -->
         @if(!empty($pos_module_data))
         @foreach($pos_module_data as $key => $value)
         @if(!empty($value['view_path']))
-        @includeIf($value['view_path'], ['view_data' => $value['view_data']])
+        {{-- @includeIf($value['view_path'], ['view_data' => $value['view_data']]) --}}
         @endif
         @endforeach
         @endif
         <div class="clearfix"></div>
-        <div class="col-sm-8">
+        {{-- <div class="col-sm-8">
             <div class="form-group">
                 {!! Form::label('product_description', __('lang_v1.product_description') . ':') !!}
                 {!! Form::textarea('product_description', !empty($duplicate_product->product_description) ? $duplicate_product->product_description : null, ['class' => 'form-control']); !!}
             </div>
-        </div>
-        <div class="col-sm-4">
+        </div> --}}
+        {{-- <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
                 {!! Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*',
@@ -161,7 +161,7 @@
                     <p class="help-block">@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit') / 1000000)]) <br> @lang('lang_v1.aspect_ratio_should_be_1_1')</p>
                 </small>
             </div>
-        </div>
+        </div> --}}
     </div>
     <div class="col-sm-4">
         <div class="form-group">
@@ -177,7 +177,7 @@
     </div>
     @endcomponent
 
-    @component('components.widget', ['class' => 'box-primary'])
+    {{-- @component('components.widget', ['class' => 'box-primary'])
     <div class="row">
         @if(session('business.enable_product_expiry'))
 
@@ -302,7 +302,7 @@
         <div class="clearfix"></div>
         @include('layouts.partials.module_form_part')
     </div>
-    @endcomponent
+    @endcomponent --}}
 
     @component('components.widget', ['class' => 'box-primary'])
     <div class="row">
