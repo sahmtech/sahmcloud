@@ -1344,6 +1344,7 @@ return [
 'profit_margin' => 'هامش الربح ٪',
 "cr"=>"CR",
 "dr"=>"DR",
+'update_product_price' => 'تحديث الاسعار',
 "payment_link"=>"رابط الدفع",
 "enable_payment_link"=>"تمكين رابط الدفع",
 "payment_link_help_text"=>"من خلال تمكين المستخدمين يمكنهم دفع الفاتورة باستخدام رابط الدفع",
@@ -1414,5 +1415,6 @@ return [
 'English name' => 'الاسم الانكليزي',
 'Parent name' => 'اسم الحساب الرئيسي',
 'Parent account' => ' الحساب الرئيسي',
-'Actions' => 'العمليات'
+'Actions' => 'العمليات',
+'enable_fast_store'=>'تفعيل التخزين السريع',
 ];

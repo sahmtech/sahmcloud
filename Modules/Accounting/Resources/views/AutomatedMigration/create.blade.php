@@ -40,11 +40,11 @@
 
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        {!! Form::label('name_ar', __('اسم الترحيل') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
+                                        {!! Form::label('name_ar', __('accounting::lang.migration_name') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
                                         {!! Form::text('migration_name', '', [
                                             'class' => 'form-control',
                                             'required',
-                                            'placeholder' => __('اسم الترحيل'),
+                                            'placeholder' => __('accounting::lang.migration_name'),
                                             'id' => 'name_ar',
                                         ]) !!}
                                     </div>
@@ -60,7 +60,7 @@
 
                                 <div class="col-sm-3">
 
-                                    {!! Form::label('account_sub_type', __('نوع العملية') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
+                                    {!! Form::label('account_sub_type', __('accounting::lang.operatio_type') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
                                     <select class="form-control" name="type" id="account_sub_type"style="padding: 3px"
                                         required>
                                         <option value="">@lang('messages.please_select')</option>
@@ -79,7 +79,7 @@
                                 </div>
 
                                 <div class="col-sm-3">
-                                    {!! Form::label('account_sub_type', __('حالة الدفع') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
+                                    {!! Form::label('account_sub_type', __('accounting::lang.payment_stauts') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
                                     <select class="form-control" name="payment_status" id="account_sub_type"
                                         style="padding: 3px" required>
                                         <option value="">@lang('messages.please_select')</option>
@@ -90,7 +90,7 @@
                                 </div>
 
                                 <div class="col-sm-3">
-                                    {!! Form::label('account_sub_type', __('طريقة الدفع') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
+                                    {!! Form::label('account_sub_type', __('accounting::lang.payment_method') . '  ') !!}<span style="color: red; font-size:10px"> *</span>
                                     <select class="form-control" name="method" id="account_sub_type"style="padding: 3px"
                                         required>
                                         <option value="">@lang('messages.please_select')</option>

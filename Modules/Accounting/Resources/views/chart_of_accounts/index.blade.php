@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 @endsection
 
-@include('accounting::layouts.nav')
+{{-- @include('accounting::layouts.nav') --}}
 
 <!-- Content Header (Page header) -->
 <section class="content-header">

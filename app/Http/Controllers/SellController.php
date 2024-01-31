@@ -348,36 +348,36 @@ class SellController extends Controller
                         if (auth()->user()->can('sell.view') || auth()->user()->can('direct_sell.view') || auth()->user()->can('view_own_sell_only')) {
                             $html .= '<li><a href="#" data-href="'.action([\App\Http\Controllers\SellController::class, 'show'], [$row->id]).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> '.__('messages.view').'</a></li>';
                         }
-                        if (! $only_shipments) {
-                            if ($row->is_direct_sale == 0) {
-                                if (auth()->user()->can('sell.update')) {
-                                    $html .= '<li><a target="_blank" href="'.action([\App\Http\Controllers\SellPosController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i> '.__('messages.edit').'</a></li>';
-                                }
-                            } elseif ($row->type == 'sales_order') {
-                                if (auth()->user()->can('so.update')) {
-                                    $html .= '<li><a target="_blank" href="'.action([\App\Http\Controllers\SellController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i> '.__('messages.edit').'</a></li>';
-                                }
-                            } else {
-                                if (auth()->user()->can('direct_sell.update')) {
-                                    $html .= '<li><a target="_blank" href="'.action([\App\Http\Controllers\SellController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i> '.__('messages.edit').'</a></li>';
-                                }
-                            }
+                        // if (! $only_shipments) {
+                        //     if ($row->is_direct_sale == 0) {
+                        //         if (auth()->user()->can('sell.update')) {
+                        //             $html .= '<li><a target="_blank" href="'.action([\App\Http\Controllers\SellPosController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i> '.__('messages.edit').'</a></li>';
+                        //         }
+                        //     } elseif ($row->type == 'sales_order') {
+                        //         if (auth()->user()->can('so.update')) {
+                        //             $html .= '<li><a target="_blank" href="'.action([\App\Http\Controllers\SellController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i> '.__('messages.edit').'</a></li>';
+                        //         }
+                        //     } else {
+                        //         if (auth()->user()->can('direct_sell.update')) {
+                        //             $html .= '<li><a target="_blank" href="'.action([\App\Http\Controllers\SellController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i> '.__('messages.edit').'</a></li>';
+                        //         }
+                        //     }
 
-                            $delete_link = '<li><a href="'.action([\App\Http\Controllers\SellPosController::class, 'destroy'], [$row->id]).'" class="delete-sale"><i class="fas fa-trash"></i> '.__('messages.delete').'</a></li>';
-                            if ($row->is_direct_sale == 0) {
-                                if (auth()->user()->can('sell.delete')) {
-                                    $html .= $delete_link;
-                                }
-                            } elseif ($row->type == 'sales_order') {
-                                if (auth()->user()->can('so.delete')) {
-                                    $html .= $delete_link;
-                                }
-                            } else {
-                                if (auth()->user()->can('direct_sell.delete')) {
-                                    $html .= $delete_link;
-                                }
-                            }
-                        }
+                        //     $delete_link = '<li><a href="'.action([\App\Http\Controllers\SellPosController::class, 'destroy'], [$row->id]).'" class="delete-sale"><i class="fas fa-trash"></i> '.__('messages.delete').'</a></li>';
+                        //     if ($row->is_direct_sale == 0) {
+                        //         if (auth()->user()->can('sell.delete')) {
+                        //             $html .= $delete_link;
+                        //         }
+                        //     } elseif ($row->type == 'sales_order') {
+                        //         if (auth()->user()->can('so.delete')) {
+                        //             $html .= $delete_link;
+                        //         }
+                        //     } else {
+                        //         if (auth()->user()->can('direct_sell.delete')) {
+                        //             $html .= $delete_link;
+                        //         }
+                        //     }
+                        // }
 
                         if (config('constants.enable_download_pdf') && auth()->user()->can('print_invoice') && $sale_type != 'sales_order') {
                             $html .= '<li><a href="'.route('sell.downloadPdf', [$row->id]).'" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> '.__('lang_v1.download_pdf').'</a></li>';

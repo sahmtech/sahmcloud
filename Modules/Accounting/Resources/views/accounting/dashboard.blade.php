@@ -3,7 +3,7 @@
 @section('title', __('accounting::lang.accounting'))
 
 @section('content')
-    @include('accounting::layouts.nav')
+    {{-- @include('accounting::layouts.nav') --}}
     
     <section class="content">
         <div class="row">

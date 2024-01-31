@@ -44,9 +44,97 @@ class DataController extends Controller
             Menu::modify(
                 'admin-sidebar-menu',
                 function ($menu) {
-                    $menu->url(action([\Modules\Accounting\Http\Controllers\AccountingController::class, 'dashboard']), __('accounting::lang.accounting'), ['icon' => 'fas fa-money-check fa', 'style' => config('app.env') == 'demo' ? 'background-color: #D483D9;' : '', 'active' => request()->segment(1) == 'accounting'])->order(50);
+                    $menu->dropdown(
+                        __('accounting::lang.accounting'),
+
+                        function ($sub) {
+                            $sub->url(
+                                action([\Modules\Accounting\Http\Controllers\AccountingController::class, 'dashboard']),
+                                __('accounting::lang.accounting'),
+                                ['icon' => 'fa fas fa-list', 'active' => request()->segment(2) == 'dashboard' ]
+                            );
+
+                            if (auth()->user()->can('chart-of-accounts')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\CoaController::class, 'index']),
+                                    __('accounting::lang.chart_of_accounts'),
+                                    ['icon' => 'fa fas fa-plus-circle', 'active' =>  request()->segment(2) == 'chart-of-accounts']
+                                );
+                            }
+
+                            // if (auth()->user()->can('chart-of-accounts')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\CostCenterController::class, 'index']),
+                                    __('accounting::lang.cost_center'),
+                                    ['icon' => 'fa fas fa-plus-circle', 'active' =>  request()->segment(2) == 'cost_centers']
+                                );
+                            // }
+                              // if (auth()->user()->can('chart-of-accounts')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\OpeningBalanceController::class, 'index']),
+                                    __('accounting::lang.opening_balances'),
+                                    ['icon' => 'fa fas fa-plus-circle', 'active' =>  request()->segment(2) == 'opening_balances']
+                                );
+                            // }
+                           
+                            if (auth()->user()->can('accounting.view_journal')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\JournalEntryController::class, 'index']),
+                                    __('accounting::lang.journal_entry'),
+                                    ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'journal-entry']
+                                );
+                            }
+
+                            if (auth()->user()->can('accounting.autoMigration')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class, 'index']),
+                                    __('accounting::lang.automatedMigration'),
+                                    ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'automated-migration']
+                                );
+                            }
+                            if (auth()->user()->can('accounting.view_transfer')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\TransferController::class, 'index']),
+                                    __('accounting::lang.transfer'),
+                                    ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'transfer']
+                                );
+                            }
+                            // if (auth()->user()->can('accounting.view_transfer') ) {
+                            $sub->url(
+                                action([\Modules\Accounting\Http\Controllers\TransactionController::class, 'index']),
+                                __('accounting::lang.transactions'),
+                                ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'transactions']
+                            );
+                            // }
+                            if (auth()->user()->can('accounting.manage_budget')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\BudgetController::class, 'index']),
+                                    __('accounting::lang.budget'),
+                                    ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'budget']
+                                );
+                            }
+                            if (auth()->user()->can('accounting.view_reports')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\ReportController::class, 'index']),
+                                    __('accounting::lang.reports'),
+                                    ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'reports']
+                                );
+                            }
+                            // if (auth()->user()->can('accounting.view_reports') ) {
+                            $sub->url(
+                                action([\Modules\Accounting\Http\Controllers\SettingsController::class, 'index']),
+                                __('messages.settings'),
+                                ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'settings']
+                            );
+                            // }
+                        },
+
+                        ['icon' => 'fas fa-money-check fa', 'style' => config('app.env') == 'demo' ? 'background-color: #D483D9;' : '', 'active' => request()->segment(1) == 'accounting']
+                    )->order(50);
                 }
             );
+
+            // action([\Modules\Accounting\Http\Controllers\AccountingController::class, 'dashboard'])  ,
         }
     }
 

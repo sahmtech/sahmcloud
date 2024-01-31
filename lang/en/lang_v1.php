@@ -1538,4 +1538,6 @@ return [
     'kitchen_order_tooltip' => 'Order will be sent to kitchen only if this option is checked',
     'disable_quotation' => 'Disable Quotation',
     'disable_card' => 'Disable Card',
+    'enable_fast_store' => 'Enable fast save',
+
 ];
