@@ -77,6 +77,22 @@ class DataController extends Controller
                                 );
                             // }
                            
+                            // if (($is_admin  || auth()->user()->can('accounting.receipt_vouchers'))) {
+
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\ReceiptVouchersController::class, 'index']),
+                                    __('accounting::lang.receipt_vouchers'),
+                                    ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(2) == 'receipt_vouchers']
+                                );
+                            // }
+                            // if (($is_admin  || auth()->user()->can('accounting.payment_vouchers'))) {
+                
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\PaymentVouchersController::class, 'index']),
+                                    __('accounting::lang.payment_vouchers'),
+                                    ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(3) == 'payment_vouchers']
+                                );
+                            // }
                             if (auth()->user()->can('accounting.view_journal')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\JournalEntryController::class, 'index']),
