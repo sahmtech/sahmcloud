@@ -44,7 +44,7 @@
                         {!! Form::text('sku', null, ['class' => 'form-control', 'placeholder' => __('product.sku')]) !!}
                     </div>
                 </div>
-                <div class="col-sm-4 @if (!session('business.enable_fast_store')) hide @endif">
+                <div class="col-sm-4 @if (session('business.enable_fast_store')) hide @endif">
                     <div class="form-group">
                         {!! Form::label('barcode_type', __('product.barcode_type') . ':*') !!}
                         {!! Form::select(
@@ -180,7 +180,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-4 @if (!session('business.enable_fast_store')) hide @endif @if (!empty($duplicate_product) && $duplicate_product->enable_stock == 0) hide @endif"
+                <div class="col-sm-4 @if (session('business.enable_fast_store')) hide @endif @if (!empty($duplicate_product) && $duplicate_product->enable_stock == 0) hide @endif"
                     id="alert_quantity_div">
                     <div class="form-group">
                         {!! Form::label('alert_quantity', __('product.alert_quantity') . ':') !!} @show_tooltip(__('tooltip.alert_quantity'))
@@ -211,7 +211,7 @@
                     @endforeach
                 @endif
                 <div class="clearfix"></div>
-                <div class="col-sm-8 @if (!session('business.enable_fast_store')) hide @endif">
+                <div class="col-sm-8 @if (session('business.enable_fast_store')) hide @endif">
                     <div class="form-group">
                         {!! Form::label('product_description', __('lang_v1.product_description') . ':') !!}
                         {!! Form::textarea(
@@ -221,7 +221,7 @@
                         ) !!}
                     </div>
                 </div>
-                <div class="col-sm-4 @if (!session('business.enable_fast_store')) hide @endif">
+                <div class="col-sm-4 @if (session('business.enable_fast_store')) hide @endif">
                     <div class="form-group">
                         {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
                         {!! Form::file('image', [
@@ -253,7 +253,7 @@
             </div>
         @endcomponent
 
-        <div class="@if (!session('business.enable_fast_store')) hide @endif">
+        <div class="@if (session('business.enable_fast_store')) hide @endif">
             @component('components.widget', ['class' => 'box-primary'])
                 <div class="row">
                     @if (session('business.enable_product_expiry'))

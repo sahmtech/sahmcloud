@@ -12,6 +12,8 @@
 */
 
 use Modules\Accounting\Http\Controllers\OpeningBalanceController;
+use Modules\Accounting\Http\Controllers\PaymentVouchersController;
+use Modules\Accounting\Http\Controllers\ReceiptVouchersController;
 
 Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'AdminSidebarMenu')->prefix('accounting')->group(function () {
     Route::get('dashboard', [\Modules\Accounting\Http\Controllers\AccountingController::class, 'dashboard']);
@@ -76,6 +78,15 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
     Route::resource('opening_balances', OpeningBalanceController::class);
     Route::get('/accounting/opening_balance/equation', [OpeningBalanceController::class, 'calcEquation'])->name('opening_balance.calc');
   
+
+    Route::resource('payment_vouchers', PaymentVouchersController::class);
+    Route::get('/accounting/payment_vouchers', [PaymentVouchersController::class,'index'])->name('index-payment_vouchers');
+    Route::get('/accounting/payment_vouchers/load/data', [PaymentVouchersController::class, 'loadNeededData'])->name('payment_vouchers.load');
+
+    Route::resource('receipt_vouchers', ReceiptVouchersController::class);
+    Route::get('/accounting/receipt_vouchers/load/data', [ReceiptVouchersController::class, 'loadNeededData'])->name('receipt_vouchers.load');
+   
+    
     Route::get('transactions', [\Modules\Accounting\Http\Controllers\TransactionController::class, 'index']);
     Route::get('transactions/map', [\Modules\Accounting\Http\Controllers\TransactionController::class, 'map']);
     Route::post('transactions/save-map', [\Modules\Accounting\Http\Controllers\TransactionController::class, 'saveMap']);
