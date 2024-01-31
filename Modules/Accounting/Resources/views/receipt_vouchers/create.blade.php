@@ -25,7 +25,7 @@
                                         id="contact_id" required>
                                     <option value="">@lang('messages.please_select')</option>
                                     @foreach($contacts as $contact)
-                                        <option value="{{$contact['id']}}">{{ $contact['first_name'].' '.$contact['last_name'] }}</option>
+                                        <option value="{{$contact['id']}}">{{ $contact['name'] }}</option>
                                     @endforeach
                                 </select>
                             </div>

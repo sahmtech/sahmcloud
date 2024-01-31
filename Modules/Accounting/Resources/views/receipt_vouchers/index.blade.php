@@ -62,7 +62,7 @@
     @include('accounting::receipt_vouchers.create')
 @stop
 
-@push('javascript')
+@section('javascript')
     <script>
         $(document).ready(function () {
             $('#receipt_voucher_table').DataTable({
@@ -226,4 +226,4 @@
 
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
-@endpush
+@endsection
