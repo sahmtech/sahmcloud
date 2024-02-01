@@ -6,7 +6,7 @@
                     id="receipt_voucher_filter_customer_id" style="width: 100%">
                 <option selected="selected" value="">{{__('accounting::lang.all')}}</option>
                 @foreach($contacts as $contact)
-                    <option value="{{$contact->id}}">{{$contact->name}}</option>
+                    <option value="{{$contact->id}}">{{$contact->name . ' - ' . $contact->supplier_business_name }}</option>
                 @endforeach
             </select>
         </div>
