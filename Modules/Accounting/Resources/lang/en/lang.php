@@ -676,5 +676,7 @@ return [
     'payment_method' => 'Payment method',
     'migration_list' => 'Migration list',
     'migratio_status' => 'الحالة',
+    'create_Journal_entry'=>'create Journal entry',
+
 
 ];

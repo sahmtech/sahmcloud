@@ -643,6 +643,7 @@ return [
     'payment_method' => 'طريقة الدفع',
     'migration_list' => 'قائمة الترحيلات',
     'migratio_status' => 'الحالة',
+    'create_Journal_entry'=>'توليد قيد يومي',
 
 
 
