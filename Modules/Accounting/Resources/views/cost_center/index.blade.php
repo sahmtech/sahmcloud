@@ -12,7 +12,9 @@
     </section>
     <section class="content no-print">
         @component('components.widget', ['class' => 'box-solid'])
-            @can('accounting.add_cost_center')
+            @if( !(auth()->user()->can('superadmin') ||
+            auth()->user()->can('accounting.add_cost_center')
+        ))
                 @slot('tool')
                     <div class="box-tools">
                         <a class="btn btn-block btn-primary btn-modal create_cost_center" data-toggle="modal"
@@ -21,7 +23,7 @@
                         </a>
                     </div>
                 @endslot
-            @endcan
+            @endif
 
             <table class="table table-bordered table-striped" id="cost_center_table">
                 <thead>

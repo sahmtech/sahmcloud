@@ -46,6 +46,12 @@ class TransactionController extends Controller
      */
     public function index()
     {
+        $is_admin =auth()->user()->can('superadmin');
+       
+        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        {
+            abort(403, 'Unauthorized action.');
+        }
         if (request()->ajax()) {
             if (request()->input('datatable') == 'payment') {
                 return $this->_allPayments();
@@ -76,6 +82,12 @@ class TransactionController extends Controller
 
     protected function _allSales()
     {
+        $is_admin =auth()->user()->can('superadmin');
+       
+        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $sale_type = 'sell';
         $business_id = request()->session()->get('user.business_id');
 
@@ -95,7 +107,7 @@ class TransactionController extends Controller
                         $html .= '<a href="#" data-href="' . action([\App\Http\Controllers\SellController::class, 'show'], [$row->id]) . '" class="btn-modal btn btn-info btn-xs" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __('messages.view') . '</a>';
                     }
 
-                    if (auth()->user()->can('accounting.map_transactions')) {
+                    if (auth()->user()->can('accounting.transaction_create_Journal_entry')) {
                         //check if mapping already present
                         $is_mapped = AccountingAccountsTransaction::where('transaction_id', $row->id)->exists();
 
@@ -103,10 +115,7 @@ class TransactionController extends Controller
                             $html .= '<a  
                                     href="' . route('create_Journal_entry', ['id' => $row->id])  . '" class="btn btn-primary btn-xs mt-10" ><i class="fas fa-link"></i> ' . __('accounting::lang.create_Journal_entry') . '</a>';
                         }
-                        // else {
-                        //     $html .= '<a href="#" 
-                        //         data-href="'.action([\Modules\Accounting\Http\Controllers\TransactionController::class, 'map']).'?id='.$row->id.'&type=sell'.'" class="btn-modal btn btn-warning btn-xs mt-10" data-container=".view_modal"><i class="fas fa-link"></i> '.__('accounting::lang.edit_mapping').'</a>';
-                        // }
+                       
                     }
 
                     return $html;
@@ -225,6 +234,12 @@ class TransactionController extends Controller
 
     protected function _allPayments()
     {
+        $is_admin =auth()->user()->can('superadmin');
+       
+        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $transaction_type = request()->input('transaction_type');
         $business_id = request()->session()->get('user.business_id');
 
@@ -279,7 +294,7 @@ class TransactionController extends Controller
             ->addColumn('action', function ($row) use ($transaction_type) {
                 $html = '';
 
-                if (auth()->user()->can('accounting.map_transactions')) {
+                 if (auth()->user()->can('accounting.transaction_create_Journal_entry')) {
                     //check if mapping already present
                     $is_mapped = AccountingAccountsTransaction::where('transaction_payment_id', $row->transaction_payment_id)->exists();
 
@@ -341,6 +356,12 @@ class TransactionController extends Controller
 
     protected function _allPurchases()
     {
+        $is_admin =auth()->user()->can('superadmin');
+       
+        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $business_id = request()->session()->get('user.business_id');
         $purchases = $this->transactionUtil->getListPurchases($business_id);
 
@@ -351,7 +372,7 @@ class TransactionController extends Controller
                 if (auth()->user()->can('purchase.view')) {
                     $html .= '<a href="#" data-href="' . action([\App\Http\Controllers\PurchaseController::class, 'show'], [$row->id]) . '" class="btn-modal btn btn-info btn-xs" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __('messages.view') . '</a>';
                 }
-                if (auth()->user()->can('accounting.map_transactions')) {
+                 if (auth()->user()->can('accounting.transaction_create_Journal_entry')) {
                     //check if mapping already present
                     $is_mapped = AccountingAccountsTransaction::where('transaction_id', $row->id)->exists();
 
@@ -407,6 +428,12 @@ class TransactionController extends Controller
 
     protected function _allExpenses()
     {
+        $is_admin =auth()->user()->can('superadmin');
+       
+        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $business_id = request()->session()->get('user.business_id');
         $expenses = $this->transactionUtil->getListExpenses($business_id);
 
@@ -415,7 +442,7 @@ class TransactionController extends Controller
                 'action',
                 function ($row) {
                     $html = '';
-                    if (auth()->user()->can('accounting.map_transactions')) {
+                     if (auth()->user()->can('accounting.transaction_create_Journal_entry')) {
                         //check if mapping already present
                         $is_mapped = AccountingAccountsTransaction::where('transaction_id', $row->id)->exists();
 
@@ -423,10 +450,7 @@ class TransactionController extends Controller
                             $html .= '<a  
                                     href="' . route('create_Journal_entry', ['id' => $row->id])  . '" class="btn btn-primary btn-xs mt-10" ><i class="fas fa-link"></i> ' . __('accounting::lang.create_Journal_entry') . '</a>';
                         }
-                        //  else {
-                        //     $html .= '<a href="#" 
-                        //     data-href="' . action([\Modules\Accounting\Http\Controllers\TransactionController::class, 'map']) . '?id=' . $row->id . '&type=expense' . '" class="btn-modal btn btn-warning btn-xs mt-10" data-container=".view_modal"><i class="fas fa-link"></i> ' . __('accounting::lang.edit_mapping') . '</a>';
-                        // }
+                       
                     }
 
                     return $html;
@@ -496,11 +520,7 @@ class TransactionController extends Controller
     public function create_Journal_entry($id)
     {
 
-        // if (! (auth()->user()->can('superadmin') ||
-        //     $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-        //     ! (auth()->user()->can('accounting.map_transactions'))) {
-        //     abort(403, 'Unauthorized action.');
-        // }
+       
 
         $createdJournal_entry = $this->transactionUtil->createTransactionJournal_entry($id);
         if ($createdJournal_entry) {

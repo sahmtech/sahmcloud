@@ -29,7 +29,7 @@ class CostCenterController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        $is_admin = auth()->user()->hasRole('Admin#1') ? true : false;
+        $is_admin =auth()->user()->can('superadmin') ? true : false;
         $can_cost_center= auth()->user()->can('accounting.cost_center');
         if (!($is_admin || $can_cost_center)) {
             return redirect()->route('home')->with('status', [
