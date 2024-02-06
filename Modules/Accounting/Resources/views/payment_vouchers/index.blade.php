@@ -28,7 +28,7 @@
             </div>
         </div>
         @component('components.widget', ['class' => 'box-solid'])
-            @if (auth()->user()->can('superadmin') ||
+            @if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
                     auth()->user()->can('accounting.add_payment_vouchers'))
                 @slot('tool')
                     <div class="box-tools">

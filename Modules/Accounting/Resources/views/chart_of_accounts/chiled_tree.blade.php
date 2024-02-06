@@ -14,7 +14,7 @@
             @endif
             <span class="tree-actions">
                 @if (
-                    !(auth()->user()->can('superadmin') ||
+                    (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
                         auth()->user()->can('accounting.view_ledger')
                     ))
                     <a class="btn-modal btn-xs btn-default text-success ledger-link" title="@lang('accounting::lang.ledger')"
@@ -23,7 +23,7 @@
                         <i class="fas fa-file-alt"></i></a>
                 @endif
                 @if (
-                    !(auth()->user()->can('superadmin') ||
+                    (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
                         auth()->user()->can('accounting.edit_accounts')
                     ))
                     <a class="btn-modal btn-xs btn-default text-primary" title="@lang('messages.edit')" style="margin: 2px;"
@@ -34,7 +34,7 @@
                 @endif
 
                 @if (
-                    !(auth()->user()->can('superadmin') ||
+                    (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
                         auth()->user()->can('accounting.add_extra_accounts')
                     ))
                     <a class="btn-modal btn-xs btn-default text-primary" title="@lang('accounting::lang.add_account')" style="margin: 2px;"
@@ -46,7 +46,7 @@
                 @endif
 
                 @if (
-                    !(auth()->user()->can('superadmin') ||
+                    (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
                         auth()->user()->can('accounting.active_accounts')
                     ))
                     <a class="activate-deactivate-btn text-warning  btn-xs btn-default" style="margin: 2px;"

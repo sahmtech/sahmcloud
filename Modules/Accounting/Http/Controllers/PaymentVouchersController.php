@@ -38,10 +38,11 @@ class PaymentVouchersController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        $is_admin = auth()->user()->can('superadmin') ? true : false;
+        $is_admin = auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin') ? true : false;
         $can_payment_vouchers = auth()->user()->can('accounting.payment_vouchers');
         $can_print_payment_vouchers = auth()->user()->can('accounting.print_payment_vouchers');
-        if (!($is_admin || $can_payment_vouchers)) {
+        if (!($is_admin || $can_payment_vouchers || $is_superadmin)) {
             return redirect()->route('home')->with('status', [
                 'success' => false,
                 'msg' => __('message.unauthorized'),
@@ -94,9 +95,9 @@ class PaymentVouchersController extends Controller
             return Datatables::of($transactions)
                 ->addColumn(
                     'action',
-                    function ($row) use ($is_admin, $can_print_payment_vouchers) {
-                        if (!($is_admin || $can_print_payment_vouchers)) {
-                        return '<button type="button" class="btn btn-primary btn-xs view_payment" style="width:100%"
+                    function ($row) use ($is_admin, $can_print_payment_vouchers, $is_superadmin) {
+                        if (($is_admin || $can_print_payment_vouchers || $is_superadmin)) {
+                            return '<button type="button" class="btn btn-primary btn-xs view_payment" style="width:100%"
                 data-href="' . action([\App\Http\Controllers\TransactionPaymentController::class, "viewPayment"], [$row->id]) . '"><i class="fa fa-print" style="padding-left: 4px;padding-right: 4px;"></i>طباعة
                     </button>';
                         }

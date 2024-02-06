@@ -24,6 +24,7 @@
             <button class="btn btn-primary btn-sm" id="expand_all">@lang('accounting::lang.expand_all')</button>
             <button class="btn btn-primary btn-sm" id="collapse_all">@lang('accounting::lang.collapse_all')</button>
         </div>
+        
         <div class="col-md-12" id="accounts_tree_container">
             <ul>
                 @foreach ($account_types as $key => $value)
@@ -62,7 +63,7 @@
                                                 @endif
                                                 <span class="tree-actions">
                                                     @if (
-                                                        !(auth()->user()->can('superadmin') ||
+                                                        (auth()->user()->can('Admin#'.request()->session()->get('user.business_id'))||auth()->user()->can('superadmin') ||
                                                             auth()->user()->can('accounting.view_ledger')
                                                         ))
                                                         <a class="btn-modal btn-xs btn-default text-success ledger-link"
@@ -72,7 +73,7 @@
                                                     @endif
 
                                                     @if (
-                                                        !(auth()->user()->can('superadmin') ||
+                                                        (auth()->user()->can('Admin#'.request()->session()->get('user.business_id'))||auth()->user()->can('superadmin') ||
                                                             auth()->user()->can('accounting.edit_accounts')
                                                         ))
                                                         <a class="btn-modal btn-xs btn-default text-primary"
@@ -87,7 +88,7 @@
 
 
                                                     @if (
-                                                        !(auth()->user()->can('superadmin') ||
+                                                        (auth()->user()->can('Admin#'.request()->session()->get('user.business_id'))||auth()->user()->can('superadmin') ||
                                                             auth()->user()->can('accounting.add_extra_accounts')
                                                         ))
                                                         <a class="btn-modal btn-xs btn-default text-primary"
@@ -99,7 +100,8 @@
                                                         </a>
                                                     @endif
                                                     @if (
-                                                        !(auth()->user()->can('superadmin') ||
+                                                        (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||
+                                                            auth()->user()->can('superadmin') ||
                                                             auth()->user()->can('accounting.active_accounts')
                                                         ))
                                                         <a class="activate-deactivate-btn text-warning  btn-xs btn-default"
@@ -134,7 +136,8 @@
                                                                 @endif
                                                                 <span class="tree-actions">
                                                                     @if (
-                                                                        !(auth()->user()->can('superadmin') ||
+                                                                        (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||
+                                                                            auth()->user()->can('superadmin') ||
                                                                             auth()->user()->can('accounting.view_ledger')
                                                                         ))
                                                                         <a class="btn-modal btn-xs btn-default text-success ledger-link"
@@ -144,7 +147,8 @@
                                                                             <i class="fas fa-file-alt"></i></a>
                                                                     @endif
                                                                     @if (
-                                                                        !(auth()->user()->can('superadmin') ||
+                                                                        (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||
+                                                                            auth()->user()->can('superadmin') ||
                                                                             auth()->user()->can('accounting.edit_accounts')
                                                                         ))
                                                                         <a class="btn-modal btn-xs btn-default text-primary"
@@ -156,7 +160,8 @@
                                                                             <i class="fas fa-edit"></i></a>
                                                                     @endif
                                                                     @if (
-                                                                        !(auth()->user()->can('superadmin') ||
+                                                                        (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||
+                                                                            auth()->user()->can('superadmin') ||
                                                                             auth()->user()->can('accounting.add_extra_accounts')
                                                                         ))
                                                                         <a class="btn-modal btn-xs btn-default text-primary"
@@ -169,7 +174,8 @@
                                                                         </a>
                                                                     @endif
                                                                     @if (
-                                                                        !(auth()->user()->can('superadmin') ||
+                                                                        (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||
+                                                                            auth()->user()->can('superadmin') ||
                                                                             auth()->user()->can('accounting.active_accounts')
                                                                         ))
                                                                         <a class="activate-deactivate-btn text-warning  btn-xs btn-default"

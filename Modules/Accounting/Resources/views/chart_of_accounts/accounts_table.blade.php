@@ -22,10 +22,11 @@
                                 class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>
                         <ul class="dropdown-menu dropdown-menu-left" role="menu">
                             <li>
-                                @if (
-                                    !(auth()->user()->can('superadmin') ||
-                                        auth()->user()->can('accounting.view_ledger')
-                                    ))
+                                @if (auth()->user()->can(
+                                            'Admin#' .
+                                                request()->session()->get('user.business_id')) ||
+                                        auth()->user()->can('superadmin') ||
+                                        auth()->user()->can('accounting.view_ledger'))
                                     <a
                                         href="{{ action([\Modules\Accounting\Http\Controllers\CoaController::class, 'ledger'], $account->id) }}">
                                         <i class="fas fa-file-alt"></i> @lang('accounting::lang.ledger')</a>
@@ -33,10 +34,11 @@
                             </li>
 
                             <li>
-                                @if (
-                                    !(auth()->user()->can('superadmin') ||
-                                        auth()->user()->can('accounting.edit_accounts')
-                                    ))
+                                @if (auth()->user()->can(
+                                            'Admin#' .
+                                                request()->session()->get('user.business_id')) ||
+                                        auth()->user()->can('superadmin') ||
+                                        auth()->user()->can('accounting.edit_accounts'))
                                     <a class="btn-modal"
                                         href="{{ action([\Modules\Accounting\Http\Controllers\CoaController::class, 'edit'], $account->id) }}"
                                         data-href="{{ action([\Modules\Accounting\Http\Controllers\CoaController::class, 'edit'], $account->id) }}"
@@ -45,10 +47,11 @@
                                 @endif
                             </li>
                             <li>
-                                @if (
-                                    !(auth()->user()->can('superadmin') ||
-                                        auth()->user()->can('accounting.active_accounts')
-                                    ))
+                                @if (auth()->user()->can(
+                                            'Admin#' .
+                                                request()->session()->get('user.business_id')) ||
+                                        auth()->user()->can('superadmin') ||
+                                        auth()->user()->can('accounting.active_accounts'))
                                     <a class="activate-deactivate-btn"
                                         href="{{ action([\Modules\Accounting\Http\Controllers\CoaController::class, 'activateDeactivate'], $account->id) }}">
                                         <i class="fas fa-power-off"></i>

@@ -40,7 +40,10 @@
                                 'method' => 'post',
                             ]) !!}
 
-                            @if (auth()->user()->can('superadmin') ||
+                            @if (auth()->user()->can(
+                                        'Admin#' .
+                                            request()->session()->get('user.business_id')) ||
+                                    auth()->user()->can('superadmin') ||
                                     auth()->user()->can('accounting.rest_accounting_data'))
                                 <div class="row mb-12">
                                     <div class="col-md-4">
@@ -268,7 +271,8 @@
                                 </div>
                                 <div class="col-md-12">
                                     <br>
-                                    <table class="table table-bordered table-striped" id="account_sub_type_table">
+                                    <table class="table table-bordered table-striped" id="account_sub_type_table"
+                                        style="width: 100%;">
                                         <thead>
                                             <tr>
                                                 <th>

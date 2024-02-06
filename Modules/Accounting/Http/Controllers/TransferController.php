@@ -42,14 +42,16 @@ class TransferController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (!(auth()->user()->can('superadmin') ||$this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||auth()->user()->can('accounting.view_transfer'))
+        if (!(auth()->user()->can('superadmin') ||$this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||auth()->user()->can('accounting.view_transfer')))
         {
             abort(403, 'Unauthorized action.');
         }
 
         $can_delete_transfer = auth()->user()->can('accounting.delete_transfer');
         $can_edit_transfer = auth()->user()->can('accounting.edit_transfer');
-        $is_admin = auth()->user()->can('superadmin') ? true : false;
+        $is_admin = auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin') ? true : false;
+  
         if (request()->ajax()) {
             $transfers = AccountingAccTransMapping::where('accounting_acc_trans_mappings.business_id', $business_id)
                 ->join('users as u', 'accounting_acc_trans_mappings.created_by', 'u.id')
@@ -102,7 +104,7 @@ class TransferController extends Controller
             return Datatables::of($transfers)
                 ->addColumn(
                     'action',
-                    function ($row) use ($is_admin, $can_edit_transfer, $can_delete_transfer) {
+                    function ($row) use ($is_admin, $can_edit_transfer, $can_delete_transfer,$is_superadmin) {
 
                         $html = '<div class="btn-group">
                                 <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
@@ -112,7 +114,7 @@ class TransferController extends Controller
                                     </span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">';
-                        if (!($is_admin || $can_edit_transfer)) {
+                        if (($is_admin || $can_edit_transfer||$is_superadmin||$is_superadmin)) {
                             $html .= '<li>
                                 <a href="#" data-href="' . action(
                                 [\Modules\Accounting\Http\Controllers\TransferController::class, 'edit'],
@@ -122,7 +124,7 @@ class TransferController extends Controller
                                 </a>
                             </li>';
                         }
-                        if (!($is_admin || $can_delete_transfer)) {
+                        if (($is_admin || $can_delete_transfer||$is_superadmin)) {
                             $html .= '<li>
                                     <a href="#" data-href="' . action([\Modules\Accounting\Http\Controllers\TransferController::class, 'destroy'], [$row->id]) . '" class="delete_transfer_button">
                                         <i class="fas fa-trash" aria-hidden="true"></i>' . __('messages.delete') . '
@@ -161,7 +163,7 @@ class TransferController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.add_transfer'))
+        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') || auth()->user()->can('accounting.add_transfer')))
          {
             abort(403, 'Unauthorized action.');
         }

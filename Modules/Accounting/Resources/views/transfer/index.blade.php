@@ -44,7 +44,7 @@
     <div class="row">
         <div class="col-md-12">
             @component('components.widget', ['class' => 'box-solid'])
-            @if(auth()->user()->can('superadmin') || auth()->user()->can("accounting.add_transfer"))
+            @if(auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can("accounting.add_transfer"))
                     @slot('tool')
                    
                     <div class="box-tools">

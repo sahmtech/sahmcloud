@@ -46,9 +46,9 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $is_admin =auth()->user()->can('superadmin');
-       
-        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        $is_admin = auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin') ? true : false;
+        if (!($is_admin  ||$is_superadmin||auth()->user()->can('accounting.transactions')))
         {
             abort(403, 'Unauthorized action.');
         }
@@ -82,9 +82,9 @@ class TransactionController extends Controller
 
     protected function _allSales()
     {
-        $is_admin =auth()->user()->can('superadmin');
-       
-        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        $is_admin = auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin') ? true : false;
+        if (!($is_admin  ||$is_superadmin||auth()->user()->can('accounting.transactions')))
         {
             abort(403, 'Unauthorized action.');
         }
@@ -234,9 +234,9 @@ class TransactionController extends Controller
 
     protected function _allPayments()
     {
-        $is_admin =auth()->user()->can('superadmin');
-       
-        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        $is_admin = auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin') ? true : false;
+        if (!($is_admin  ||$is_superadmin||auth()->user()->can('accounting.transactions')))
         {
             abort(403, 'Unauthorized action.');
         }
@@ -356,9 +356,9 @@ class TransactionController extends Controller
 
     protected function _allPurchases()
     {
-        $is_admin =auth()->user()->can('superadmin');
-       
-        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        $is_admin = auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin') ? true : false;
+        if (!($is_admin  ||$is_superadmin ||auth()->user()->can('accounting.transactions')))
         {
             abort(403, 'Unauthorized action.');
         }
@@ -428,9 +428,9 @@ class TransactionController extends Controller
 
     protected function _allExpenses()
     {
-        $is_admin =auth()->user()->can('superadmin');
-       
-        if (!($is_admin  ||auth()->user()->can('accounting.transactions')))
+        $is_admin = auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin') ? true : false;
+        if (!($is_admin  ||$is_superadmin||auth()->user()->can('accounting.transactions')))
         {
             abort(403, 'Unauthorized action.');
         }

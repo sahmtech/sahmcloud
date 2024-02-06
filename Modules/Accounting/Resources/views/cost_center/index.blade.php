@@ -12,17 +12,18 @@
     </section>
     <section class="content no-print">
         @component('components.widget', ['class' => 'box-solid'])
-            @if( !(auth()->user()->can('superadmin') ||
-            auth()->user()->can('accounting.add_cost_center')
-        ))
-                @slot('tool')
-                    <div class="box-tools">
-                        <a class="btn btn-block btn-primary btn-modal create_cost_center" data-toggle="modal"
-                            data-target="#create_cost_center_modal">
-                            <i class="fas fa-plus"></i> @lang('messages.add')
-                        </a>
-                    </div>
-                @endslot
+            @if ((auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||
+        auth()->user()->can('superadmin') ||
+        auth()->user()->can('accounting.add_cost_center')
+    ))
+            @slot('tool')
+                <div class="box-tools">
+                    <a class="btn btn-block btn-primary btn-modal create_cost_center" data-toggle="modal"
+                        data-target="#create_cost_center_modal">
+                        <i class="fas fa-plus"></i> @lang('messages.add')
+                    </a>
+                </div>
+            @endslot
             @endif
 
             <table class="table table-bordered table-striped" id="cost_center_table">
@@ -268,7 +269,7 @@
 
             e.preventDefault()
             let id = $('#cost_center_id').val()
-          
+
 
             let url = `{{ route('cost_center_update', 'id') }}`
             url = url.replace('id', id)

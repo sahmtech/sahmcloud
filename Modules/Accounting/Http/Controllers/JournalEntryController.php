@@ -42,15 +42,17 @@ class JournalEntryController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
+
         if (
-            !(auth()->user()->can('superadmin') ||
-                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-            !(auth()->user()->can('accounting.journals'))
-        ) {
+            !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
+                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
+            auth()->user()->can('accounting.journals')))
+         {
             abort(403, 'Unauthorized action.');
         }
 
-        $is_admin = auth()->user()->can('superadmin') ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin');
+        $is_admin = auth()->user()->can('Admin#' . request()->session()->get('user.business_id'));
         $can_delete_journals = auth()->user()->can('accounting.delete_journal');
         $can_edit_journals = auth()->user()->can('accounting.edit_journal');
         if (request()->ajax()) {
@@ -72,7 +74,7 @@ class JournalEntryController extends Controller
             return Datatables::of($journal)
                 ->addColumn(
                     'action',
-                    function ($row) use($can_delete_journals,$can_edit_journals,$is_admin){
+                    function ($row) use ($can_delete_journals, $can_edit_journals, $is_admin, $is_superadmin) {
                         $html = '<div class="btn-group">
                                 <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
                                     data-toggle="dropdown" aria-expanded="false">' .
@@ -82,7 +84,7 @@ class JournalEntryController extends Controller
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">';
 
-                        if ($is_admin || $can_edit_journals) {
+                        if ($is_admin || $can_edit_journals || $is_superadmin) {
                             $html .= '<li>
                                     <a href="' . action([\Modules\Accounting\Http\Controllers\JournalEntryController::class, 'edit'], [$row->id]) . '">
                                         <i class="fas fa-edit"></i>' . __('messages.edit') . '
@@ -90,7 +92,7 @@ class JournalEntryController extends Controller
                                 </li>';
                         }
 
-                        if ($is_admin || $can_delete_journals) {
+                        if ($is_admin || $can_delete_journals || $is_superadmin) {
                             $html .= '<li>
                                     <a href="#" data-href="' . action([\Modules\Accounting\Http\Controllers\JournalEntryController::class, 'destroy'], [$row->id]) . '" class="delete_journal_button">
                                         <i class="fas fa-trash" aria-hidden="true"></i>' . __('messages.delete') . '
@@ -120,9 +122,9 @@ class JournalEntryController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         if (
-            !(auth()->user()->can('superadmin') ||
-                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-            !(auth()->user()->can('accounting.add_journal'))
+            !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
+                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
+            auth()->user()->can('accounting.add_journal'))
         ) {
             abort(403, 'Unauthorized action.');
         }
@@ -140,13 +142,7 @@ class JournalEntryController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (
-            !(auth()->user()->can('superadmin') ||
-                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-            !(auth()->user()->can('accounting.add_journal'))
-        ) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         try {
             DB::beginTransaction();
@@ -235,8 +231,10 @@ class JournalEntryController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.view_journal'))
-     {
+        if (
+            !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
+            auth()->user()->can('accounting.view_journal')
+        ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -253,8 +251,7 @@ class JournalEntryController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (!(auth()->user()->can('superadmin') ||$this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||auth()->user()->can('accounting.edit_journal'))
-         {
+        if (!(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') || auth()->user()->can('accounting.edit_journal'))) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -365,9 +362,9 @@ class JournalEntryController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
         if (
-            !(auth()->user()->can('superadmin') ||
-                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-            !(auth()->user()->can('accounting.delete_journal'))
+            !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
+                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
+            (auth()->user()->can('accounting.delete_journal')))
         ) {
             abort(403, 'Unauthorized action.');
         }
