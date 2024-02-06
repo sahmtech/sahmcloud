@@ -15,6 +15,8 @@ use Modules\Accounting\Entities\AccountingBudget;
 use Modules\Accounting\Utils\AccountingUtil;
 use App\BusinessLocation;
 use App\ExpenseCategory;
+use Modules\Accounting\Entities\AccountingAccTransMappingSettingAutoMigration;
+use Modules\Accounting\Entities\AccountingMappingSettingAutoMigration;
 
 class SettingsController extends Controller
 {
@@ -40,11 +42,12 @@ class SettingsController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (! (auth()->user()->can('superadmin') ||
-            $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module'))) {
+       
+        if (!(auth()->user()->can('superadmin') ||$this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||auth()->user()->can('accounting.settings')))
+        {
             abort(403, 'Unauthorized action.');
         }
-
+        
         $account_sub_types = AccountingAccountType::where('account_type', 'sub_type')
                                     ->where(function ($q) use ($business_id) {
                                         $q->whereNull('business_id')
@@ -67,16 +70,12 @@ class SettingsController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (! (auth()->user()->can('superadmin') ||
-            $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module'))) {
+       
+        if (!(auth()->user()->can('superadmin') ||$this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||auth()->user()->can('accounting.rest_accounting_data')))
+        {
             abort(403, 'Unauthorized action.');
         }
-
-        //check for admin
-        if (! $this->accountingUtil->is_admin(auth()->user())) {
-            abort(403, 'Unauthorized action.');
-        }
-
+        
         //reset logic
         AccountingBudget::join('accounting_accounts', 'accounting_budgets.accounting_account_id', '=', 'accounting_accounts.id')
             ->where('accounting_accounts.business_id', $business_id)
@@ -92,6 +91,10 @@ class SettingsController extends Controller
 
         AccountingAccount::where('business_id', $business_id)->delete();
 
+        AccountingAccTransMappingSettingAutoMigration::where('business_id', $business_id)->delete();
+        
+        AccountingMappingSettingAutoMigration::where('business_id', $business_id)->delete();
+        
         return back();
     }
 
@@ -115,11 +118,10 @@ class SettingsController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (! (auth()->user()->can('superadmin') || ($this->moduleUtil->hasThePermissionInSubscription($business_id,
-        'accounting_module')))) {
+        if (!(auth()->user()->can('superadmin') ||$this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||auth()->user()->can('accounting.settings')))
+        {
             abort(403, 'Unauthorized action.');
         }
-
         try {
             $accounting_settings = $request->only(['journal_entry_prefix', 'transfer_prefix', 'accounting_default_map']);
 

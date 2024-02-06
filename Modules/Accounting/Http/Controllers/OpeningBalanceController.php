@@ -28,9 +28,11 @@ class OpeningBalanceController extends Controller
     protected function index()
     {
         $business_id = request()->session()->get('user.business_id');
-        $is_admin = auth()->user()->hasRole('Admin#1') ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin') ? true : false;
+        $is_admin = auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ? true : false;
+       
         $can_opening_balances = auth()->user()->can('accounting.opening_balances');
-        if (!($is_admin || $can_opening_balances)) {
+        if (!($is_admin || $can_opening_balances||$is_superadmin)) {
             return redirect()->route('home')->with('status', [
                 'success' => false,
                 'msg' => __('message.unauthorized'),
@@ -56,8 +58,8 @@ class OpeningBalanceController extends Controller
             return Datatables::of($openingBalances)
                 ->addColumn(
                     'action',
-                    function ($row) use ($is_admin, $can_OpeningBalance_delete) {
-                        if ($is_admin  || $can_OpeningBalance_delete) {
+                    function ($row) use ($is_admin, $can_OpeningBalance_delete,$is_superadmin) {
+                        if ($is_admin  || $can_OpeningBalance_delete||$is_superadmin) {
                             $deleteUrl = action('\Modules\Accounting\Http\Controllers\OpeningBalanceController@destroy', [$row->id]);
                             return
                                 '

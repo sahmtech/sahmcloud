@@ -117,7 +117,7 @@
                                             @foreach ($journal_entry_1 as $index => $journal_entry)
                                                 <tr>
                                                     <td style="display: flex;font-size: smaller;align-items:center">
-                                                        @if (auth()->user()->can('superadmin') ||
+                                                        @if (auth()->user()->can('Admin#1') ||auth()->user()->can('superadmin') ||
                                                                 auth()->user()->can('accounting.destroy_acc_trans_mapping_setting'))
                                                             <a type="button" class="fa fa-trash fa-2x cursor-pointer"
                                                                 href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"
@@ -240,7 +240,7 @@
                                             @foreach ($journal_entry_2 as $index => $journal_entry)
                                                 <tr>
                                                     <td style="display: flex;font-size: smaller;align-items:center">
-                                                        @if (auth()->user()->can('superadmin') ||
+                                                        @if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id'))  ||auth()->user()->can('superadmin') ||
                                                                 auth()->user()->can('accounting.destroy_acc_trans_mapping_setting'))
                                                             <a type="button" class="fa fa-trash fa-2x cursor-pointer"
                                                                 href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"

@@ -37,20 +37,22 @@ class PaymentVouchersController extends Controller
     protected function index()
     {
         $business_id = request()->session()->get('user.business_id');
-        
-        $is_admin = auth()->user()->hasRole('Admin#1') ? true : false;
-        $can_payment_vouchers= auth()->user()->can('accounting.payment_vouchers');
-        if (!($is_admin || $can_payment_vouchers)) {
+
+        $is_admin = auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) ? true : false;
+        $is_superadmin = auth()->user()->can('superadmin') ? true : false;
+        $can_payment_vouchers = auth()->user()->can('accounting.payment_vouchers');
+        $can_print_payment_vouchers = auth()->user()->can('accounting.print_payment_vouchers');
+        if (!($is_admin || $can_payment_vouchers || $is_superadmin)) {
             return redirect()->route('home')->with('status', [
                 'success' => false,
                 'msg' => __('message.unauthorized'),
             ]);
         }
-        
-        $contacts = Contact::where('business_id',$business_id)->whereNot('id', 1)->where('type', 'supplier')->get();
+
+        $contacts = Contact::where('business_id', $business_id)->whereNot('id', 1)->where('type', 'supplier')->get();
         $transactionUtil = new TransactionUtil();
         $moduleUtil = new ModuleUtil();
-//        $accounts = $moduleUtil->accountsDropdown($business_id, true, false, true);
+        //        $accounts = $moduleUtil->accountsDropdown($business_id, true, false, true);
         $sub_types_obj = AccountingAccount::query()->whereIn('account_primary_type', ['asset', 'liability'])
             ->where(function ($q) use ($business_id) {
                 $q->whereNull('business_id')
@@ -67,54 +69,63 @@ class PaymentVouchersController extends Controller
         $payment_types = $transactionUtil->payment_types(null, true, $business_id);
 
         if (request()->ajax()) {
-          $transactions = TransactionPayment::with('transaction');
+            $transactions = TransactionPayment::with('transaction');
             if (!empty(request()->start_date) && !empty(request()->end_date)) {
                 $start = request()->start_date;
                 $end =  request()->end_date;
                 $transactions->whereDate('created_at', '>=', $start)
                     ->whereDate('created_at', '<=', $end);
             }
-            if (\request()->customer_id){
+            if (\request()->customer_id) {
                 $transactions->where('payment_for', request()->customer_id);
             }
-            if (\request()->account_id){
+            if (\request()->account_id) {
                 $transactions->where('account_id', request()->account_id);
             }
-            if (\request()->payment_status){
-                $transactions->whereHas('transaction', function ($q){
+            if (\request()->payment_status) {
+                $transactions->whereHas('transaction', function ($q) {
                     $q->where('payment_status', request()->payment_status);
                 });
             }
-            $transactions->where(function ($q){
-                $q->where('payment_type', 'debit')->orWhereHas('transaction', function ($q){
+            $transactions->where(function ($q) {
+                $q->where('payment_type', 'debit')->orWhereHas('transaction', function ($q) {
                     $q->whereIn('type', ['purchase', 'expense']);
                 });
             })->orderBy('id');
             return Datatables::of($transactions)
                 ->addColumn(
-                    'action', function ($row) {
-                    return '<button type="button" class="btn btn-primary btn-xs view_payment" style="width:100%"
-                data-href="'.action([\App\Http\Controllers\TransactionPaymentController::class, "viewPayment"], [$row->id]).'"><i class="fa fa-print" style="padding-left: 4px;padding-right: 4px;"></i>طباعة
+                    'action',
+                    function ($row) use ($is_admin, $can_print_payment_vouchers, $is_superadmin) {
+                        if (($is_admin || $can_print_payment_vouchers || $is_superadmin)) {
+                            return '<button type="button" class="btn btn-primary btn-xs view_payment" style="width:100%"
+                data-href="' . action([\App\Http\Controllers\TransactionPaymentController::class, "viewPayment"], [$row->id]) . '"><i class="fa fa-print" style="padding-left: 4px;padding-right: 4px;"></i>طباعة
                     </button>';
-                })->addColumn(
-                    'account_id', function ($row) {
-                    return $row->payment_account?->account_number;
-                })
-                ->addColumn(
-                    'voucher_number', function ($row) {
-                    return $row->transaction?->ref_no;
-                })
-                ->addColumn(
-                    'contact_id', function ($row) {
-                    if ($row->contact){
-                        return $row->contact->first_name? : '';
-                    }elseif ($row->transaction){
-                        return $row->transaction->contact?$row->transaction->contact->first_name? : '': '';
+                        }
                     }
-                    else{
-                        return '';
+                )->addColumn(
+                    'account_id',
+                    function ($row) {
+                        return $row->payment_account?->account_number;
                     }
-                })
+                )
+                ->addColumn(
+                    'voucher_number',
+                    function ($row) {
+                        return $row->transaction?->ref_no;
+                    }
+                )
+                ->addColumn(
+                    'contact_id',
+                    function ($row) {
+                        if ($row->contact) {
+                            return $row->contact->first_name ?: '';
+                        } elseif ($row->transaction) {
+                            return $row->transaction->contact ? $row->transaction->contact->first_name ?: '' : '';
+                        } else {
+                            return '';
+                        }
+                    }
+                )
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->format('Y-m-d g:i A');
                 })
@@ -128,20 +139,20 @@ class PaymentVouchersController extends Controller
         }
 
         return view('accounting::payment_vouchers.index', compact('payment_types', 'accounts', 'contacts'));
-
     }
 
-    protected function store(Request $request){
+    protected function store(Request $request)
+    {
         $transaction_id = $request->input('transaction_id');
-        if ($transaction_id){
+        if ($transaction_id) {
             try {
                 $business_id = $request->session()->get('user.business_id');
                 $transaction = Transaction::where('business_id', $business_id)->with(['contact'])->findOrFail($transaction_id);
 
                 $transaction_before = $transaction->replicate();
 
-                if (! (auth()->user()->can('purchase.payments') || auth()->user()->can('sell.payments') || auth()->user()->can('all_expense.access') || auth()->user()->can('view_own_expense'))) {
-                   //temp  abort(403, 'Unauthorized action.');
+                if (!(auth()->user()->can('purchase.payments') || auth()->user()->can('sell.payments') || auth()->user()->can('all_expense.access') || auth()->user()->can('view_own_expense'))) {
+                    //temp  abort(403, 'Unauthorized action.');
                 }
 
                 if ($transaction->payment_status != 'paid') {
@@ -160,7 +171,7 @@ class PaymentVouchersController extends Controller
                         $inputs['transaction_no'] = $request->input('transaction_no_3');
                     }
 
-                    if (! empty($request->input('account_id')) && $inputs['method'] != 'advance') {
+                    if (!empty($request->input('account_id')) && $inputs['method'] != 'advance') {
                         $inputs['account_id'] = $request->input('account_id');
                     }
 
@@ -182,15 +193,15 @@ class PaymentVouchersController extends Controller
 
                     //Pay from advance balance
                     $payment_amount = $inputs['amount'];
-                    $contact_balance = ! empty($transaction->contact) ? $transaction->contact->balance : 0;
+                    $contact_balance = !empty($transaction->contact) ? $transaction->contact->balance : 0;
                     if ($inputs['method'] == 'advance' && $inputs['amount'] > $contact_balance) {
                         throw new AdvanceBalanceNotAvailable(__('lang_v1.required_advance_balance_not_available'));
                     }
 
-                    if (! empty($inputs['amount'])) {
+                    if (!empty($inputs['amount'])) {
                         $tp = TransactionPayment::create($inputs);
 
-                        if (! empty($request->input('denominations'))) {
+                        if (!empty($request->input('denominations'))) {
                             $this->transactionUtil->addCashDenominations($tp, $request->input('denominations'));
                         }
 
@@ -207,7 +218,8 @@ class PaymentVouchersController extends Controller
                     DB::commit();
                 }
 
-                $output = ['success' => true,
+                $output = [
+                    'success' => true,
                     'msg' => __('purchase.payment_added_success'),
                 ];
             } catch (\Exception $e) {
@@ -217,34 +229,34 @@ class PaymentVouchersController extends Controller
                 if (get_class($e) == \App\Exceptions\AdvanceBalanceNotAvailable::class) {
                     $msg = $e->getMessage();
                 } else {
-                    Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+                    Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
                 }
 
-                $output = ['success' => false,
+                $output = [
+                    'success' => false,
                     'msg' => $msg,
                 ];
             }
             return redirect()->back()->with(['status' => $output]);
-
-        }else{
-            if (!$request->account_id){
-                if (! (auth()->user()->can('sell.payments') || auth()->user()->can('purchase.payments'))) {
-                   //temp  abort(403, 'Unauthorized action.');
+        } else {
+            if (!$request->account_id) {
+                if (!(auth()->user()->can('sell.payments') || auth()->user()->can('purchase.payments'))) {
+                    //temp  abort(403, 'Unauthorized action.');
                 }
 
                 try {
                     DB::beginTransaction();
 
                     $business_id = request()->session()->get('business.id');
-                        $tp = $this->transactionUtil->payContact($request);
-                    $pos_settings = ! empty(session()->get('business.pos_settings')) ? json_decode(session()->get('business.pos_settings'), true) : [];
-                    $enable_cash_denomination_for_payment_methods = ! empty($pos_settings['enable_cash_denomination_for_payment_methods']) ? $pos_settings['enable_cash_denomination_for_payment_methods'] : [];
+                    $tp = $this->transactionUtil->payContact($request);
+                    $pos_settings = !empty(session()->get('business.pos_settings')) ? json_decode(session()->get('business.pos_settings'), true) : [];
+                    $enable_cash_denomination_for_payment_methods = !empty($pos_settings['enable_cash_denomination_for_payment_methods']) ? $pos_settings['enable_cash_denomination_for_payment_methods'] : [];
                     //add cash denomination
-                    if (in_array($tp->method, $enable_cash_denomination_for_payment_methods) && ! empty($request->input('denominations')) && ! empty($pos_settings['enable_cash_denomination_on']) && $pos_settings['enable_cash_denomination_on'] == 'all_screens') {
+                    if (in_array($tp->method, $enable_cash_denomination_for_payment_methods) && !empty($request->input('denominations')) && !empty($pos_settings['enable_cash_denomination_on']) && $pos_settings['enable_cash_denomination_on'] == 'all_screens') {
                         $denominations = [];
 
                         foreach ($request->input('denominations') as $key => $value) {
-                            if (! empty($value)) {
+                            if (!empty($value)) {
                                 $denominations[] = [
                                     'business_id' => $business_id,
                                     'amount' => $key,
@@ -253,28 +265,30 @@ class PaymentVouchersController extends Controller
                             }
                         }
 
-                        if (! empty($denominations)) {
+                        if (!empty($denominations)) {
                             $tp->denominations()->createMany($denominations);
                         }
                     }
 
                     DB::commit();
-                    $output = ['success' => true,
+                    $output = [
+                        'success' => true,
                         'msg' => __('purchase.payment_added_success'),
                     ];
                 } catch (\Exception $e) {
                     DB::rollBack();
-                    Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+                    Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-                    $output = ['success' => false,
-                        'msg' => 'File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage(),
+                    $output = [
+                        'success' => false,
+                        'msg' => 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage(),
                     ];
                 }
 
                 return redirect()->back()->with(['status' => $output]);
-            }else{
-                if (! auth()->user()->can('account.access')) {
-                   //temp  abort(403, 'Unauthorized action.');
+            } else {
+                if (!auth()->user()->can('account.access')) {
+                    //temp  abort(403, 'Unauthorized action.');
                 }
 
                 try {
@@ -283,7 +297,7 @@ class PaymentVouchersController extends Controller
                     $amount = $this->commonUtil->num_uf($request->input('amount'));
                     $account_id = $request->input('account_id');
                     $note = $request->input('note');
-                    if (! empty($amount)) {
+                    if (!empty($amount)) {
                         $credit_data = [
                             'amount' => $amount,
                             'accounting_account_id' => $account_id,
@@ -296,7 +310,7 @@ class PaymentVouchersController extends Controller
                         $credit = AccountingAccountsTransaction::query()->create($credit_data);
 
                         $from_account = $request->input('from_account');
-                        if (! empty($from_account)) {
+                        if (!empty($from_account)) {
                             $debit_data = $credit_data;
                             $debit_data['type'] = 'debit';
                             $debit_data['accounting_account_id'] = $from_account;
@@ -310,14 +324,16 @@ class PaymentVouchersController extends Controller
                         }
                     }
 
-                    $output = ['success' => true,
+                    $output = [
+                        'success' => true,
                         'msg' => __('account.deposited_successfully'),
                     ];
                 } catch (\Exception $e) {
                     DB::rollBack();
-                    Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+                    Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-                    $output = ['success' => false,
+                    $output = [
+                        'success' => false,
                         'msg' => __('messages.something_went_wrong'),
                     ];
                 }
@@ -348,9 +364,9 @@ class PaymentVouchersController extends Controller
                 return response()->json(['success' => true, 'amount' => $amount], 200);
             }
         }
-        return response()->json(['success' => false,
+        return response()->json([
+            'success' => false,
             'msg' => __("messages.something_went_wrong")
         ]);
     }
-
 }

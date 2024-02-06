@@ -32,7 +32,7 @@ class AccountTypeController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (! (auth()->user()->can('superadmin') ||
+        if (!(auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
             $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module'))) {
             abort(403, 'Unauthorized action.');
         }
@@ -110,7 +110,7 @@ class AccountTypeController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (! (auth()->user()->can('superadmin') ||
+        if (!(auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
             $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module'))) {
             abort(403, 'Unauthorized action.');
         }
@@ -162,7 +162,8 @@ class AccountTypeController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (! (auth()->user()->can('superadmin') ||
+        if (
+            !(auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
             $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module'))) {
             abort(403, 'Unauthorized action.');
         }
@@ -189,7 +190,7 @@ class AccountTypeController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (! (auth()->user()->can('superadmin') ||
+        if (!(auth()->user()->can('Admin#'.request()->session()->get('user.business_id'))||auth()->user()->can('superadmin') ||
             $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module'))) {
             abort(403, 'Unauthorized action.');
         }
@@ -228,7 +229,7 @@ class AccountTypeController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (! (auth()->user()->can('superadmin') ||
+        if (!(auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
             $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module'))) {
             abort(403, 'Unauthorized action.');
         }

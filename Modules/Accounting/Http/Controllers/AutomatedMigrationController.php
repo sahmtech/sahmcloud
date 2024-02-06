@@ -38,8 +38,8 @@ class AutomatedMigrationController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.index_autoMigration')) {
-            // abort(403, 'Unauthorized action.');
+        if (!(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') || auth()->user()->can('accounting.index_autoMigration'))) {
+            abort(403, 'Unauthorized action.');
         }
         $mappingSetting = AccountingMappingSettingAutoMigration::where('business_id', $business_id)->get();
         if (request()->ajax()) {
@@ -55,7 +55,7 @@ class AutomatedMigrationController extends Controller
                 $mappingSetting = $mappingSetting->where('location_id', request()->input('location_id'));
             }
 
-            
+
             if (!empty(request()->input('type_fillter')) && request()->input('type_fillter') !== 'all') {
 
 
@@ -171,8 +171,8 @@ class AutomatedMigrationController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.create_autoMigration')) {
-            // abort(403, 'Unauthorized action.');
+        if (!(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') || auth()->user()->can('accounting.create_autoMigration'))) {
+            abort(403, 'Unauthorized action.');
         }
         $mappingSetting_ids = AccountingMappingSettingAutoMigration::pluck('id');
 
@@ -316,10 +316,10 @@ class AutomatedMigrationController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.create_autoMigration')) {
-            // abort(403, 'Unauthorized action.');
+        if (!(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') || auth()->user()->can('accounting.create_autoMigration'))) {
+            abort(403, 'Unauthorized action.');
         }
-      
+
         $mappingSetting_location_ids = AccountingMappingSettingAutoMigration::pluck('location_id');
 
         $business_locations = BusinessLocation::where('business_id', $business_id)->whereNotIn('id', $mappingSetting_location_ids)->get();
@@ -336,8 +336,8 @@ class AutomatedMigrationController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        if (!(auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) || auth()->user()->can('accounting.edit_autoMigration')) {
-            // abort(403, 'Unauthorized action.');
+        if (!(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') || auth()->user()->can('accounting.edit_autoMigration'))) {
+            abort(403, 'Unauthorized action.');
         }
         $mappingSetting = AccountingMappingSettingAutoMigration::find($id);
 
@@ -377,9 +377,9 @@ class AutomatedMigrationController extends Controller
         $business_id = request()->session()->get('user.business_id');
         // return $request;
         if (
-            !(auth()->user()->can('superadmin') ||
-                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-            !(auth()->user()->can('accounting.add_journal'))
+            !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
+                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
+            auth()->user()->can('accounting.add_journal'))
         ) {
             abort(403, 'Unauthorized action.');
         }

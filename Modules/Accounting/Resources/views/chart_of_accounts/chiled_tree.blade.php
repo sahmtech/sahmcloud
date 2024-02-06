@@ -13,29 +13,49 @@
                 <span><i class="fas fa-times text-danger" title="@lang('lang_v1.inactive')" style="font-size: 14px;"></i></span>
             @endif
             <span class="tree-actions">
-                <a class="btn-modal btn-xs btn-default text-success ledger-link" title="@lang('accounting::lang.ledger')"
-                    style="margin: 2px;"
-                    href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@ledger', $child_account->id) }}">
-                    <i class="fas fa-file-alt"></i></a>
-                <a class="btn-modal btn-xs btn-default text-primary" title="@lang('messages.edit')" style="margin: 2px;"
-                    href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@edit', $child_account->id) }}"
-                    data-href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@edit', $child_account->id) }}"
-                    data-container="#create_account_modal">
-                    <i class="fas fa-edit"></i></a>
+                @if (
+                    (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
+                        auth()->user()->can('accounting.view_ledger')
+                    ))
+                    <a class="btn-modal btn-xs btn-default text-success ledger-link" title="@lang('accounting::lang.ledger')"
+                        style="margin: 2px;"
+                        href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@ledger', $child_account->id) }}">
+                        <i class="fas fa-file-alt"></i></a>
+                @endif
+                @if (
+                    (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
+                        auth()->user()->can('accounting.edit_accounts')
+                    ))
+                    <a class="btn-modal btn-xs btn-default text-primary" title="@lang('messages.edit')" style="margin: 2px;"
+                        href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@edit', $child_account->id) }}"
+                        data-href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@edit', $child_account->id) }}"
+                        data-container="#create_account_modal">
+                        <i class="fas fa-edit"></i></a>
+                @endif
 
-                <a class="btn-modal btn-xs btn-default text-primary" title="@lang('accounting::lang.add_account')" style="margin: 2px;"
-                    href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@open_create_dialog', $child_account->id) }}"
-                    data-href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@open_create_dialog', $child_account->id) }}"
-                    data-container="#create_account_modal">
-                    <i class="fas fa-plus"></i>
-                </a>
+                @if (
+                    (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
+                        auth()->user()->can('accounting.add_extra_accounts')
+                    ))
+                    <a class="btn-modal btn-xs btn-default text-primary" title="@lang('accounting::lang.add_account')" style="margin: 2px;"
+                        href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@open_create_dialog', $child_account->id) }}"
+                        data-href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@open_create_dialog', $child_account->id) }}"
+                        data-container="#create_account_modal">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                @endif
 
-                <a class="activate-deactivate-btn text-warning  btn-xs btn-default" style="margin: 2px;"
-                    title="@if ($child_account->status == 'active') @lang('messages.deactivate') @else 
+                @if (
+                    (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') ||
+                        auth()->user()->can('accounting.active_accounts')
+                    ))
+                    <a class="activate-deactivate-btn text-warning  btn-xs btn-default" style="margin: 2px;"
+                        title="@if ($child_account->status == 'active') @lang('messages.deactivate') @else 
                                                                                   @lang('messages.activate') @endif"
-                    href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@activateDeactivate', $child_account->id) }}">
-                    <i class="fas fa-power-off"></i>
-                </a>
+                        href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@activateDeactivate', $child_account->id) }}">
+                        <i class="fas fa-power-off"></i>
+                    </a>
+                @endif
             </span>
             @if (count($child_account->child_accounts) > 0)
                 @include('accounting::chart_of_accounts.chiled_tree', ['account' => $child_account])
