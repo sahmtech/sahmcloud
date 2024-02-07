@@ -40,7 +40,6 @@ use App\Media;
 use App\Product;
 use App\SellingPriceGroup;
 use App\TaxRate;
-use App\Transaction;
 use App\TransactionPayment;
 use App\TransactionSellLine;
 use App\TypesOfService;
@@ -597,7 +596,7 @@ class SellPosController extends Controller
                 Media::uploadMedia($business_id, $transaction, $request, 'documents');
 
                 $this->transactionUtil->activityLog($transaction, 'added');
-                
+
                 $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
 
                 DB::commit();
@@ -1774,46 +1773,46 @@ class SellPosController extends Controller
      */
     public function getProductRow($variation_id, $location_id)
     {
-        $output = [];
+  
 
         try {
-            $row_count = request()->get('product_row');
-            $row_count = $row_count + 1;
-            $quantity = request()->get('quantity', 1);
-            $weighing_barcode = request()->get('weighing_scale_barcode', null);
+        $row_count = request()->get('product_row');
+        $row_count = $row_count + 1;
+        $quantity = request()->get('quantity', 1);
+        $weighing_barcode = request()->get('weighing_scale_barcode', null);
 
-            $is_direct_sell = false;
-            if (request()->get('is_direct_sell') == 'true') {
-                $is_direct_sell = true;
+        $is_direct_sell = false;
+        if (request()->get('is_direct_sell') == 'true') {
+            $is_direct_sell = true;
+        }
+
+        if ($variation_id == 'null' && !empty($weighing_barcode)) {
+            $product_details = $this->__parseWeighingBarcode($weighing_barcode);
+            if ($product_details['success']) {
+                $variation_id = $product_details['variation_id'];
+                $quantity = $product_details['qty'];
+            } else {
+                $output['success'] = false;
+                $output['msg'] = $product_details['msg'];
+
+                return $output;
             }
+        }
 
-            if ($variation_id == 'null' && !empty($weighing_barcode)) {
-                $product_details = $this->__parseWeighingBarcode($weighing_barcode);
-                if ($product_details['success']) {
-                    $variation_id = $product_details['variation_id'];
-                    $quantity = $product_details['qty'];
-                } else {
-                    $output['success'] = false;
-                    $output['msg'] = $product_details['msg'];
+        $output = $this->getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell);
 
-                    return $output;
-                }
+        if ($this->transactionUtil->isModuleEnabled('modifiers') && !$is_direct_sell) {
+            $variation = Variation::find($variation_id);
+            $business_id = request()->session()->get('user.business_id');
+            $this_product = Product::where('business_id', $business_id)
+                ->with(['modifier_sets'])
+                ->find($variation->product_id);
+            if (count($this_product->modifier_sets) > 0) {
+                $product_ms = $this_product->modifier_sets;
+                $output['html_modifier'] = view('restaurant.product_modifier_set.modifier_for_product')
+                    ->with(compact('product_ms', 'row_count'))->render();
             }
-
-            $output = $this->getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell);
-
-            if ($this->transactionUtil->isModuleEnabled('modifiers') && !$is_direct_sell) {
-                $variation = Variation::find($variation_id);
-                $business_id = request()->session()->get('user.business_id');
-                $this_product = Product::where('business_id', $business_id)
-                    ->with(['modifier_sets'])
-                    ->find($variation->product_id);
-                if (count($this_product->modifier_sets) > 0) {
-                    $product_ms = $this_product->modifier_sets;
-                    $output['html_modifier'] = view('restaurant.product_modifier_set.modifier_for_product')
-                        ->with(compact('product_ms', 'row_count'))->render();
-                }
-            }
+        }
         } catch (\Exception $e) {
             \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
@@ -1967,8 +1966,10 @@ class SellPosController extends Controller
      */
     public function getProductSuggestion(Request $request)
     {
+          
         if ($request->ajax()) {
             $category_id = $request->get('category_id');
+            $category_id = $category_id?$category_id[0]:'all';
             $brand_id = $request->get('brand_id');
             $location_id = $request->get('location_id');
             $term = $request->get('term');
