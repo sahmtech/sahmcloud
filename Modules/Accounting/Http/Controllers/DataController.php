@@ -40,7 +40,7 @@ class DataController extends Controller
         $commonUtil = new Util();
         $is_admin = $commonUtil->is_admin(auth()->user(), $business_id);
 
-        if (auth()->user()->can('accounting.access_accounting_module') && $is_accounting_enabled) {
+        if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) || auth()->user()->can('accounting.access_accounting_module') && $is_accounting_enabled) {
             Menu::modify(
                 'admin-sidebar-menu',
                 function ($menu) {
