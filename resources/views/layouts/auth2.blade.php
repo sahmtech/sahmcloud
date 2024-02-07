@@ -61,17 +61,16 @@
                     </select>
                 </div>
             </div>
-            <div style="padding: 60px;">
+            <div style="padding-top: 50px;">
                 <div class="row " style="border-radius: 22px;box-shadow: 1px 1px 4px rgb(0 0 0 / 74%);">
-                    <div class="col-sm-12 col-md-8 login-col-right-logo-title"
-                        >
+                    <div class="col-sm-12 col-md-8 login-col-right-logo-title">
                         @yield('content')
                     </div>
 
                     @if (app()->getLocale() == 'ar')
-                        <div class="login-col-left-logo-title-ar col-sm-0">
+                        <div class="login-col-left-logo-title-ar col-md-4 col-sm-0 col-xm-0">
                         @else
-                            <div class="login-col-left-logo-title-en col-sm-4">
+                            <div class="login-col-left-logo-title-en col-md-4 col-sm-0 col-xm-0">
                     @endif
 
 

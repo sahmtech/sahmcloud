@@ -2,7 +2,7 @@
 @section('title', __('lang_v1.login'))
 
 @section('content')
-    <div class="col-sm-10">
+    <div class="col-sm-12 col-xm-12 col-md-10">
 
         <div class="form-group">
             <p class="form-header"
