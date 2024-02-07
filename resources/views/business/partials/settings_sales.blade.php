@@ -148,8 +148,8 @@
             </div>
         </div>
     </div>
-    <hr>
-    <div class="row">
+    {{-- <hr> --}}
+    {{-- <div class="row">
         <div class="col-md-12"><h4>@lang('lang_v1.payment_link') @show_tooltip(__('lang_v1.payment_link_help_text')):</h4></div>
         <div class="col-sm-4">
             <div class="form-group">
@@ -169,12 +169,12 @@
                 {!! Form::text('pos_settings[razor_pay_key_id]', $pos_settings['razor_pay_key_id'] ?? '', ['class' => 'form-control', 'id' => 'razor_pay_key_id']); !!}
             </div>
         </div>
-        {{-- <div class="col-sm-4">
+        <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('razor_pay_key_secret', 'Key Secret:') !!}
                 {!! Form::text('pos_settings[razor_pay_key_secret]', $pos_settings['razor_pay_key_secret'] ?? '', ['class' => 'form-control', 'id' => 'razor_pay_key_secret']); !!}
             </div>
-        </div> --}}
+        </div>
 
         <div class="col-md-12">
             <h4>Stripe:</h4>
@@ -191,5 +191,5 @@
                 {!! Form::text('pos_settings[stripe_secret_key]', $pos_settings['stripe_secret_key'] ?? '', ['class' => 'form-control', 'id' => 'stripe_secret_key']); !!}
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>

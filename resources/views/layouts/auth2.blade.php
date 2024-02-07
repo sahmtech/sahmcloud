@@ -68,9 +68,9 @@
                     </div>
 
                     @if (app()->getLocale() == 'ar')
-                        <div class="login-col-left-logo-title-ar col-md-4 col-sm-0 col-xm-0">
+                        <div class="login-col-left-logo-title-ar col-md-4 col-sm-0 hidden-sm-down">
                         @else
-                            <div class="login-col-left-logo-title-en col-md-4 col-sm-0 col-xm-0">
+                            <div class="login-col-left-logo-title-en col-md-4 col-sm-0 col-xs-0">
                     @endif
 
 
