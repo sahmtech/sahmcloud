@@ -60,7 +60,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
-
+use App\Transaction;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -78,7 +78,13 @@ Route::middleware(['setData'])->group(function () {
     Route::get('/', function () {
         return view('welcome');
     });
+    Route::get('amen/{id}', function ($id) {
+     return   $tt = Transaction::with(['sell_lines', 'payment_lines'])->find($id);
+          $payment_lines = $tt->payment_lines[0];
+        return $payment_lines->method;
+        //  return $tt['payment_lines']['method'];
 
+    });
     Auth::routes();
 
     Route::get('/business/register', [BusinessController::class, 'getRegister'])->name('business.getRegister');
@@ -168,6 +174,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('/products/mass-delete', [ProductController::class, 'massDestroy']);
     Route::get('/products/view/{id}', [ProductController::class, 'view']);
     Route::get('/products/list', [ProductController::class, 'getProducts']);
+    // Route::get('/products/list-row/{variation_id}', [ProductController::class, 'getProductsList_Row']);
     Route::get('/products/list-no-variation', [ProductController::class, 'getProductsWithoutVariations']);
     Route::post('/products/bulk-edit', [ProductController::class, 'bulkEdit']);
     Route::post('/products/bulk-update', [ProductController::class, 'bulkUpdate']);
@@ -460,7 +467,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::resource('warranties', WarrantyController::class);
 
     Route::resource('dashboard-configurator', DashboardConfiguratorController::class)
-    ->only(['edit', 'update']);
+        ->only(['edit', 'update']);
 
     Route::get('view-media/{model_id}', [SellController::class, 'viewMedia']);
 

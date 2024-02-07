@@ -151,12 +151,11 @@ $(document).ready(function () {
     if (data.price_calculation_type == "selling_price_group") {
       $("#price_group").val(data.selling_price_group_id);
       $("#price_group").val($("#price_group option:first").val());
-      $("#price_group").change();
+      // $("#price_group").change();
     } else {
-      $("#price_group").val("");
+      // $("#price_group").val("");
       $("#price_group").val($("#price_group option:first").val());
-
-      $("#price_group").change();
+      // $("#price_group").change();
     }
     if ($(".contact_due_text").length) {
       get_contact_due(data.id);
@@ -1408,13 +1407,14 @@ $(document).ready(function () {
 
   //Used for weighing scale barcode
   $("#weighing_scale_modal").on("shown.bs.modal", function (e) {
+    // window.onbeforeunload = function () {
     //Attach the scan event
     onScan.attachTo(document, {
       suffixKeyCodes: [13], // enter-key expected at the end of a scan
       reactToPaste: true, // Compatibility to built-in scanners in paste-mode (as opposed to keyboard-mode)
       onScan: function (sCode, iQty) {
         console.log("Scanned: " + iQty + "x " + sCode);
-        $("input#weighing_scale_barcode").val(sCode);
+        $("#weighing_scale_barcode").val(sCode);
         $("button#weighing_scale_submit").trigger("click");
       },
       onScanError: function (oDebug) {
@@ -1434,18 +1434,23 @@ $(document).ready(function () {
     onScan.detachFrom(document);
   });
 
-  $("button#weighing_scale_submit").click(function () {
-    var price_group = "";
-    if ($("#price_group").length > 0) {
-      price_group = $("#price_group").val();
-    }
+  $("#weighing_scale_barcode").keydown(function (e) {
+    if ($("#weighing_scale_barcode").val().length > 5) {
+      setTimeout(function () {
+        // $("button#weighing_scale_submit").click(function () {
+        var price_group = "";
+        if ($("#price_group").length > 0) {
+          price_group = $("#price_group").val();
+        }
 
-    if ($("#weighing_scale_barcode").val().length > 0) {
-      pos_product_row(null, null, $("#weighing_scale_barcode").val());
-      $("#weighing_scale_modal").modal("hide");
-      $("input#weighing_scale_barcode").val("");
-    } else {
-      $("input#weighing_scale_barcode").focus();
+        if ($("#weighing_scale_barcode").val().length > 0) {
+          pos_product_row(null, null, $("#weighing_scale_barcode").val());
+          // $("#weighing_scale_modal").modal("hide");
+          $("input#weighing_scale_barcode").val("");
+        } else {
+          $("input#weighing_scale_barcode").focus();
+        }
+      }, 4000);
     }
   });
 
