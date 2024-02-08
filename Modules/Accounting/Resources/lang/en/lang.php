@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'accounting' => 'Accounting',
+    'accounting' => 'Accounting (Beta)',
     'accounting_module' => 'Accounting Module',
     'accounts_receivable' => 'Accounts Receivable (A/R)',
     'current_assets' => 'Current assets',
