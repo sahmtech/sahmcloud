@@ -147,8 +147,8 @@ class CoaController extends Controller
 
         if (
             !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
-                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-            (auth()->user()->can('accounting.manage_accounts'))
+                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
+            auth()->user()->can('accounting.manage_accounts'))
         ) {
             abort(403, 'Unauthorized action.');
         }
@@ -177,8 +177,8 @@ class CoaController extends Controller
 
         if (
             !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
-                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')) ||
-            (auth()->user()->can('accounting.manage_accounts'))
+                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
+            auth()->user()->can('accounting.manage_accounts'))
         ) {
             abort(403, 'Unauthorized action.');
         }
