@@ -59,6 +59,7 @@ class PaymentVouchersController extends Controller
                     ->orWhere('business_id', $business_id);
             })
             ->get();
+        $accounts = [];
         foreach ($sub_types_obj as $st) {
             $accounts[] = [
                 'id' => $st->id,

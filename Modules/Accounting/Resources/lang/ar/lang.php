@@ -403,8 +403,8 @@ return [
     'map_transactions' => 'ربط العملية',
     'view_transfer' => 'إستعراض التحويل',
     'transaction_create_Journal_entry' => 'توليد قيد يومي على مستوى العملية',
-    'accounting_settings'=>'التحكم بإعدادات المحاسبة',
-    'rest_accounting_data'=>'إعادة تعيين بيانات المحاسبة',
+    'accounting_settings' => 'التحكم بإعدادات المحاسبة',
+    'rest_accounting_data' => 'إعادة تعيين بيانات المحاسبة',
     'add_budget' => 'إضافة ميزانية',
     'add_transfer' => 'اضافة تحويل',
     'edit_transfer' => 'تعديل التحويل',
@@ -661,6 +661,7 @@ return [
     'migration_list' => 'قائمة الترحيلات',
     'migratio_status' => 'الحالة',
     'create_Journal_entry' => 'توليد قيد يومي',
+    'create_payment_voucher' => "إضافة سندات صرف",
 
 
 

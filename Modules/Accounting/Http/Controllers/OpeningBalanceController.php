@@ -29,10 +29,10 @@ class OpeningBalanceController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
         $is_superadmin = auth()->user()->can('superadmin') ? true : false;
-        $is_admin = auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ? true : false;
-       
+        $is_admin = auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) ? true : false;
+
         $can_opening_balances = auth()->user()->can('accounting.opening_balances');
-        if (!($is_admin || $can_opening_balances||$is_superadmin)) {
+        if (!($is_admin || $can_opening_balances || $is_superadmin)) {
             return redirect()->route('home')->with('status', [
                 'success' => false,
                 'msg' => __('message.unauthorized'),
@@ -45,6 +45,7 @@ class OpeningBalanceController extends Controller
                     ->orWhere('business_id', $business_id);
             })
             ->get();
+        $sub_types = [];
         foreach ($sub_types_obj as $st) {
             $sub_types[] = [
                 'id' => $st->id,
@@ -58,8 +59,8 @@ class OpeningBalanceController extends Controller
             return Datatables::of($openingBalances)
                 ->addColumn(
                     'action',
-                    function ($row) use ($is_admin, $can_OpeningBalance_delete,$is_superadmin) {
-                        if ($is_admin  || $can_OpeningBalance_delete||$is_superadmin) {
+                    function ($row) use ($is_admin, $can_OpeningBalance_delete, $is_superadmin) {
+                        if ($is_admin  || $can_OpeningBalance_delete || $is_superadmin) {
                             $deleteUrl = action('\Modules\Accounting\Http\Controllers\OpeningBalanceController@destroy', [$row->id]);
                             return
                                 '
@@ -122,26 +123,26 @@ class OpeningBalanceController extends Controller
             ]);
         }
         try {
-        DB::beginTransaction();
-        $user_id = request()->session()->get('user.id');
-        $validated = $validator->validated();
-        $validated['created_by'] = auth()->user()->id;
-        $validated['business_id'] = $request->session()->get('user.business_id');
-        $transaction = AccountingAccountsTransaction::query()->create([
-            'accounting_account_id' => $validated['accounting_account_id'],
-            'amount' => $validated['value'],
-            'type' => $validated['type'] == 'credit' ? 'credit' : 'debit',
-            'sub_type' => 'opening_balance'
-        ]);
-        $validated['acc_transaction_id'] = $transaction->id;
-        OpeningBalance::query()->create([
-            'year' => date('Y-m-d'),
-            'business_id' => $validated['business_id'],
-            'type' => $validated['type'],
-            'created_by' => $user_id,
-            'acc_transaction_id' => $validated['acc_transaction_id']
-        ]);
-        DB::commit();
+            DB::beginTransaction();
+            $user_id = request()->session()->get('user.id');
+            $validated = $validator->validated();
+            $validated['created_by'] = auth()->user()->id;
+            $validated['business_id'] = $request->session()->get('user.business_id');
+            $transaction = AccountingAccountsTransaction::query()->create([
+                'accounting_account_id' => $validated['accounting_account_id'],
+                'amount' => $validated['value'],
+                'type' => $validated['type'] == 'credit' ? 'credit' : 'debit',
+                'sub_type' => 'opening_balance'
+            ]);
+            $validated['acc_transaction_id'] = $transaction->id;
+            OpeningBalance::query()->create([
+                'year' => date('Y-m-d'),
+                'business_id' => $validated['business_id'],
+                'type' => $validated['type'],
+                'created_by' => $user_id,
+                'acc_transaction_id' => $validated['acc_transaction_id']
+            ]);
+            DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with([
@@ -198,7 +199,6 @@ class OpeningBalanceController extends Controller
             'success' => true,
             'msg' => __("lang_v1.updated_success")
         ]);
-       
     }
 
     protected function destroy($id)
