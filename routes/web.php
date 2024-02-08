@@ -329,6 +329,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     // Route::get('/payments/opening-balance/{contact_id}', 'TransactionPaymentController@getOpeningBalancePayments');
     Route::get('/payments/show-child-payments/{payment_id}', [TransactionPaymentController::class, 'showChildPayments']);
     Route::get('/payments/view-payment/{payment_id}', [TransactionPaymentController::class, 'viewPayment']);
+    Route::get('/payments/view-payment-vouchers/{payment_id}', [TransactionPaymentController::class, 'view_payment_vouchers']);
+    
     Route::get('/payments/add_payment/{transaction_id}', [TransactionPaymentController::class, 'addPayment']);
     Route::get('/payments/pay-contact-due/{contact_id}', [TransactionPaymentController::class, 'getPayContactDue']);
     Route::post('/payments/pay-contact-due', [TransactionPaymentController::class, 'postPayContactDue']);
