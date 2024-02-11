@@ -640,7 +640,7 @@ class SellPosController extends Controller
                 }
 
                 $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt];
-
+ 
                 if (!empty($whatsapp_link)) {
                     $output['whatsapp_link'] = $whatsapp_link;
                 }
@@ -780,6 +780,7 @@ class SellPosController extends Controller
             $output['html_content'] = view($layout, compact('receipt_details'))->render();
         }
 
+       
         return $output;
     }
 
@@ -2121,8 +2122,8 @@ class SellPosController extends Controller
 
             $title = $transaction->business->name . ' | ' . $transaction->invoice_no;
 
-            return view('sale_pos.partials.show_invoice')
-                ->with(compact('receipt', 'title', 'payment_link'));
+            return view('sale_pos.partials.show_invoice', compact('receipt', 'title', 'payment_link'));
+            // ->with();
         } else {
             exit(__('messages.something_went_wrong'));
         }
