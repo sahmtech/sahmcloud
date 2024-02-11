@@ -15,6 +15,7 @@
     ],
     "require": {
         "php": "^8.0",
+        "alkoumi/laravel-arabic-numbers": "^1.1",
         "aloha/twilio": "^4.0",
         "arcanedev/log-viewer": "9.x",
         "automattic/woocommerce": "^3.0",

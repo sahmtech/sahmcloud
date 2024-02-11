@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'accounting' => 'الحسابات',
+    'accounting' => 'المحاسبة (نسخة تجريبية)',
     'accounting_module' => 'قسم الحسابات',
     'accounts_receivable' => 'الذمم المدينة (A/R)',
     'current_assets' => 'الاصول المتداولة',

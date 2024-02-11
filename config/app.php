@@ -178,6 +178,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Unicodeveloper\Paystack\PaystackServiceProvider::class,
+        Alkoumi\LaravelArabicNumbers\LaravelArabicNumbersServiceProvider::class,
         /*
          * Package Service Providers...
          */
