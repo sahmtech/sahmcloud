@@ -15,6 +15,8 @@ use Modules\Accounting\Entities\CostCenter;
 use Modules\Accounting\Entities\OpeningBalance;
 use Yajra\DataTables\Facades\DataTables;
 use App\Utils\ModuleUtil;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OpeningBalanceController extends Controller
 {
@@ -220,6 +222,91 @@ class OpeningBalanceController extends Controller
         $debt = AccountingAccountsTransaction::query()->where('sub_type', 'opening_balance')->where('type', 'debit')->sum('amount');
         return response()->json(['credit' => $credit, 'debt' => $debt]);
     }
-}
 
-//<button data-id="' . $row->id . '" data-accountid="' . $row->accounting_account_id . '" data-year="' . $row->year . '" data-type="' . $row->type . '" data-value="' . $row->value . '" class="btn btn-xs btn-primary btn-modal edit_opening_balance" data-toggle="modal" data-target="#edit_opening_balance_modal"><i class="glyphicon glyphicon-edit"></i>' . __("messages.edit") . '</button>
+      public function viewImporte_openingBalance()
+    {
+        $is_admin = auth()->user()->hasRole('Admin#1') ? true : false;
+        $can_import_opeining_balances = auth()->user()->can('accouning.import_opeining_balances');
+
+        if (!($is_admin || $can_import_opeining_balances)) {
+            return redirect()->route('home')->with('status', [
+                'success' => false,
+                'msg' => __('message.unauthorized'),
+            ]);
+        }
+        return view('accounting::opening_balance.import_opening_balance');
+    }
+    public function importe_openingBalance(Request $request)
+    {
+        $business_id = $request->session()->get('user.business_id');
+        $is_admin = auth()->user()->hasRole('Admin#1') ? true : false;
+        $can_import_opeining_balances = auth()->user()->can('accouning.import_opeining_balances');
+
+        if (!($is_admin || $can_import_opeining_balances)) {
+            return redirect()->route('home')->with('status', [
+                'success' => false,
+                'msg' => __('message.unauthorized'),
+            ]);
+        }
+        $openingBalanceBeforImport = OpeningBalance::count();
+        // try {
+           
+
+            if ($request->hasFile('opeining_balance_csv')) {
+                $file = $request->file('opeining_balance_csv');
+                $parsed_array = Excel::toArray([], $file);
+                $opeining_balance_csv = array_splice($parsed_array[0], 1);
+                DB::beginTransaction();
+                foreach ($opeining_balance_csv as  $value) {
+                    // dd($value[1]);
+                    if (!$value[0] || !$value[1] || !$value[2]) {
+                        continue;
+                    } else {
+                        $accountsAccount = AccountingAccount::where('name', $value[0])->orWhere('gl_code', $value[0])->first();
+                        if (!$accountsAccount) {
+                            continue;
+                        } else {
+                            $transaction = AccountingAccountsTransaction::create([
+                                'accounting_account_id' => $accountsAccount->id, //accounting_account_id
+                                'amount' => $value[2],  //value
+                                'type' => $value[1] == 'credit' ? 'credit' : 'debit', //type
+                                'sub_type' => 'opening_balance'
+                            ]);
+
+                            OpeningBalance::create([
+                                'year' => date('Y-m-d'),
+                                'business_id' => $business_id,
+                                'type' => $value[1],
+                                'acc_transaction_id' => $transaction->id,
+                                'created_by'=>Auth::user()->id
+                            ]);
+                        }
+                    }
+                }
+            }
+            DB::commit();
+            $openingBalanceAfterImport = OpeningBalance::count();
+
+
+            if ($openingBalanceAfterImport > $openingBalanceBeforImport) {
+                return redirect()->back()
+                    ->with('status', [
+                        'success' => 1,
+                        'msg' => __('lang_v1.added_success')
+                    ]);
+            } else {
+                return redirect()->back()
+                    ->with('status', [
+                        'success' => 0,
+                        'msg' => __('messages.something_went_wrong'),
+                    ]);
+            }
+        // } catch (\Exception $e) {
+        //     return redirect()->back()
+        //         ->with('status', [
+        //             'success' => 0,
+        //             'msg' => __('messages.something_went_wrong'),
+        //         ]);
+        // }
+    }
+}

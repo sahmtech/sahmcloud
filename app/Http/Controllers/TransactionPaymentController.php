@@ -685,7 +685,7 @@ class TransactionPaymentController extends Controller
             $single_payment_line['amount_string'] = \Alkoumi\LaravelArabicNumbers\Numbers::TafqeetMoney($single_payment_line->amount);
 
 
-            // return view('transaction_payment.single_payment_view')
+        //    return view('transaction_payment.single_payment_view')
             return view('transaction_payment.payment_vouchers_view')
                 ->with(compact('single_payment_line', 'transaction', 'payment_types'));
         }

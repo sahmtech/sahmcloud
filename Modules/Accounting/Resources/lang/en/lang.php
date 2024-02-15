@@ -696,6 +696,7 @@ return [
     'accounting_settings' => 'Accouning settings controll',
     'rest_accounting_data' => 'Reset Accouning data',
     'add_budget' => 'Add budget',
+    'importe_openingBalance' => 'Import opening balance',
 
 
 ];
