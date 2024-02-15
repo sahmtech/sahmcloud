@@ -27,7 +27,9 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
     Route::get('ledger/{id}', [\Modules\Accounting\Http\Controllers\CoaController::class, 'ledger'])->name('accounting.ledger');
     Route::get('activate-deactivate/{id}', [\Modules\Accounting\Http\Controllers\CoaController::class, 'activateDeactivate']);
     Route::get('create-default-accounts', [\Modules\Accounting\Http\Controllers\CoaController::class, 'createDefaultAccounts'])->name('accounting.create-default-accounts');
-
+    Route::get('importe-accounts', [\Modules\Accounting\Http\Controllers\CoaController::class, 'viewImporte_accounts'] )->name('accounting.viewImporte_accounts');
+    Route::post('save-importe-accounts',  [\Modules\Accounting\Http\Controllers\CoaController::class, 'importe_accounts'])->name('accounting.saveImporte_accounts');
+   
     Route::resource('journal-entry', \Modules\Accounting\Http\Controllers\JournalEntryController::class);
 
 
