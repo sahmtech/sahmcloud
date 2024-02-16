@@ -2,7 +2,9 @@
 
 namespace Modules\Connector\Transformers;
 
+use App\Product;
 use App\Utils\Util;
+use App\Variation;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SellResource extends JsonResource
@@ -37,8 +39,13 @@ class SellResource extends JsonResource
                 unset($array['sell_lines'][$key]['sell_line_purchase_lines']);
                 $array['sell_lines'][$key]['purchase_price'] = $purchase_lines;
             }
-        }
+            $product_id =  $array['sell_lines'][$key]['product_id'];
+            $variation_id =  $array['sell_lines'][$key]['variation_id'];
 
+            $array['sell_lines'][$key]['product_name'] =   Product::where('id', $product_id)->first()?->name ?? '';
+            $array['sell_lines'][$key]['variation_name'] = Variation::where('id', $variation_id)->first()?->name ?? '';
+            $array['sell_lines'][$key]['is_tax_group'] =   Product::where('id', $product_id)->first()?->product_tax?->is_tax_group ?? '0';
+        }
         $commonUtil = new Util;
         $array['invoice_url'] = $commonUtil->getInvoiceUrl($array['id'], $array['business_id']);
         $array['payment_link'] = $commonUtil->getInvoicePaymentLink($array['id'], $array['business_id']);
