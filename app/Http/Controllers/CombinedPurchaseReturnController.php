@@ -43,22 +43,22 @@ class CombinedPurchaseReturnController extends Controller
      */
     public function create()
     {
-        if (! auth()->user()->can('purchase.update')) {
+        if (!auth()->user()->can('purchase.update')) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
 
         //Check if subscribed or not
-        if (! $this->moduleUtil->isSubscribed($business_id)) {
+        if (!$this->moduleUtil->isSubscribed($business_id)) {
             return $this->moduleUtil->expiredResponse();
         }
 
         $business_locations = BusinessLocation::forDropdown($business_id);
 
         $taxes = TaxRate::where('business_id', $business_id)
-                        ->ExcludeForTaxGroup()
-                        ->get();
+            ->ExcludeForTaxGroup()
+            ->get();
 
         return view('purchase_return.create')
             ->with(compact('business_locations', 'taxes'));
@@ -72,19 +72,21 @@ class CombinedPurchaseReturnController extends Controller
      */
     public function save(Request $request)
     {
-        if (! auth()->user()->can('purchase.update')) {
+        if (!auth()->user()->can('purchase.update')) {
             abort(403, 'Unauthorized action.');
         }
 
         try {
             DB::beginTransaction();
 
-            $input_data = $request->only(['location_id', 'transaction_date', 'final_total', 'ref_no',
-                'tax_id', 'tax_amount', 'contact_id', ]);
+            $input_data = $request->only([
+                'location_id', 'transaction_date', 'final_total', 'ref_no',
+                'tax_id', 'tax_amount', 'contact_id',
+            ]);
             $business_id = $request->session()->get('user.business_id');
 
             //Check if subscribed or not
-            if (! $this->moduleUtil->isSubscribed($business_id)) {
+            if (!$this->moduleUtil->isSubscribed($business_id)) {
                 return $this->moduleUtil->expiredResponse();
             }
 
@@ -108,7 +110,7 @@ class CombinedPurchaseReturnController extends Controller
 
             $products = $request->input('products');
 
-            if (! empty($products)) {
+            if (!empty($products)) {
                 $product_data = [];
 
                 foreach ($products as $product) {
@@ -121,8 +123,8 @@ class CombinedPurchaseReturnController extends Controller
                         'pp_without_discount' => $unit_price,
                         'purchase_price_inc_tax' => $unit_price,
                         'quantity_returned' => $this->productUtil->num_uf($product['quantity']),
-                        'lot_number' => ! empty($product['lot_number']) ? $product['lot_number'] : null,
-                        'exp_date' => ! empty($product['exp_date']) ? $this->productUtil->uf_date($product['exp_date']) : null,
+                        'lot_number' => !empty($product['lot_number']) ? $product['lot_number'] : null,
+                        'exp_date' => !empty($product['exp_date']) ? $this->productUtil->uf_date($product['exp_date']) : null,
                     ];
 
                     $product_data[] = $return_line;
@@ -137,13 +139,17 @@ class CombinedPurchaseReturnController extends Controller
                 }
 
                 $purchase_return = Transaction::create($input_data);
+            
+                $auto_migration = $this->transactionUtil->saveAutoMigration($request, $purchase_return, $business_id, $user_id);
+
                 $purchase_return->purchase_lines()->createMany($product_data);
 
                 //update payment status
                 $this->transactionUtil->updatePaymentStatus($purchase_return->id, $purchase_return->final_total);
             }
 
-            $output = ['success' => 1,
+            $output = [
+                'success' => 1,
                 'msg' => __('lang_v1.purchase_return_added_success'),
             ];
 
@@ -151,9 +157,10 @@ class CombinedPurchaseReturnController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
+            $output = [
+                'success' => 0,
                 'msg' => __('messages.something_went_wrong'),
             ];
         }
@@ -169,58 +176,58 @@ class CombinedPurchaseReturnController extends Controller
      */
     public function edit($id)
     {
-        if (! auth()->user()->can('purchase.update')) {
+        if (!auth()->user()->can('purchase.update')) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
 
         $purchase_return = Transaction::where('business_id', $business_id)
-                                    ->with(['contact'])
-                                    ->find($id);
+            ->with(['contact'])
+            ->find($id);
         $location_id = $purchase_return->location_id;
         $purchase_lines = PurchaseLine::join(
-                            'products AS p',
-                            'purchase_lines.product_id',
-                            '=',
-                            'p.id'
-                        )
-                        ->join(
-                            'variations AS variations',
-                            'purchase_lines.variation_id',
-                            '=',
-                            'variations.id'
-                        )
-                        ->join(
-                            'product_variations AS pv',
-                            'variations.product_variation_id',
-                            '=',
-                            'pv.id'
-                        )
-                        ->leftjoin('variation_location_details AS vld', function ($join) use ($location_id) {
-                            $join->on('variations.id', '=', 'vld.variation_id')
-                                ->where('vld.location_id', '=', $location_id);
-                        })
-                        ->leftjoin('units', 'units.id', '=', 'p.unit_id')
-                        ->where('purchase_lines.transaction_id', $id)
-                        ->select(
-                            DB::raw("IF(pv.is_dummy = 0, CONCAT(p.name, 
+            'products AS p',
+            'purchase_lines.product_id',
+            '=',
+            'p.id'
+        )
+            ->join(
+                'variations AS variations',
+                'purchase_lines.variation_id',
+                '=',
+                'variations.id'
+            )
+            ->join(
+                'product_variations AS pv',
+                'variations.product_variation_id',
+                '=',
+                'pv.id'
+            )
+            ->leftjoin('variation_location_details AS vld', function ($join) use ($location_id) {
+                $join->on('variations.id', '=', 'vld.variation_id')
+                    ->where('vld.location_id', '=', $location_id);
+            })
+            ->leftjoin('units', 'units.id', '=', 'p.unit_id')
+            ->where('purchase_lines.transaction_id', $id)
+            ->select(
+                DB::raw("IF(pv.is_dummy = 0, CONCAT(p.name, 
                                     ' (', pv.name, ':',variations.name, ')'), p.name) AS product_name"),
-                            'p.id as product_id',
-                            'p.enable_stock',
-                            'pv.is_dummy as is_dummy',
-                            'variations.sub_sku',
-                            'vld.qty_available',
-                            'variations.id as variation_id',
-                            'units.short_name as unit',
-                            'units.allow_decimal as unit_allow_decimal',
-                            'purchase_lines.purchase_price',
-                            'purchase_lines.id as purchase_line_id',
-                            'purchase_lines.quantity_returned as quantity_returned',
-                            'purchase_lines.lot_number',
-                            'purchase_lines.exp_date'
-                        )
-                        ->get();
+                'p.id as product_id',
+                'p.enable_stock',
+                'pv.is_dummy as is_dummy',
+                'variations.sub_sku',
+                'vld.qty_available',
+                'variations.id as variation_id',
+                'units.short_name as unit',
+                'units.allow_decimal as unit_allow_decimal',
+                'purchase_lines.purchase_price',
+                'purchase_lines.id as purchase_line_id',
+                'purchase_lines.quantity_returned as quantity_returned',
+                'purchase_lines.lot_number',
+                'purchase_lines.exp_date'
+            )
+            ->get();
 
         foreach ($purchase_lines as $key => $value) {
             $purchase_lines[$key]->qty_available += $value->quantity_returned;
@@ -230,8 +237,8 @@ class CombinedPurchaseReturnController extends Controller
         $business_locations = BusinessLocation::forDropdown($business_id);
 
         $taxes = TaxRate::where('business_id', $business_id)
-                        ->ExcludeForTaxGroup()
-                        ->get();
+            ->ExcludeForTaxGroup()
+            ->get();
 
         return view('purchase_return.edit')
             ->with(compact('business_locations', 'taxes', 'purchase_return', 'purchase_lines'));
@@ -246,23 +253,25 @@ class CombinedPurchaseReturnController extends Controller
      */
     public function update(Request $request)
     {
-        if (! auth()->user()->can('purchase.update')) {
+        if (!auth()->user()->can('purchase.update')) {
             abort(403, 'Unauthorized action.');
         }
 
         try {
             DB::beginTransaction();
 
-            $input_data = $request->only(['transaction_date', 'final_total',
-                'tax_id', 'tax_amount', 'contact_id', ]);
+            $input_data = $request->only([
+                'transaction_date', 'final_total',
+                'tax_id', 'tax_amount', 'contact_id',
+            ]);
             $business_id = $request->session()->get('user.business_id');
 
-            if (! empty($request->input('ref_no'))) {
+            if (!empty($request->input('ref_no'))) {
                 $input_data['ref_no'] = $request->input('ref_no');
             }
 
             //Check if subscribed or not
-            if (! $this->moduleUtil->isSubscribed($business_id)) {
+            if (!$this->moduleUtil->isSubscribed($business_id)) {
                 return $this->moduleUtil->expiredResponse();
             }
 
@@ -272,23 +281,23 @@ class CombinedPurchaseReturnController extends Controller
             //upload document
             $doc_name = $this->productUtil->uploadFile($request, 'document', 'documents');
 
-            if (! empty($doc_name)) {
+            if (!empty($doc_name)) {
                 $input_data['document'] = $doc_name;
             }
 
             $products = $request->input('products');
             $purchase_return_id = $request->input('purchase_return_id');
             $purchase_return = Transaction::where('business_id', $business_id)
-                                ->where('type', 'purchase_return')
-                                ->find($purchase_return_id);
+                ->where('type', 'purchase_return')
+                ->find($purchase_return_id);
 
-            if (! empty($products)) {
+            if (!empty($products)) {
                 $product_data = [];
                 $updated_purchase_lines = [];
 
                 foreach ($products as $product) {
                     $unit_price = $this->productUtil->num_uf($product['unit_price']);
-                    if (! empty($product['purchase_line_id'])) {
+                    if (!empty($product['purchase_line_id'])) {
                         $return_line = PurchaseLine::find($product['purchase_line_id']);
                         $updated_purchase_lines[] = $return_line->id;
 
@@ -318,8 +327,8 @@ class CombinedPurchaseReturnController extends Controller
                     $return_line->pp_without_discount = $unit_price;
                     $return_line->purchase_price_inc_tax = $unit_price;
                     $return_line->quantity_returned = $this->productUtil->num_uf($product['quantity']);
-                    $return_line->lot_number = ! empty($product['lot_number']) ? $product['lot_number'] : null;
-                    $return_line->exp_date = ! empty($product['exp_date']) ? $this->productUtil->uf_date($product['exp_date']) : null;
+                    $return_line->lot_number = !empty($product['lot_number']) ? $product['lot_number'] : null;
+                    $return_line->exp_date = !empty($product['exp_date']) ? $this->productUtil->uf_date($product['exp_date']) : null;
                     $product_data[] = $return_line;
                 }
 
@@ -327,16 +336,16 @@ class CombinedPurchaseReturnController extends Controller
 
                 //If purchase line deleted add return quantity to stock
                 $deleted_purchase_lines = PurchaseLine::where('transaction_id', $purchase_return_id)
-                            ->whereNotIn('id', $updated_purchase_lines)
-                            ->get();
+                    ->whereNotIn('id', $updated_purchase_lines)
+                    ->get();
 
                 foreach ($deleted_purchase_lines as $dpl) {
                     $this->productUtil->updateProductQuantity($purchase_return->location_id, $dpl->product_id, $dpl->variation_id, $dpl->quantity_returned, 0, null, false);
                 }
 
                 PurchaseLine::where('transaction_id', $purchase_return_id)
-                            ->whereNotIn('id', $updated_purchase_lines)
-                            ->delete();
+                    ->whereNotIn('id', $updated_purchase_lines)
+                    ->delete();
 
                 $purchase_return->purchase_lines()->saveMany($product_data);
 
@@ -344,7 +353,8 @@ class CombinedPurchaseReturnController extends Controller
                 $this->transactionUtil->updatePaymentStatus($purchase_return->id, $purchase_return->final_total);
             }
 
-            $output = ['success' => 1,
+            $output = [
+                'success' => 1,
                 'msg' => __('lang_v1.purchase_return_updated_success'),
             ];
 
@@ -352,9 +362,10 @@ class CombinedPurchaseReturnController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
+            $output = [
+                'success' => 0,
                 'msg' => __('messages.something_went_wrong'),
             ];
         }
@@ -380,7 +391,7 @@ class CombinedPurchaseReturnController extends Controller
             $product->formatted_qty_available = $this->productUtil->num_f($product->qty_available);
 
             return view('purchase_return.partials.product_table_row')
-            ->with(compact('product', 'row_index'));
+                ->with(compact('product', 'row_index'));
         }
     }
 }

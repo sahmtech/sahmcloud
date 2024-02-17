@@ -366,8 +366,10 @@ class ExpenseController extends Controller
             }
 
             $this->transactionUtil->activityLog($expense, 'added');
+            
+            $auto_migration = $this->transactionUtil->saveAutoMigration($request, $expense, $business_id, $user_id);
 
-            event(new ExpenseCreatedOrModified($expense));
+            // event(new ExpenseCreatedOrModified($expense));
 
             DB::commit();
 
@@ -480,7 +482,9 @@ class ExpenseController extends Controller
 
             $this->transactionUtil->activityLog($expense, 'edited');
 
-            event(new ExpenseCreatedOrModified($expense));
+            $auto_migration = $this->transactionUtil->saveAutoMigration($request, $expense, $business_id, $user_id);
+            
+            // event(new ExpenseCreatedOrModified($expense));
 
             $output = ['success' => 1,
                 'msg' => __('expense.expense_update_success'),
