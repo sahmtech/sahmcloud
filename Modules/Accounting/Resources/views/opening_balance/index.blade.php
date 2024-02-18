@@ -19,6 +19,13 @@
                             data-target="#create_opening_balance_modal">
                             <i class="fas fa-plus"></i> @lang('messages.add')
                         </a>
+                        @if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) ||
+                                auth()->user()->can('accouning.import_opeining_balances'))
+                            <a class="btn btn-block btn-primary  " style="font-size: small;"
+                                href="{{ route('viewImporte_openingBalance') }}">
+                                <i class="fa fa-download"></i> @lang('accounting::lang.importe_openingBalance')
+                            </a>
+                        @endif
                     </div>
                 @endslot
             @endcan

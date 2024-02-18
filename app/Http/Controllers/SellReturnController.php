@@ -55,7 +55,7 @@ class SellReturnController extends Controller
      */
     public function index()
     {
-        if (! auth()->user()->can('access_sell_return') && ! auth()->user()->can('access_own_sell_return')) {
+        if (!auth()->user()->can('access_sell_return') && !auth()->user()->can('access_own_sell_return')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -63,54 +63,54 @@ class SellReturnController extends Controller
         if (request()->ajax()) {
             $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
 
-                    ->join(
-                        'business_locations AS bl',
-                        'transactions.location_id',
-                        '=',
-                        'bl.id'
-                    )
-                    ->join(
-                        'transactions as T1',
-                        'transactions.return_parent_id',
-                        '=',
-                        'T1.id'
-                    )
-                    ->leftJoin(
-                        'transaction_payments AS TP',
-                        'transactions.id',
-                        '=',
-                        'TP.transaction_id'
-                    )
-                    ->where('transactions.business_id', $business_id)
-                    ->where('transactions.type', 'sell_return')
-                    ->where('transactions.status', 'final')
-                    ->select(
-                        'transactions.id',
-                        'transactions.transaction_date',
-                        'transactions.invoice_no',
-                        'contacts.name',
-                        'contacts.supplier_business_name',
-                        'transactions.final_total',
-                        'transactions.payment_status',
-                        'bl.name as business_location',
-                        'T1.invoice_no as parent_sale',
-                        'T1.id as parent_sale_id',
-                        DB::raw('SUM(TP.amount) as amount_paid')
-                    );
+                ->join(
+                    'business_locations AS bl',
+                    'transactions.location_id',
+                    '=',
+                    'bl.id'
+                )
+                ->join(
+                    'transactions as T1',
+                    'transactions.return_parent_id',
+                    '=',
+                    'T1.id'
+                )
+                ->leftJoin(
+                    'transaction_payments AS TP',
+                    'transactions.id',
+                    '=',
+                    'TP.transaction_id'
+                )
+                ->where('transactions.business_id', $business_id)
+                ->where('transactions.type', 'sell_return')
+                ->where('transactions.status', 'final')
+                ->select(
+                    'transactions.id',
+                    'transactions.transaction_date',
+                    'transactions.invoice_no',
+                    'contacts.name',
+                    'contacts.supplier_business_name',
+                    'transactions.final_total',
+                    'transactions.payment_status',
+                    'bl.name as business_location',
+                    'T1.invoice_no as parent_sale',
+                    'T1.id as parent_sale_id',
+                    DB::raw('SUM(TP.amount) as amount_paid')
+                );
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
                 $sells->whereIn('transactions.location_id', $permitted_locations);
             }
 
-            if (! auth()->user()->can('access_sell_return') && auth()->user()->can('access_own_sell_return')) {
+            if (!auth()->user()->can('access_sell_return') && auth()->user()->can('access_own_sell_return')) {
                 $sells->where('transactions.created_by', request()->session()->get('user.id'));
             }
 
             //Add condition for created_by,used in sales representative sales report
             if (request()->has('created_by')) {
                 $created_by = request()->get('created_by');
-                if (! empty($created_by)) {
+                if (!empty($created_by)) {
                     $sells->where('transactions.created_by', $created_by);
                 }
             }
@@ -118,20 +118,20 @@ class SellReturnController extends Controller
             //Add condition for location,used in sales representative expense report
             if (request()->has('location_id')) {
                 $location_id = request()->get('location_id');
-                if (! empty($location_id)) {
+                if (!empty($location_id)) {
                     $sells->where('transactions.location_id', $location_id);
                 }
             }
 
-            if (! empty(request()->customer_id)) {
+            if (!empty(request()->customer_id)) {
                 $customer_id = request()->customer_id;
                 $sells->where('contacts.id', $customer_id);
             }
-            if (! empty(request()->start_date) && ! empty(request()->end_date)) {
+            if (!empty(request()->start_date) && !empty(request()->end_date)) {
                 $start = request()->start_date;
                 $end = request()->end_date;
                 $sells->whereDate('transactions.transaction_date', '>=', $start)
-                        ->whereDate('transactions.transaction_date', '<=', $end);
+                    ->whereDate('transactions.transaction_date', '<=', $end);
             }
 
             $sells->groupBy('transactions.id');
@@ -143,8 +143,8 @@ class SellReturnController extends Controller
                     'action',
                     '<div class="btn-group">
                     <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
-                        data-toggle="dropdown" aria-expanded="false">'.
-                        __('messages.actions').
+                        data-toggle="dropdown" aria-expanded="false">' .
+                        __('messages.actions') .
                         '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                         </span>
                     </button>
@@ -166,7 +166,7 @@ class SellReturnController extends Controller
                     '<span class="display_currency final_total" data-currency_symbol="true" data-orig-value="{{$final_total}}">{{$final_total}}</span>'
                 )
                 ->editColumn('parent_sale', function ($row) {
-                    return '<button type="button" class="btn btn-link btn-modal" data-container=".view_modal" data-href="'.action([\App\Http\Controllers\SellController::class, 'show'], [$row->parent_sale_id]).'">'.$row->parent_sale.'</button>';
+                    return '<button type="button" class="btn btn-link btn-modal" data-container=".view_modal" data-href="' . action([\App\Http\Controllers\SellController::class, 'show'], [$row->parent_sale_id]) . '">' . $row->parent_sale . '</button>';
                 })
                 ->editColumn('name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -177,7 +177,7 @@ class SellReturnController extends Controller
                 ->addColumn('payment_due', function ($row) {
                     $due = $row->final_total - $row->amount_paid;
 
-                    return '<span class="display_currency payment_due" data-currency_symbol="true" data-orig-value="'.$due.'">'.$due.'</sapn>';
+                    return '<span class="display_currency payment_due" data-currency_symbol="true" data-orig-value="' . $due . '">' . $due . '</sapn>';
                 })
                 ->setRowAttr([
                     'data-href' => function ($row) {
@@ -186,7 +186,8 @@ class SellReturnController extends Controller
                         } else {
                             return '';
                         }
-                    }, ])
+                    },
+                ])
                 ->rawColumns(['final_total', 'action', 'parent_sale', 'payment_status', 'payment_due', 'name'])
                 ->make(true);
         }
@@ -230,22 +231,22 @@ class SellReturnController extends Controller
      */
     public function add($id)
     {
-        if (! auth()->user()->can('access_sell_return') && ! auth()->user()->can('access_own_sell_return')) {
+        if (!auth()->user()->can('access_sell_return') && !auth()->user()->can('access_own_sell_return')) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
         //Check if subscribed or not
-        if (! $this->moduleUtil->isSubscribed($business_id)) {
+        if (!$this->moduleUtil->isSubscribed($business_id)) {
             return $this->moduleUtil->expiredResponse();
         }
 
         $sell = Transaction::where('business_id', $business_id)
-                            ->with(['sell_lines', 'location', 'return_parent', 'contact', 'tax', 'sell_lines.sub_unit', 'sell_lines.product', 'sell_lines.product.unit'])
-                            ->find($id);
+            ->with(['sell_lines', 'location', 'return_parent', 'contact', 'tax', 'sell_lines.sub_unit', 'sell_lines.product', 'sell_lines.product.unit'])
+            ->find($id);
 
         foreach ($sell->sell_lines as $key => $value) {
-            if (! empty($value->sub_unit_id)) {
+            if (!empty($value->sub_unit_id)) {
                 $formated_sell_line = $this->transactionUtil->recalculateSellLineTotals($business_id, $value);
                 $sell->sell_lines[$key] = $formated_sell_line;
             }
@@ -265,18 +266,18 @@ class SellReturnController extends Controller
      */
     public function store(Request $request)
     {
-        if (! auth()->user()->can('access_sell_return') && ! auth()->user()->can('access_own_sell_return')) {
+        if (!auth()->user()->can('access_sell_return') && !auth()->user()->can('access_own_sell_return')) {
             abort(403, 'Unauthorized action.');
         }
 
         try {
             $input = $request->except('_token');
 
-            if (! empty($input['products'])) {
+            if (!empty($input['products'])) {
                 $business_id = $request->session()->get('user.business_id');
 
                 //Check if subscribed or not
-                if (! $this->moduleUtil->isSubscribed($business_id)) {
+                if (!$this->moduleUtil->isSubscribed($business_id)) {
                     return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\SellReturnController::class, 'index']));
                 }
 
@@ -288,9 +289,12 @@ class SellReturnController extends Controller
 
                 $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
 
+              $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($input['transaction_id']);
+
                 DB::commit();
 
-                $output = ['success' => 1,
+                $output = [
+                    'success' => 1,
                     'msg' => __('lang_v1.success'),
                     'receipt' => $receipt,
                 ];
@@ -301,11 +305,12 @@ class SellReturnController extends Controller
             if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
                 $msg = $e->getMessage();
             } else {
-                \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+                \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
                 $msg = __('messages.something_went_wrong');
             }
 
-            $output = ['success' => 0,
+            $output = [
+                'success' => 0,
                 'msg' => $msg,
             ];
         }
@@ -321,40 +326,40 @@ class SellReturnController extends Controller
      */
     public function show($id)
     {
-        if (! auth()->user()->can('access_sell_return') && ! auth()->user()->can('access_own_sell_return')) {
+        if (!auth()->user()->can('access_sell_return') && !auth()->user()->can('access_own_sell_return')) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
         $query = Transaction::where('business_id', $business_id)
-                                ->where('id', $id)
-                                ->with(
-                                    'contact',
-                                    'return_parent',
-                                    'tax',
-                                    'sell_lines',
-                                    'sell_lines.product',
-                                    'sell_lines.variations',
-                                    'sell_lines.sub_unit',
-                                    'sell_lines.product',
-                                    'sell_lines.product.unit',
-                                    'location'
-                                );
+            ->where('id', $id)
+            ->with(
+                'contact',
+                'return_parent',
+                'tax',
+                'sell_lines',
+                'sell_lines.product',
+                'sell_lines.variations',
+                'sell_lines.sub_unit',
+                'sell_lines.product',
+                'sell_lines.product.unit',
+                'location'
+            );
 
-        if (! auth()->user()->can('access_sell_return') && auth()->user()->can('access_own_sell_return')) {
+        if (!auth()->user()->can('access_sell_return') && auth()->user()->can('access_own_sell_return')) {
             $sells->where('created_by', request()->session()->get('user.id'));
         }
         $sell = $query->first();
 
         foreach ($sell->sell_lines as $key => $value) {
-            if (! empty($value->sub_unit_id)) {
+            if (!empty($value->sub_unit_id)) {
                 $formated_sell_line = $this->transactionUtil->recalculateSellLineTotals($business_id, $value);
                 $sell->sell_lines[$key] = $formated_sell_line;
             }
         }
 
         $sell_taxes = [];
-        if (! empty($sell->return_parent->tax)) {
+        if (!empty($sell->return_parent->tax)) {
             if ($sell->return_parent->tax->is_tax_group) {
                 $sell_taxes = $this->transactionUtil->sumGroupTaxDetails($this->transactionUtil->groupTaxDetails($sell->return_parent->tax, $sell->return_parent->tax_amount));
             } else {
@@ -377,9 +382,9 @@ class SellReturnController extends Controller
         }
 
         $activities = Activity::forSubject($sell->return_parent)
-           ->with(['causer', 'subject'])
-           ->latest()
-           ->get();
+            ->with(['causer', 'subject'])
+            ->latest()
+            ->get();
 
         return view('sell_return.show')
             ->with(compact('sell', 'sell_taxes', 'total_discount', 'activities'));
@@ -393,7 +398,7 @@ class SellReturnController extends Controller
      */
     public function destroy($id)
     {
-        if (! auth()->user()->can('access_sell_return') && ! auth()->user()->can('access_own_sell_return')) {
+        if (!auth()->user()->can('access_sell_return') && !auth()->user()->can('access_own_sell_return')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -408,16 +413,18 @@ class SellReturnController extends Controller
                     ->where('type', 'sell_return')
                     ->with(['sell_lines', 'payment_lines']);
 
-                if (! auth()->user()->can('access_sell_return') && auth()->user()->can('access_own_sell_return')) {
+                if (!auth()->user()->can('access_sell_return') && auth()->user()->can('access_own_sell_return')) {
                     $sells->where('created_by', request()->session()->get('user.id'));
                 }
                 $sell_return = $query->first();
 
-                $sell_lines = TransactionSellLine::where('transaction_id',
-                                            $sell_return->return_parent_id)
-                                    ->get();
+                $sell_lines = TransactionSellLine::where(
+                    'transaction_id',
+                    $sell_return->return_parent_id
+                )
+                    ->get();
 
-                if (! empty($sell_return)) {
+                if (!empty($sell_return)) {
                     $transaction_payments = $sell_return->payment_lines;
 
                     foreach ($sell_lines as $sell_line) {
@@ -443,7 +450,8 @@ class SellReturnController extends Controller
                 }
 
                 DB::commit();
-                $output = ['success' => 1,
+                $output = [
+                    'success' => 1,
                     'msg' => __('lang_v1.success'),
                 ];
             } catch (\Exception $e) {
@@ -452,11 +460,12 @@ class SellReturnController extends Controller
                 if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
                     $msg = $e->getMessage();
                 } else {
-                    \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+                    \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
                     $msg = __('messages.something_went_wrong');
                 }
 
-                $output = ['success' => 0,
+                $output = [
+                    'success' => 0,
                     'msg' => $msg,
                 ];
             }
@@ -480,7 +489,8 @@ class SellReturnController extends Controller
         $transaction_id,
         $printer_type = null
     ) {
-        $output = ['is_enabled' => false,
+        $output = [
+            'is_enabled' => false,
             'print_type' => 'browser',
             'html_content' => null,
             'printer_config' => [],
@@ -526,15 +536,16 @@ class SellReturnController extends Controller
     {
         if (request()->ajax()) {
             try {
-                $output = ['success' => 0,
+                $output = [
+                    'success' => 0,
                     'msg' => trans('messages.something_went_wrong'),
                 ];
 
                 $business_id = $request->session()->get('user.business_id');
 
                 $transaction = Transaction::where('business_id', $business_id)
-                                ->where('id', $transaction_id)
-                                ->first();
+                    ->where('id', $transaction_id)
+                    ->first();
 
                 if (empty($transaction)) {
                     return $output;
@@ -542,11 +553,12 @@ class SellReturnController extends Controller
 
                 $receipt = $this->receiptContent($business_id, $transaction->location_id, $transaction_id, 'browser');
 
-                if (! empty($receipt)) {
+                if (!empty($receipt)) {
                     $output = ['success' => 1, 'receipt' => $receipt];
                 }
             } catch (\Exception $e) {
-                $output = ['success' => 0,
+                $output = [
+                    'success' => 0,
                     'msg' => trans('messages.something_went_wrong'),
                 ];
             }
@@ -560,34 +572,37 @@ class SellReturnController extends Controller
      */
     public function validateInvoiceToReturn($invoice_no)
     {
-        if (! auth()->user()->can('sell.create') && ! auth()->user()->can('direct_sell.access') && ! auth()->user()->can('view_own_sell_only')) {
-            return ['success' => 0,
+        if (!auth()->user()->can('sell.create') && !auth()->user()->can('direct_sell.access') && !auth()->user()->can('view_own_sell_only')) {
+            return [
+                'success' => 0,
                 'msg' => trans('lang_v1.permission_denied'),
             ];
         }
 
         $business_id = request()->session()->get('user.business_id');
         $query = Transaction::where('business_id', $business_id)
-                            ->where('invoice_no', $invoice_no);
+            ->where('invoice_no', $invoice_no);
 
         $permitted_locations = auth()->user()->permitted_locations();
         if ($permitted_locations != 'all') {
             $query->whereIn('transactions.location_id', $permitted_locations);
         }
 
-        if (! auth()->user()->can('direct_sell.access') && auth()->user()->can('view_own_sell_only')) {
+        if (!auth()->user()->can('direct_sell.access') && auth()->user()->can('view_own_sell_only')) {
             $query->where('created_by', auth()->user()->id);
         }
 
         $sell = $query->first();
 
         if (empty($sell)) {
-            return ['success' => 0,
+            return [
+                'success' => 0,
                 'msg' => trans('lang_v1.sell_not_found'),
             ];
         }
 
-        return ['success' => 1,
+        return [
+            'success' => 1,
             'redirect_url' => action([\App\Http\Controllers\SellReturnController::class, 'add'], [$sell->id]),
         ];
     }

@@ -3,16 +3,19 @@
 namespace Modules\Accounting\Http\Controllers;
 
 use App\Utils\ModuleUtil;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB as FacadesDB;
 use Modules\Accounting\Entities\AccountingAccount;
 use Modules\Accounting\Entities\AccountingAccountsTransaction;
 use Modules\Accounting\Entities\AccountingAccountType;
 use Modules\Accounting\Utils\AccountingUtil;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CoaController extends Controller
 {
@@ -585,5 +588,91 @@ class CoaController extends Controller
 
         return view('accounting::chart_of_accounts.ledger')
             ->with(compact('account', 'current_bal'));
+    }
+
+    public function viewImporte_accounts()
+    {
+        $is_admin = auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) ? true : false;
+        $can_import_accountss = auth()->user()->can('accouning.import_accounts');
+
+        if (!($is_admin || $can_import_accountss)) {
+            return redirect()->route('home')->with('status', [
+                'success' => false,
+                'msg' => __('message.unauthorized'),
+            ]);
+        }
+        return view('accounting::chart_of_accounts.import_accounts');
+    }
+
+
+    public function importe_accounts(Request $request)
+    {
+        $business_id = $request->session()->get('user.business_id');
+        $is_admin = auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) ? true : false;
+        $can_import_accountss = auth()->user()->can('accouning.import_accounts');
+
+        if (!($is_admin || $can_import_accountss)) {
+            return redirect()->route('home')->with('status', [
+                'success' => false,
+                'msg' => __('message.unauthorized'),
+            ]);
+        }
+
+        try {
+      
+        if ($request->hasFile('accounts_csv')) {
+            $file = $request->file('accounts_csv');
+            $parsed_array = Excel::toArray([], $file);
+            $accounts_csv = array_splice($parsed_array[0], 1);
+            FacadesDB::beginTransaction();
+            $business_id = request()->session()->get('user.business_id');
+               
+            $user_id = request()->session()->get('user.id');
+
+            foreach ($accounts_csv as  $value) {
+
+             
+                if (!$value[0] || !$value[1] || !$value[2]  || !$value[3] || !$value[4]) {
+                    continue;
+                } else {
+                    $accountingAccountType = AccountingAccountType::where('name', $value[4])->first();
+                    if (!$accountingAccountType || AccountingAccount::where('gl_code', $value[3])->first()) {
+                        continue;
+                    } else {
+
+                        AccountingAccount::create([
+                            'name' => $value[0],
+                            'business_id' => $business_id,
+                           
+                            'account_primary_type' => $value[2],
+                            'account_sub_type_id' => $accountingAccountType->id,
+                            'detail_type_id' =>  $accountingAccountType->account_type == 'sub_type' ? null : AccountingAccountType::find($accountingAccountType->parent_id)->id,
+                            'gl_code' => $value[3],
+                            'status' => 'active',
+                            'created_by' => $user_id,
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                        ]);
+                    }
+                }
+            }
+        }
+        DB::commit();
+
+
+
+        return redirect()->back()
+            ->with('status', [
+                'success' => 1,
+                'msg' => __('lang_v1.added_success')
+            ]);
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('status', [
+                    'success' => 0,
+                    'msg' => __('messages.something_went_wrong'),
+                ]);
+        }
     }
 }

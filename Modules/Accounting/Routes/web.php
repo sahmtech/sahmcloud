@@ -27,7 +27,9 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
     Route::get('ledger/{id}', [\Modules\Accounting\Http\Controllers\CoaController::class, 'ledger'])->name('accounting.ledger');
     Route::get('activate-deactivate/{id}', [\Modules\Accounting\Http\Controllers\CoaController::class, 'activateDeactivate']);
     Route::get('create-default-accounts', [\Modules\Accounting\Http\Controllers\CoaController::class, 'createDefaultAccounts'])->name('accounting.create-default-accounts');
-
+    Route::get('importe-accounts', [\Modules\Accounting\Http\Controllers\CoaController::class, 'viewImporte_accounts'] )->name('accounting.viewImporte_accounts');
+    Route::post('save-importe-accounts',  [\Modules\Accounting\Http\Controllers\CoaController::class, 'importe_accounts'])->name('accounting.saveImporte_accounts');
+   
     Route::resource('journal-entry', \Modules\Accounting\Http\Controllers\JournalEntryController::class);
 
 
@@ -71,22 +73,23 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
 
 
     Route::resource('cost_centers', \Modules\Accounting\Http\Controllers\CostCenterController::class);
-    Route::put('cost-center-update',[\Modules\Accounting\Http\Controllers\CostCenterController::class, 'update'])->name('cost_center_update');
+    Route::put('cost-center-update', [\Modules\Accounting\Http\Controllers\CostCenterController::class, 'update'])->name('cost_center_update');
     Route::post('cost-center-store', [\Modules\Accounting\Http\Controllers\CostCenterController::class, 'store'])->name('cost_center_store');
 
 
     Route::resource('opening_balances', OpeningBalanceController::class);
     Route::get('/accounting/opening_balance/equation', [OpeningBalanceController::class, 'calcEquation'])->name('opening_balance.calc');
-  
+    Route::get('/opening-balance/importe', [OpeningBalanceController::class, 'viewImporte_openingBalance'])->name('viewImporte_openingBalance');
+    Route::post('/opening-balance/save-importe', [OpeningBalanceController::class, 'importe_openingBalance'])->name('save-importe_openingBalance');
 
     Route::resource('payment_vouchers', PaymentVouchersController::class);
-    Route::get('/accounting/payment_vouchers', [PaymentVouchersController::class,'index'])->name('index-payment_vouchers');
+    Route::get('/accounting/payment_vouchers', [PaymentVouchersController::class, 'index'])->name('index-payment_vouchers');
     Route::get('/accounting/payment_vouchers/load/data', [PaymentVouchersController::class, 'loadNeededData'])->name('payment_vouchers.load');
 
     Route::resource('receipt_vouchers', ReceiptVouchersController::class);
     Route::get('/accounting/receipt_vouchers/load/data', [ReceiptVouchersController::class, 'loadNeededData'])->name('receipt_vouchers.load');
-   
-    
+
+
     Route::get('transactions', [\Modules\Accounting\Http\Controllers\TransactionController::class, 'index']);
     Route::get('transactions/map', [\Modules\Accounting\Http\Controllers\TransactionController::class, 'map']);
     Route::get('transactions/ctrate-Journal-entry/{id}', [\Modules\Accounting\Http\Controllers\TransactionController::class, 'create_Journal_entry'])->name('create_Journal_entry');

@@ -1452,8 +1452,9 @@ class SellPosController extends Controller
                 Media::uploadMedia($business_id, $transaction, $request, 'documents');
 
                 $this->transactionUtil->activityLog($transaction, 'edited', $transaction_before);
+                $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
 
-                SellCreatedOrModified::dispatch($transaction);
+                // SellCreatedOrModified::dispatch($transaction);
 
                 DB::commit();
 

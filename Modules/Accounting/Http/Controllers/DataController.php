@@ -40,7 +40,7 @@ class DataController extends Controller
         $commonUtil = new Util();
         $is_admin = $commonUtil->is_admin(auth()->user(), $business_id);
 
-        if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) || auth()->user()->can('accounting.access_accounting_module') && $is_accounting_enabled) {
+        if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('accounting.access_accounting_module') && $is_accounting_enabled) {
             Menu::modify(
                 'admin-sidebar-menu',
                 function ($menu) {
@@ -54,7 +54,7 @@ class DataController extends Controller
                                 ['icon' => 'fa fas fa-list', 'active' => request()->segment(2) == 'dashboard']
                             );
 
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.manage_accounts')) {
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.manage_accounts')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\CoaController::class, 'index']),
                                     __('accounting::lang.chart_of_accounts'),
@@ -62,14 +62,14 @@ class DataController extends Controller
                                 );
                             }
 
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.cost_center')) {
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.cost_center')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\CostCenterController::class, 'index']),
                                     __('accounting::lang.cost_center'),
                                     ['icon' => 'fa fas fa-plus-circle', 'active' =>  request()->segment(2) == 'cost_centers']
                                 );
                             }
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.opening_balances')) {
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.opening_balances')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\OpeningBalanceController::class, 'index']),
                                     __('accounting::lang.opening_balances'),
@@ -93,7 +93,7 @@ class DataController extends Controller
                                     ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(3) == 'payment_vouchers']
                                 );
                             }
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.journals')) {
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.journals')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\JournalEntryController::class, 'index']),
                                     __('accounting::lang.journal_entry'),
@@ -101,47 +101,47 @@ class DataController extends Controller
                                 );
                             }
 
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.autoMigration')) {
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.autoMigration')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class, 'index']),
                                     __('accounting::lang.automatedMigration'),
                                     ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'automated-migration']
                                 );
                             }
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.view_transfer')) {
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.view_transfer')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\TransferController::class, 'index']),
                                     __('accounting::lang.transfer'),
                                     ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'transfer']
                                 );
                             }
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.transactions')) {
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.transactions')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\TransactionController::class, 'index']),
                                     __('accounting::lang.transactions'),
                                     ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'transactions']
                                 );
                             }
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.manage_budget')) {
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.manage_budget')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\BudgetController::class, 'index']),
                                     __('accounting::lang.budget'),
                                     ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'budget']
                                 );
                             }
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.view_reports')) {
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.view_reports')) {
                                 $sub->url(
                                     action([\Modules\Accounting\Http\Controllers\ReportController::class, 'index']),
                                     __('accounting::lang.reports'),
                                     ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'reports']
                                 );
                             }
-                            if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||auth()->user()->can('superadmin') || auth()->user()->can('accounting.settings') ) {
-                            $sub->url(
-                                action([\Modules\Accounting\Http\Controllers\SettingsController::class, 'index']),
-                                __('messages.settings'),
-                                ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'settings']
-                            );
+                            if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || auth()->user()->can('accounting.settings')) {
+                                $sub->url(
+                                    action([\Modules\Accounting\Http\Controllers\SettingsController::class, 'index']),
+                                    __('messages.settings'),
+                                    ['icon' => 'fa fas fa-circle', 'active' => request()->segment(2) == 'settings']
+                                );
                             }
                         },
 
@@ -193,6 +193,11 @@ class DataController extends Controller
                 'default' => false,
             ],
             [
+                'value' => 'accouning.import_accounts',
+                'label' => __('accounting::lang.importe_accounts'),
+                'default' => false
+            ],
+            [
                 'value' => 'accounting.cost_center',
                 'label' => __('accounting::lang.cost_center'),
                 'default' => false,
@@ -221,6 +226,11 @@ class DataController extends Controller
                 'value' => 'accounting.OpeningBalance.delete',
                 'label' => __('accounting::lang.opening_balances_delete'),
                 'default' => false,
+            ],
+            [
+                'value' => 'accouning.import_opeining_balances',
+                'label' => __('accounting::lang.importe_openingBalance'),
+                'default' => false
             ],
             [
                 'value' => 'accounting.receipt_vouchers',
@@ -358,7 +368,7 @@ class DataController extends Controller
                 'default' => false,
             ],
 
-            
+
 
 
 
