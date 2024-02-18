@@ -340,7 +340,10 @@ class StockTransferController extends Controller
 
             $this->transactionUtil->activityLog($sell_transfer, 'added');
 
-            event( new StockTransferCreatedOrModified($sell_transfer, 'added'));
+
+            // $auto_migration = $this->transactionUtil->saveAutoMigration($request, $sell_transfer, $business_id, $user_id);
+
+            // event( new StockTransferCreatedOrModified($sell_transfer, 'added'));
 
             $output = ['success' => 1,
                 'msg' => __('lang_v1.stock_transfer_added_successfully'),

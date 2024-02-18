@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('accounting_mapping_setting_auto_migrations', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['sell', 'sell_return', 'opening_stock', 'purchase', 'purchase_order', 'purchase_return', 'expens', 'sell_transfer', 'purchase_transfer', 'payroll', 'opening_balance', 'other']);
+            $table->enum('type', ['sell', 'sell_return', 'opening_stock', 'purchase', 'purchase_order', 'purchase_return', 'expense', 'sell_transfer', 'purchase_transfer', 'payroll', 'opening_balance', 'other']);
             $table->string('name');
             $table->string('status');
             $table->boolean('active')->default(true);

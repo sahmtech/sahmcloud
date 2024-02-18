@@ -1407,7 +1407,7 @@ class AccountingUtil extends Util
             'purchase',
             'purchase_order',
             'purchase_return',
-            'expens',
+            'expense',
             'sell_transfer',
             'purchase_transfer',
             'payroll',

@@ -40,7 +40,7 @@ class OpeningStockController extends Controller
      */
     public function add($product_id)
     {
-        if (! auth()->user()->can('product.opening_stock')) {
+        if (!auth()->user()->can('product.opening_stock')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -48,27 +48,28 @@ class OpeningStockController extends Controller
 
         //Get the product
         $product = Product::where('business_id', $business_id)
-                            ->where('id', $product_id)
-                            ->with(['variations',
-                                'variations.product_variation',
-                                'unit',
-                                'product_locations',
-                                'second_unit',
-                            ])
-                            ->first();
-        if (! empty($product) && $product->enable_stock == 1) {
+            ->where('id', $product_id)
+            ->with([
+                'variations',
+                'variations.product_variation',
+                'unit',
+                'product_locations',
+                'second_unit',
+            ])
+            ->first();
+        if (!empty($product) && $product->enable_stock == 1) {
             //Get Opening Stock Transactions for the product if exists
             $transactions = Transaction::where('business_id', $business_id)
-                                ->where('opening_stock_product_id', $product_id)
-                                ->where('type', 'opening_stock')
-                                ->with(['purchase_lines'])
-                                ->get();
+                ->where('opening_stock_product_id', $product_id)
+                ->where('type', 'opening_stock')
+                ->with(['purchase_lines'])
+                ->get();
 
             $purchases = [];
             $purchase_lines = [];
             foreach ($transactions as $transaction) {
                 foreach ($transaction->purchase_lines as $purchase_line) {
-                    if (! empty($purchase_lines[$purchase_line->variation_id])) {
+                    if (!empty($purchase_lines[$purchase_line->variation_id])) {
                         $k = count($purchase_lines[$purchase_line->variation_id]);
                     } else {
                         $k = 0;
@@ -100,7 +101,7 @@ class OpeningStockController extends Controller
             //Unset locations where product is not available
             $available_locations = $product->product_locations->pluck('id')->toArray();
             foreach ($locations as $key => $value) {
-                if (! in_array($key, $available_locations)) {
+                if (!in_array($key, $available_locations)) {
                     unset($locations[$key]);
                 }
             }
@@ -120,13 +121,13 @@ class OpeningStockController extends Controller
             }
 
             return view('opening_stock.add')
-                    ->with(compact(
-                        'product',
-                        'locations',
-                        'purchases',
-                        'enable_expiry',
-                        'enable_lot'
-                    ));
+                ->with(compact(
+                    'product',
+                    'locations',
+                    'purchases',
+                    'enable_expiry',
+                    'enable_lot'
+                ));
         }
     }
 
@@ -139,7 +140,7 @@ class OpeningStockController extends Controller
      */
     public function save(Request $request)
     {
-        if (! auth()->user()->can('product.opening_stock')) {
+        if (!auth()->user()->can('product.opening_stock')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -151,16 +152,16 @@ class OpeningStockController extends Controller
             $user_id = $request->session()->get('user.id');
 
             $product = Product::where('business_id', $business_id)
-                                ->where('id', $product_id)
-                                ->with(['variations', 'product_tax'])
-                                ->first();
+                ->where('id', $product_id)
+                ->with(['variations', 'product_tax'])
+                ->first();
 
             $locations = BusinessLocation::forDropdown($business_id)->toArray();
 
-            if (! empty($product) && $product->enable_stock == 1) {
+            if (!empty($product) && $product->enable_stock == 1) {
                 //Get product tax
-                $tax_percent = ! empty($product->product_tax->amount) ? $product->product_tax->amount : 0;
-                $tax_id = ! empty($product->product_tax->id) ? $product->product_tax->id : null;
+                $tax_percent = !empty($product->product_tax->amount) ? $product->product_tax->amount : 0;
+                $tax_id = !empty($product->product_tax->id) ? $product->product_tax->id : null;
 
                 //Get start date for financial year.
                 $transaction_date = request()->session()->get('financial_year.start');
@@ -186,17 +187,17 @@ class OpeningStockController extends Controller
                                 $secondary_unit_quantity = isset($pl['secondary_unit_quantity']) ? $this->productUtil->num_uf(trim($pl['secondary_unit_quantity'])) : 0;
 
                                 $exp_date = null;
-                                if (! empty($pl['exp_date'])) {
+                                if (!empty($pl['exp_date'])) {
                                     $exp_date = $this->productUtil->uf_date($pl['exp_date']);
                                 }
 
                                 $lot_number = null;
-                                if (! empty($pl['lot_number'])) {
+                                if (!empty($pl['lot_number'])) {
                                     $lot_number = $pl['lot_number'];
                                 }
 
-                                $purchase_line_note = ! empty($pl['purchase_line_note']) ? $pl['purchase_line_note'] : null;
-                                $transaction_date = ! empty($pl['transaction_date']) ? $this->productUtil->uf_date($pl['transaction_date'], true) : $transaction_date;
+                                $purchase_line_note = !empty($pl['purchase_line_note']) ? $pl['purchase_line_note'] : null;
+                                $transaction_date = !empty($pl['transaction_date']) ? $this->productUtil->uf_date($pl['transaction_date'], true) : $transaction_date;
 
                                 $purchase_line = null;
 
@@ -222,7 +223,7 @@ class OpeningStockController extends Controller
                                         $this->productUtil->updateProductQuantity($location_id, $product->id, $vid, $qty_remaining, 0, null, false);
                                     }
                                 }
-                                if (! is_null($purchase_line)) {
+                                if (!is_null($purchase_line)) {
                                     $purchase_line->item_tax = $item_tax;
                                     $purchase_line->tax_id = $tax_id;
                                     $purchase_line->quantity = $qty_remaining;
@@ -234,7 +235,7 @@ class OpeningStockController extends Controller
                                     $purchase_line->secondary_unit_quantity = $secondary_unit_quantity;
                                 }
 
-                                if (! empty($purchase_line->transaction_id)) {
+                                if (!empty($purchase_line->transaction_id)) {
                                     $edit_purchase_lines[$purchase_line->transaction_id][] = $purchase_line;
 
                                     $purchase_line->save();
@@ -255,7 +256,7 @@ class OpeningStockController extends Controller
 
                         //edit existing transactions & purchase lines
                         $updated_transaction_ids = [];
-                        if (! empty($edit_purchase_lines)) {
+                        if (!empty($edit_purchase_lines)) {
                             foreach ($edit_purchase_lines as $t_id => $purchase_lines) {
                                 $purchase_total = 0;
                                 $updated_purchase_line_ids = [];
@@ -281,8 +282,8 @@ class OpeningStockController extends Controller
                                 $delete_purchase_line_ids = [];
                                 $delete_purchase_lines = null;
                                 $delete_purchase_lines = PurchaseLine::where('transaction_id', $transaction->id)
-                                            ->whereNotIn('id', $updated_purchase_line_ids)
-                                            ->get();
+                                    ->whereNotIn('id', $updated_purchase_line_ids)
+                                    ->get();
 
                                 if ($delete_purchase_lines->count()) {
                                     foreach ($delete_purchase_lines as $delete_purchase_line) {
@@ -298,8 +299,8 @@ class OpeningStockController extends Controller
                                     }
                                     //Delete deleted purchase lines
                                     PurchaseLine::where('transaction_id', $transaction->id)
-                                                ->whereIn('id', $delete_purchase_line_ids)
-                                                ->delete();
+                                        ->whereIn('id', $delete_purchase_line_ids)
+                                        ->delete();
                                 }
 
                                 $this->transactionUtil->adjustMappingPurchaseSellAfterEditingPurchase('received', $transaction, $delete_purchase_lines);
@@ -335,7 +336,7 @@ class OpeningStockController extends Controller
                         }
 
                         //create transaction & purchase lines
-                        if (! empty($new_purchase_lines)) {
+                        if (!empty($new_purchase_lines)) {
                             foreach ($new_purchase_lines as $key => $new_purchase_line) {
                                 if (empty($new_purchase_line)) {
                                     continue;
@@ -356,6 +357,8 @@ class OpeningStockController extends Controller
                                     ]
                                 );
 
+                                return   $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
+
                                 $transaction->purchase_lines()->saveMany([$new_purchase_line]);
 
                                 //Adjust stock over selling if found
@@ -365,17 +368,20 @@ class OpeningStockController extends Controller
                     }
                 }
 
+
                 DB::commit();
             }
 
-            $output = ['success' => 1,
+            $output = [
+                'success' => 1,
                 'msg' => __('lang_v1.opening_stock_added_successfully'),
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
+            $output = [
+                'success' => 0,
                 'msg' => $e->getMessage(),
             ];
 

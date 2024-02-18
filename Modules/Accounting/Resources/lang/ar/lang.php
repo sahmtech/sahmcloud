@@ -456,7 +456,7 @@ return [
         'sell_return' => 'بيع العائد',
         'opening_stock' => 'افتتاح المخزون',
         'purchase' => 'شراء',
-        'expens' => 'مصروف',
+        'expense' => 'مصروف',
         'purchase_order' => 'طلب شراء',
         'sell_transfer' => 'نقل بيع',
         'purchase_transfer' => 'نقل الشراء',
