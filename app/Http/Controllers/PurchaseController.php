@@ -776,9 +776,10 @@ class PurchaseController extends Controller
             DB::rollBack();
             \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
+            error_log($e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage(),
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
 
             return back()->with('status', $output);
@@ -879,9 +880,10 @@ class PurchaseController extends Controller
             DB::rollBack();
             \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
+            error_log($e->getMessage());
             $output = [
-                'success' => false,
-                'msg' => $e->getMessage(),
+                'success' => 0,
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
         }
 
@@ -1245,9 +1247,10 @@ class PurchaseController extends Controller
                 'html' => $html,
             ];
         } catch (\Exception $e) {
-            return [
-                'success' => false,
-                'msg' => $e->getMessage(),
+            error_log($e->getMessage());
+            $output = [
+                'success' => 0,
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
         }
     }
@@ -1437,9 +1440,10 @@ class PurchaseController extends Controller
             DB::rollBack();
             \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
+            error_log($e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage(),
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
         }
 

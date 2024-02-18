@@ -1539,5 +1539,6 @@ return [
     'disable_quotation' => 'Disable Quotation',
     'disable_card' => 'Disable Card',
     'enable_fast_store' => 'Enable fast save',
+    'technical_erorr' => 'technical error, please try agane',
 
 ];

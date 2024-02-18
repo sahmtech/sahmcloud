@@ -268,8 +268,10 @@ class WoocommerceController extends Controller
             DB::rollBack();
 
             if (get_class($e) == 'Modules\Woocommerce\Exceptions\WooCommerceError') {
-                $output = ['success' => 0,
-                    'msg' => $e->getMessage(),
+                error_log($e->getMessage());
+                $output = [
+                    'success' => 0,
+                    'msg' =>  __('lang_v1.technical_erorr'),
                 ];
             } else {
                 \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
@@ -324,8 +326,10 @@ class WoocommerceController extends Controller
             DB::rollBack();
 
             if (get_class($e) == 'Modules\Woocommerce\Exceptions\WooCommerceError') {
-                $output = ['success' => 0,
-                    'msg' => $e->getMessage(),
+                error_log($e->getMessage());
+                $output = [
+                    'success' => 0,
+                    'msg' =>  __('lang_v1.technical_erorr'),
                 ];
             } else {
                 \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
@@ -371,9 +375,11 @@ class WoocommerceController extends Controller
             DB::rollBack();
 
             if (get_class($e) == 'Modules\Woocommerce\Exceptions\WooCommerceError') {
-                $output = ['success' => 0,
-                    'msg' => $e->getMessage(),
-                ];
+                error_log($e->getMessage());
+            $output = [
+                'success' => 0,
+                'msg' =>  __('lang_v1.technical_erorr'),
+            ];
             } else {
                 \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 

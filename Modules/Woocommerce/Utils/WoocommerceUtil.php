@@ -1009,12 +1009,13 @@ class WoocommerceUtil extends Util
                 DB::rollBack();
 
                 $this->add_to_skipped_orders($business_data['business'], $order->id);
-
+                error_log($e->getMessage());
                 return [
                     'error_type' => 'order_insuficient_product_qty',
                     'order_number' => $order->number,
-                    'msg' => $e->getMessage(),
+                    'msg' =>  __('lang_v1.technical_erorr'),
                 ];
+              
             }
         }
 
@@ -1364,12 +1365,14 @@ class WoocommerceUtil extends Util
             $this->transactionUtil->adjustMappingPurchaseSell($status_before, $transaction, $business_data, $deleted_lines);
         } catch (PurchaseSellMismatch $e) {
             DB::rollBack();
-
+            error_log($e->getMessage());
             return [
                 'error_type' => 'order_insuficient_product_qty',
                 'order_number' => $order->number,
-                'msg' => $e->getMessage(),
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
+
+          
         }
 
         DB::commit();
