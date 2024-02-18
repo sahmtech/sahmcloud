@@ -251,8 +251,10 @@ class SellReturnController extends Controller
                 $sell->sell_lines[$key] = $formated_sell_line;
             }
 
+
             $sell->sell_lines[$key]->formatted_qty = $this->transactionUtil->num_f($value->quantity, false, null, true);
         }
+
 
         return view('sell_return.add')
             ->with(compact('sell'));
@@ -289,7 +291,7 @@ class SellReturnController extends Controller
 
                 $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
 
-              $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($input['transaction_id']);
+                $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($sell_return->id);
 
                 DB::commit();
 
