@@ -380,9 +380,10 @@ class OpeningStockController extends Controller
             DB::rollBack();
             \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
+            error_log($e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage(),
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
 
             return back()->with('status', $output);

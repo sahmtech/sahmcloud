@@ -165,8 +165,10 @@ class ClientController extends Controller
                 'msg' => __('lang_v1.success'),
             ];
         } catch (Exception $e) {
-            $output = ['success' => 1,
-                'msg' => $e->getMessage(),
+            error_log($e->getMessage());
+            $output = [
+                'success' => 0,
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
         }
 

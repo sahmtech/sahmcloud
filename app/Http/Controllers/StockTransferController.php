@@ -51,7 +51,7 @@ class StockTransferController extends Controller
      */
     public function index()
     {
-        if (! auth()->user()->can('purchase.view') && ! auth()->user()->can('purchase.create')) {
+        if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -67,33 +67,33 @@ class StockTransferController extends Controller
                 '=',
                 'l1.id'
             )
-                    ->join('transactions as t2', 't2.transfer_parent_id', '=', 'transactions.id')
-                    ->join(
-                        'business_locations AS l2',
-                        't2.location_id',
-                        '=',
-                        'l2.id'
-                    )
-                    ->where('transactions.business_id', $business_id)
-                    ->where('transactions.type', 'sell_transfer')
-                    ->select(
-                        'transactions.id',
-                        'transactions.transaction_date',
-                        'transactions.ref_no',
-                        'l1.name as location_from',
-                        'l2.name as location_to',
-                        'transactions.final_total',
-                        'transactions.shipping_charges',
-                        'transactions.additional_notes',
-                        'transactions.id as DT_RowId',
-                        'transactions.status'
-                    );
+                ->join('transactions as t2', 't2.transfer_parent_id', '=', 'transactions.id')
+                ->join(
+                    'business_locations AS l2',
+                    't2.location_id',
+                    '=',
+                    'l2.id'
+                )
+                ->where('transactions.business_id', $business_id)
+                ->where('transactions.type', 'sell_transfer')
+                ->select(
+                    'transactions.id',
+                    'transactions.transaction_date',
+                    'transactions.ref_no',
+                    'l1.name as location_from',
+                    'l2.name as location_to',
+                    'transactions.final_total',
+                    'transactions.shipping_charges',
+                    'transactions.additional_notes',
+                    'transactions.id as DT_RowId',
+                    'transactions.status'
+                );
 
             return Datatables::of($stock_transfers)
                 ->addColumn('action', function ($row) use ($edit_days) {
-                    $html = '<button type="button" title="'.__('stock_adjustment.view_details').'" class="btn btn-primary btn-xs btn-modal" data-container=".view_modal" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'show'], [$row->id]).'"><i class="fa fa-eye" aria-hidden="true"></i> '.__('messages.view').'</button>';
+                    $html = '<button type="button" title="' . __('stock_adjustment.view_details') . '" class="btn btn-primary btn-xs btn-modal" data-container=".view_modal" data-href="' . action([\App\Http\Controllers\StockTransferController::class, 'show'], [$row->id]) . '"><i class="fa fa-eye" aria-hidden="true"></i> ' . __('messages.view') . '</button>';
 
-                    $html .= ' <a href="#" class="print-invoice btn btn-info btn-xs" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'printInvoice'], [$row->id]).'"><i class="fa fa-print" aria-hidden="true"></i> '.__('messages.print').'</a>';
+                    $html .= ' <a href="#" class="print-invoice btn btn-info btn-xs" data-href="' . action([\App\Http\Controllers\StockTransferController::class, 'printInvoice'], [$row->id]) . '"><i class="fa fa-print" aria-hidden="true"></i> ' . __('messages.print') . '</a>';
 
                     $date = \Carbon::parse($row->transaction_date)
                         ->addDays($edit_days);
@@ -101,12 +101,12 @@ class StockTransferController extends Controller
 
                     if ($date->gte($today)) {
                         $html .= '&nbsp;
-                        <button type="button" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'destroy'], [$row->id]).'" class="btn btn-danger btn-xs delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> '.__('messages.delete').'</button>';
+                        <button type="button" data-href="' . action([\App\Http\Controllers\StockTransferController::class, 'destroy'], [$row->id]) . '" class="btn btn-danger btn-xs delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> ' . __('messages.delete') . '</button>';
                     }
 
                     if ($row->status != 'final') {
                         $html .= '&nbsp;
-                        <a href="'.action([\App\Http\Controllers\StockTransferController::class, 'edit'], [$row->id]).'" class="btn btn-primary btn-xs"><i class="fa fa-edit" aria-hidden="true"></i> '.__('messages.edit').'</a>';
+                        <a href="' . action([\App\Http\Controllers\StockTransferController::class, 'edit'], [$row->id]) . '" class="btn btn-primary btn-xs"><i class="fa fa-edit" aria-hidden="true"></i> ' . __('messages.edit') . '</a>';
                     }
 
                     return $html;
@@ -122,8 +122,8 @@ class StockTransferController extends Controller
                 ->editColumn('status', function ($row) use ($statuses) {
                     $row->status = $row->status == 'final' ? 'completed' : $row->status;
                     $status = $statuses[$row->status];
-                    $status_color = ! empty($this->status_colors[$row->status]) ? $this->status_colors[$row->status] : 'bg-gray';
-                    $status = $row->status != 'completed' ? '<a href="#" class="stock_transfer_status" data-status="'.$row->status.'" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'updateStatus'], [$row->id]).'"><span class="label '.$status_color.'">'.$statuses[$row->status].'</span></a>' : '<span class="label '.$status_color.'">'.$statuses[$row->status].'</span>';
+                    $status_color = !empty($this->status_colors[$row->status]) ? $this->status_colors[$row->status] : 'bg-gray';
+                    $status = $row->status != 'completed' ? '<a href="#" class="stock_transfer_status" data-status="' . $row->status . '" data-href="' . action([\App\Http\Controllers\StockTransferController::class, 'updateStatus'], [$row->id]) . '"><span class="label ' . $status_color . '">' . $statuses[$row->status] . '</span></a>' : '<span class="label ' . $status_color . '">' . $statuses[$row->status] . '</span>';
 
                     return $status;
                 })
@@ -132,7 +132,8 @@ class StockTransferController extends Controller
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         return  action([\App\Http\Controllers\StockTransferController::class, 'show'], [$row->id]);
-                    }, ])
+                    },
+                ])
                 ->make(true);
         }
 
@@ -146,14 +147,14 @@ class StockTransferController extends Controller
      */
     public function create()
     {
-        if (! auth()->user()->can('purchase.create')) {
+        if (!auth()->user()->can('purchase.create')) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
 
         //Check if subscribed or not
-        if (! $this->moduleUtil->isSubscribed($business_id)) {
+        if (!$this->moduleUtil->isSubscribed($business_id)) {
             return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\StockTransferController::class, 'index']));
         }
 
@@ -162,7 +163,7 @@ class StockTransferController extends Controller
         $statuses = $this->stockTransferStatuses();
 
         return view('stock_transfer.create')
-                ->with(compact('business_locations', 'statuses'));
+            ->with(compact('business_locations', 'statuses'));
     }
 
     private function stockTransferStatuses()
@@ -182,7 +183,7 @@ class StockTransferController extends Controller
      */
     public function store(Request $request)
     {
-        if (! auth()->user()->can('purchase.create')) {
+        if (!auth()->user()->can('purchase.create')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -190,7 +191,7 @@ class StockTransferController extends Controller
             $business_id = $request->session()->get('user.business_id');
 
             //Check if subscribed or not
-            if (! $this->moduleUtil->isSubscribed($business_id)) {
+            if (!$this->moduleUtil->isSubscribed($business_id)) {
                 return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\StockTransferController::class, 'index']));
             }
 
@@ -221,25 +222,26 @@ class StockTransferController extends Controller
             $sell_lines = [];
             $purchase_lines = [];
 
-            if (! empty($products)) {
+            if (!empty($products)) {
                 foreach ($products as $product) {
                     $sell_line_arr = [
                         'product_id' => $product['product_id'],
                         'variation_id' => $product['variation_id'],
                         'quantity' => $this->productUtil->num_uf($product['quantity']),
                         'item_tax' => 0,
-                        'tax_id' => null, ];
+                        'tax_id' => null,
+                    ];
 
-                    if (! empty($product['product_unit_id'])) {
+                    if (!empty($product['product_unit_id'])) {
                         $sell_line_arr['product_unit_id'] = $product['product_unit_id'];
                     }
-                    if (! empty($product['sub_unit_id'])) {
+                    if (!empty($product['sub_unit_id'])) {
                         $sell_line_arr['sub_unit_id'] = $product['sub_unit_id'];
                     }
 
                     $purchase_line_arr = $sell_line_arr;
 
-                    if (! empty($product['base_unit_multiplier'])) {
+                    if (!empty($product['base_unit_multiplier'])) {
                         $sell_line_arr['base_unit_multiplier'] = $product['base_unit_multiplier'];
                     }
 
@@ -249,7 +251,7 @@ class StockTransferController extends Controller
                     $purchase_line_arr['purchase_price'] = $sell_line_arr['unit_price'];
                     $purchase_line_arr['purchase_price_inc_tax'] = $sell_line_arr['unit_price'];
 
-                    if (! empty($product['lot_no_line_id'])) {
+                    if (!empty($product['lot_no_line_id'])) {
                         //Add lot_no_line_id to sell line
                         $sell_line_arr['lot_no_line_id'] = $product['lot_no_line_id'];
 
@@ -260,7 +262,7 @@ class StockTransferController extends Controller
                         $purchase_line_arr['exp_date'] = $lot_details->exp_date;
                     }
 
-                    if (! empty($product['base_unit_multiplier'])) {
+                    if (!empty($product['base_unit_multiplier'])) {
                         $purchase_line_arr['quantity'] = $purchase_line_arr['quantity'] * $product['base_unit_multiplier'];
                         $purchase_line_arr['purchase_price'] = $purchase_line_arr['purchase_price'] / $product['base_unit_multiplier'];
                         $purchase_line_arr['purchase_price_inc_tax'] = $purchase_line_arr['purchase_price_inc_tax'] / $product['base_unit_multiplier'];
@@ -288,12 +290,12 @@ class StockTransferController extends Controller
             $purchase_transfer = Transaction::create($input_data);
 
             //Sell Product from first location
-            if (! empty($sell_lines)) {
+            if (!empty($sell_lines)) {
                 $this->transactionUtil->createOrUpdateSellLines($sell_transfer, $sell_lines, $input_data['location_id'], false, null, [], false);
             }
 
             //Purchase product in second location
-            if (! empty($purchase_lines)) {
+            if (!empty($purchase_lines)) {
                 $purchase_transfer->purchase_lines()->createMany($purchase_lines);
             }
 
@@ -303,8 +305,8 @@ class StockTransferController extends Controller
                 foreach ($products as $product) {
                     if ($product['enable_stock']) {
                         $decrease_qty = $this->productUtil
-                                    ->num_uf($product['quantity']);
-                        if (! empty($product['base_unit_multiplier'])) {
+                            ->num_uf($product['quantity']);
+                        if (!empty($product['base_unit_multiplier'])) {
                             $decrease_qty = $decrease_qty * $product['base_unit_multiplier'];
                         }
 
@@ -331,7 +333,8 @@ class StockTransferController extends Controller
                 $this->productUtil->adjustStockOverSelling($purchase_transfer);
 
                 //Map sell lines with purchase lines
-                $business = ['id' => $business_id,
+                $business = [
+                    'id' => $business_id,
                     'accounting_method' => $request->session()->get('business.accounting_method'),
                     'location_id' => $sell_transfer->location_id,
                 ];
@@ -345,17 +348,20 @@ class StockTransferController extends Controller
 
             // event( new StockTransferCreatedOrModified($sell_transfer, 'added'));
 
-            $output = ['success' => 1,
+            $output = [
+                'success' => 1,
                 'msg' => __('lang_v1.stock_transfer_added_successfully'),
             ];
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
-                'msg' => $e->getMessage(),
+            error_log($e->getMessage());
+            $output = [
+                'success' => 0,
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
         }
 
@@ -370,30 +376,30 @@ class StockTransferController extends Controller
      */
     public function show($id)
     {
-        if (! auth()->user()->can('purchase.view')) {
+        if (!auth()->user()->can('purchase.view')) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
 
         $sell_transfer = Transaction::where('business_id', $business_id)
-                            ->where('id', $id)
-                            ->where('type', 'sell_transfer')
-                            ->with(
-                                'contact',
-                                'sell_lines',
-                                'sell_lines.product',
-                                'sell_lines.variations',
-                                'sell_lines.variations.product_variation',
-                                'sell_lines.lot_details',
-                                'sell_lines.sub_unit',
-                                'location',
-                                'sell_lines.product.unit'
-                            )
-                            ->first();
+            ->where('id', $id)
+            ->where('type', 'sell_transfer')
+            ->with(
+                'contact',
+                'sell_lines',
+                'sell_lines.product',
+                'sell_lines.variations',
+                'sell_lines.variations.product_variation',
+                'sell_lines.lot_details',
+                'sell_lines.sub_unit',
+                'location',
+                'sell_lines.product.unit'
+            )
+            ->first();
 
         foreach ($sell_transfer->sell_lines as $key => $value) {
-            if (! empty($value->sub_unit_id)) {
+            if (!empty($value->sub_unit_id)) {
                 $formated_sell_line = $this->transactionUtil->recalculateSellLineTotals($business_id, $value);
 
                 $sell_transfer->sell_lines[$key] = $formated_sell_line;
@@ -401,9 +407,9 @@ class StockTransferController extends Controller
         }
 
         $purchase_transfer = Transaction::where('business_id', $business_id)
-                    ->where('transfer_parent_id', $sell_transfer->id)
-                    ->where('type', 'purchase_transfer')
-                    ->first();
+            ->where('transfer_parent_id', $sell_transfer->id)
+            ->where('type', 'purchase_transfer')
+            ->first();
 
         $location_details = ['sell' => $sell_transfer->location, 'purchase' => $purchase_transfer->location];
 
@@ -417,12 +423,12 @@ class StockTransferController extends Controller
         $statuses['final'] = __('restaurant.completed');
 
         $activities = Activity::forSubject($sell_transfer)
-           ->with(['causer', 'subject'])
-           ->latest()
-           ->get();
+            ->with(['causer', 'subject'])
+            ->latest()
+            ->get();
 
         return view('stock_transfer.show')
-                ->with(compact('sell_transfer', 'location_details', 'lot_n_exp_enabled', 'statuses', 'activities'));
+            ->with(compact('sell_transfer', 'location_details', 'lot_n_exp_enabled', 'statuses', 'activities'));
     }
 
     /**
@@ -433,40 +439,43 @@ class StockTransferController extends Controller
      */
     public function destroy($id)
     {
-        if (! auth()->user()->can('purchase.delete')) {
+        if (!auth()->user()->can('purchase.delete')) {
             abort(403, 'Unauthorized action.');
         }
         try {
             if (request()->ajax()) {
                 $edit_days = request()->session()->get('business.transaction_edit_days');
-                if (! $this->transactionUtil->canBeEdited($id, $edit_days)) {
-                    return ['success' => 0,
-                        'msg' => __('messages.transaction_edit_not_allowed', ['days' => $edit_days]), ];
+                if (!$this->transactionUtil->canBeEdited($id, $edit_days)) {
+                    return [
+                        'success' => 0,
+                        'msg' => __('messages.transaction_edit_not_allowed', ['days' => $edit_days]),
+                    ];
                 }
 
                 //Get sell transfer transaction
                 $sell_transfer = Transaction::where('id', $id)
-                                    ->where('type', 'sell_transfer')
-                                    ->with(['sell_lines'])
-                                    ->first();
+                    ->where('type', 'sell_transfer')
+                    ->with(['sell_lines'])
+                    ->first();
 
                 //Get purchase transfer transaction
                 $purchase_transfer = Transaction::where('transfer_parent_id', $sell_transfer->id)
-                                    ->where('type', 'purchase_transfer')
-                                    ->with(['purchase_lines'])
-                                    ->first();
+                    ->where('type', 'purchase_transfer')
+                    ->with(['purchase_lines'])
+                    ->first();
 
                 //Check if any transfer stock is deleted and delete purchase lines
                 $purchase_lines = $purchase_transfer->purchase_lines;
                 foreach ($purchase_lines as $purchase_line) {
                     if ($purchase_line->quantity_sold > 0) {
-                        return ['success' => 0,
+                        return [
+                            'success' => 0,
                             'msg' => __('lang_v1.stock_transfer_cannot_be_deleted'),
                         ];
                     }
                 }
 
-                event( new StockTransferCreatedOrModified($sell_transfer, 'deleted'));
+                event(new StockTransferCreatedOrModified($sell_transfer, 'deleted'));
 
                 DB::beginTransaction();
                 //Get purchase lines from transaction_sell_lines_purchase_lines and decrease quantity_sold
@@ -477,10 +486,10 @@ class StockTransferController extends Controller
                 foreach ($sell_lines as $sell_line) {
                     $purchase_sell_line = TransactionSellLinesPurchaseLines::where('sell_line_id', $sell_line->id)->first();
 
-                    if (! empty($purchase_sell_line)) {
+                    if (!empty($purchase_sell_line)) {
                         //Decrease quntity sold from purchase line
                         PurchaseLine::where('id', $purchase_sell_line->purchase_line_id)
-                                ->decrement('quantity_sold', $sell_line->quantity);
+                            ->decrement('quantity_sold', $sell_line->quantity);
 
                         $deleted_sell_purchase_ids[] = $purchase_sell_line->id;
 
@@ -496,7 +505,7 @@ class StockTransferController extends Controller
                 }
 
                 //Update quantity available in both location
-                if (! empty($products)) {
+                if (!empty($products)) {
                     foreach ($products as $key => $value) {
                         //Decrease from location 2
                         $this->productUtil->decreaseProductQuantity(
@@ -517,7 +526,7 @@ class StockTransferController extends Controller
                 }
 
                 //Delete sale line purchase line
-                if (! empty($deleted_sell_purchase_ids)) {
+                if (!empty($deleted_sell_purchase_ids)) {
                     TransactionSellLinesPurchaseLines::whereIn('id', $deleted_sell_purchase_ids)
                         ->delete();
                 }
@@ -525,17 +534,19 @@ class StockTransferController extends Controller
                 //Delete both transactions
                 $sell_transfer->delete();
                 $purchase_transfer->delete();
-                event( new StockTransferCreatedOrModified($sell_transfer, 'deleted'));
-                $output = ['success' => 1,
+                event(new StockTransferCreatedOrModified($sell_transfer, 'deleted'));
+                $output = [
+                    'success' => 1,
                     'msg' => __('lang_v1.stock_transfer_delete_success'),
                 ];
                 DB::commit();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
+            $output = [
+                'success' => 0,
                 'msg' => __('messages.something_went_wrong'),
             ];
         }
@@ -555,24 +566,24 @@ class StockTransferController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $sell_transfer = Transaction::where('business_id', $business_id)
-                                ->where('id', $id)
-                                ->where('type', 'sell_transfer')
-                                ->with(
-                                    'contact',
-                                    'sell_lines',
-                                    'sell_lines.product',
-                                    'sell_lines.variations',
-                                    'sell_lines.variations.product_variation',
-                                    'sell_lines.lot_details',
-                                    'location',
-                                    'sell_lines.product.unit'
-                                )
-                                ->first();
+                ->where('id', $id)
+                ->where('type', 'sell_transfer')
+                ->with(
+                    'contact',
+                    'sell_lines',
+                    'sell_lines.product',
+                    'sell_lines.variations',
+                    'sell_lines.variations.product_variation',
+                    'sell_lines.lot_details',
+                    'location',
+                    'sell_lines.product.unit'
+                )
+                ->first();
 
             $purchase_transfer = Transaction::where('business_id', $business_id)
-                        ->where('transfer_parent_id', $sell_transfer->id)
-                        ->where('type', 'purchase_transfer')
-                        ->first();
+                ->where('transfer_parent_id', $sell_transfer->id)
+                ->where('type', 'purchase_transfer')
+                ->first();
 
             $location_details = ['sell' => $sell_transfer->location, 'purchase' => $purchase_transfer->location];
 
@@ -584,9 +595,10 @@ class StockTransferController extends Controller
             $output = ['success' => 1, 'receipt' => [], 'print_title' => $sell_transfer->ref_no];
             $output['receipt']['html_content'] = view('stock_transfer.print', compact('sell_transfer', 'location_details', 'lot_n_exp_enabled'))->render();
         } catch (\Exception $e) {
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
+            $output = [
+                'success' => 0,
                 'msg' => __('messages.something_went_wrong'),
             ];
         }
@@ -609,17 +621,19 @@ class StockTransferController extends Controller
         $statuses = $this->stockTransferStatuses();
 
         $sell_transfer = Transaction::where('business_id', $business_id)
-                ->where('type', 'sell_transfer')
-                ->where('status', '!=', 'final')
-                ->with(['sell_lines'])
-                ->findOrFail($id);
+            ->where('type', 'sell_transfer')
+            ->where('status', '!=', 'final')
+            ->with(['sell_lines'])
+            ->findOrFail($id);
 
-        $purchase_transfer = Transaction::where('business_id',
-                $business_id)
-                ->where('transfer_parent_id', $id)
-                ->where('status', '!=', 'received')
-                ->where('type', 'purchase_transfer')
-                ->first();
+        $purchase_transfer = Transaction::where(
+            'business_id',
+            $business_id
+        )
+            ->where('transfer_parent_id', $id)
+            ->where('status', '!=', 'received')
+            ->where('type', 'purchase_transfer')
+            ->first();
 
         $products = [];
         foreach ($sell_transfer->sell_lines as $sell_line) {
@@ -647,7 +661,7 @@ class StockTransferController extends Controller
         }
 
         return view('stock_transfer.edit')
-                ->with(compact('sell_transfer', 'purchase_transfer', 'business_locations', 'statuses', 'products'));
+            ->with(compact('sell_transfer', 'purchase_transfer', 'business_locations', 'statuses', 'products'));
     }
 
     /**
@@ -659,7 +673,7 @@ class StockTransferController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (! auth()->user()->can('purchase.create')) {
+        if (!auth()->user()->can('purchase.create')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -667,24 +681,26 @@ class StockTransferController extends Controller
             $business_id = $request->session()->get('user.business_id');
 
             //Check if subscribed or not
-            if (! $this->moduleUtil->isSubscribed($business_id)) {
+            if (!$this->moduleUtil->isSubscribed($business_id)) {
                 return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\StockTransferController::class, 'index']));
             }
 
             $business_id = request()->session()->get('user.business_id');
 
             $sell_transfer = Transaction::where('business_id', $business_id)
-                    ->where('type', 'sell_transfer')
-                    ->findOrFail($id);
+                ->where('type', 'sell_transfer')
+                ->findOrFail($id);
 
             $sell_transfer_before = $sell_transfer->replicate();
 
-            $purchase_transfer = Transaction::where('business_id',
-                    $business_id)
-                    ->where('transfer_parent_id', $id)
-                    ->where('type', 'purchase_transfer')
-                    ->with(['purchase_lines'])
-                    ->first();
+            $purchase_transfer = Transaction::where(
+                'business_id',
+                $business_id
+            )
+                ->where('transfer_parent_id', $id)
+                ->where('type', 'purchase_transfer')
+                ->with(['purchase_lines'])
+                ->first();
 
             $status = $request->input('status');
 
@@ -703,25 +719,26 @@ class StockTransferController extends Controller
             $sell_lines = [];
             $purchase_lines = [];
             $edited_purchase_lines = [];
-            if (! empty($products)) {
+            if (!empty($products)) {
                 foreach ($products as $product) {
                     $sell_line_arr = [
                         'product_id' => $product['product_id'],
                         'variation_id' => $product['variation_id'],
                         'quantity' => $this->productUtil->num_uf($product['quantity']),
                         'item_tax' => 0,
-                        'tax_id' => null, ];
+                        'tax_id' => null,
+                    ];
 
-                    if (! empty($product['product_unit_id'])) {
+                    if (!empty($product['product_unit_id'])) {
                         $sell_line_arr['product_unit_id'] = $product['product_unit_id'];
                     }
-                    if (! empty($product['sub_unit_id'])) {
+                    if (!empty($product['sub_unit_id'])) {
                         $sell_line_arr['sub_unit_id'] = $product['sub_unit_id'];
                     }
 
                     $purchase_line_arr = $sell_line_arr;
 
-                    if (! empty($product['base_unit_multiplier'])) {
+                    if (!empty($product['base_unit_multiplier'])) {
                         $sell_line_arr['base_unit_multiplier'] = $product['base_unit_multiplier'];
                     }
 
@@ -734,7 +751,7 @@ class StockTransferController extends Controller
                         $sell_line_arr['transaction_sell_lines_id'] = $product['transaction_sell_lines_id'];
                     }
 
-                    if (! empty($product['lot_no_line_id'])) {
+                    if (!empty($product['lot_no_line_id'])) {
                         //Add lot_no_line_id to sell line
                         $sell_line_arr['lot_no_line_id'] = $product['lot_no_line_id'];
 
@@ -745,7 +762,7 @@ class StockTransferController extends Controller
                         $purchase_line_arr['exp_date'] = $lot_details->exp_date;
                     }
 
-                    if (! empty($product['base_unit_multiplier'])) {
+                    if (!empty($product['base_unit_multiplier'])) {
                         $purchase_line_arr['quantity'] = $purchase_line_arr['quantity'] * $product['base_unit_multiplier'];
                         $purchase_line_arr['purchase_price'] = $purchase_line_arr['purchase_price'] / $product['base_unit_multiplier'];
                         $purchase_line_arr['purchase_price_inc_tax'] = $purchase_line_arr['purchase_price_inc_tax'] / $product['base_unit_multiplier'];
@@ -780,7 +797,7 @@ class StockTransferController extends Controller
             $sell_transfer->update($input_data);
             $sell_transfer->save();
 
-            event( new StockTransferCreatedOrModified($sell_transfer, 'updated'));
+            event(new StockTransferCreatedOrModified($sell_transfer, 'updated'));
 
             //Create Purchase Transfer at transfer location
             $input_data['status'] = $status == 'completed' ? 'received' : $status;
@@ -789,16 +806,16 @@ class StockTransferController extends Controller
             $purchase_transfer->save();
 
             //Sell Product from first location
-            if (! empty($sell_lines)) {
+            if (!empty($sell_lines)) {
                 $this->transactionUtil->createOrUpdateSellLines($sell_transfer, $sell_lines, $sell_transfer->location_id, false, 'draft', [], false);
             }
 
             //Purchase product in second location
-            if (! empty($purchase_lines)) {
-                if (! empty($edited_purchase_lines)) {
+            if (!empty($purchase_lines)) {
+                if (!empty($edited_purchase_lines)) {
                     PurchaseLine::where('transaction_id', $purchase_transfer->id)
-                    ->whereNotIn('id', $edited_purchase_lines)
-                    ->delete();
+                        ->whereNotIn('id', $edited_purchase_lines)
+                        ->delete();
                 }
                 $purchase_transfer->purchase_lines()->saveMany($purchase_lines);
             }
@@ -809,8 +826,8 @@ class StockTransferController extends Controller
                 foreach ($products as $product) {
                     if ($product['enable_stock']) {
                         $decrease_qty = $this->productUtil
-                                    ->num_uf($product['quantity']);
-                        if (! empty($product['base_unit_multiplier'])) {
+                            ->num_uf($product['quantity']);
+                        if (!empty($product['base_unit_multiplier'])) {
                             $decrease_qty = $decrease_qty * $product['base_unit_multiplier'];
                         }
 
@@ -837,7 +854,8 @@ class StockTransferController extends Controller
                 $this->productUtil->adjustStockOverSelling($purchase_transfer);
 
                 //Map sell lines with purchase lines
-                $business = ['id' => $business_id,
+                $business = [
+                    'id' => $business_id,
                     'accounting_method' => $request->session()->get('business.accounting_method'),
                     'location_id' => $sell_transfer->location_id,
                 ];
@@ -846,17 +864,20 @@ class StockTransferController extends Controller
 
             $this->transactionUtil->activityLog($sell_transfer, 'edited', $sell_transfer_before);
 
-            $output = ['success' => 1,
+            $output = [
+                'success' => 1,
                 'msg' => __('lang_v1.updated_succesfully'),
             ];
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
-                'msg' => $e->getMessage(),
+            error_log($e->getMessage());
+            $output = [
+                'success' => 0,
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
         }
 
@@ -872,7 +893,7 @@ class StockTransferController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
-        if (! auth()->user()->can('purchase.update')) {
+        if (!auth()->user()->can('purchase.update')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -880,16 +901,18 @@ class StockTransferController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $sell_transfer = Transaction::where('business_id', $business_id)
-                    ->where('type', 'sell_transfer')
-                    ->with(['sell_lines', 'sell_lines.product'])
-                    ->findOrFail($id);
+                ->where('type', 'sell_transfer')
+                ->with(['sell_lines', 'sell_lines.product'])
+                ->findOrFail($id);
 
-            $purchase_transfer = Transaction::where('business_id',
-                    $business_id)
-                    ->where('transfer_parent_id', $id)
-                    ->where('type', 'purchase_transfer')
-                    ->with(['purchase_lines'])
-                    ->first();
+            $purchase_transfer = Transaction::where(
+                'business_id',
+                $business_id
+            )
+                ->where('transfer_parent_id', $id)
+                ->where('type', 'purchase_transfer')
+                ->with(['purchase_lines'])
+                ->first();
 
             $status = $request->input('status');
 
@@ -920,7 +943,8 @@ class StockTransferController extends Controller
                 $this->productUtil->adjustStockOverSelling($purchase_transfer);
 
                 //Map sell lines with purchase lines
-                $business = ['id' => $business_id,
+                $business = [
+                    'id' => $business_id,
                     'accounting_method' => $request->session()->get('business.accounting_method'),
                     'location_id' => $sell_transfer->location_id,
                 ];
@@ -933,15 +957,17 @@ class StockTransferController extends Controller
 
             DB::commit();
 
-            $output = ['success' => 1,
+            $output = [
+                'success' => 1,
                 'msg' => __('lang_v1.updated_succesfully'),
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
-                'msg' => 'File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage(),
+            $output = [
+                'success' => 0,
+                'msg' => 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage(),
             ];
         }
 

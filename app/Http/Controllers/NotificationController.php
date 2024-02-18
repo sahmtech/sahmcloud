@@ -46,16 +46,16 @@ class NotificationController extends Controller
         $transaction = null;
         if ($template_for == 'new_booking') {
             $transaction = Booking::where('business_id', $business_id)
-                            ->with(['customer'])
-                            ->find($id);
+                ->with(['customer'])
+                ->find($id);
 
             $contact = $transaction->customer;
         } elseif ($template_for == 'send_ledger') {
             $contact = Contact::find($id);
         } else {
             $transaction = Transaction::where('business_id', $business_id)
-                            ->with(['contact'])
-                            ->find($id);
+                ->with(['contact'])
+                ->find($id);
 
             $contact = $transaction->contact;
         }
@@ -85,7 +85,7 @@ class NotificationController extends Controller
         $location_id = request()->input('location_id');
 
         return view('notification.show_template')
-                ->with(compact('notification_template', 'transaction', 'tags', 'template_name', 'contact', 'start_date', 'end_date', 'ledger_format', 'location_id'));
+            ->with(compact('notification_template', 'transaction', 'tags', 'template_name', 'contact', 'start_date', 'end_date', 'ledger_format', 'location_id'));
     }
 
     /**
@@ -100,7 +100,7 @@ class NotificationController extends Controller
         //     abort(403, 'Unauthorized action.');
         // }
         $notAllowed = $this->notificationUtil->notAllowedInDemo();
-        if (! empty($notAllowed)) {
+        if (!empty($notAllowed)) {
             return $notAllowed;
         }
 
@@ -115,7 +115,7 @@ class NotificationController extends Controller
             $transaction_id = $request->input('transaction_id');
             $business_id = request()->session()->get('business.id');
 
-            $transaction = ! empty($transaction_id) ? Transaction::find($transaction_id) : null;
+            $transaction = !empty($transaction_id) ? Transaction::find($transaction_id) : null;
 
             $orig_data = [
                 'email_body' => $data['email_body'],
@@ -149,22 +149,22 @@ class NotificationController extends Controller
             $whatsapp_link = '';
             if (array_key_exists($request->input('template_for'), $customer_notifications)) {
                 if (in_array('email', $notification_type)) {
-                    if (! empty($request->input('attach_pdf'))) {
-                        $data['pdf_name'] = 'INVOICE-'.$transaction->invoice_no.'.pdf';
+                    if (!empty($request->input('attach_pdf'))) {
+                        $data['pdf_name'] = 'INVOICE-' . $transaction->invoice_no . '.pdf';
                         $data['pdf'] = $this->transactionUtil->getEmailAttachmentForGivenTransaction($business_id, $transaction_id, true);
                     }
 
                     Notification::route('mail', $emails_array)
-                                    ->notify(new CustomerNotification($data));
+                        ->notify(new CustomerNotification($data));
 
-                    if (! empty($transaction)) {
+                    if (!empty($transaction)) {
                         $this->notificationUtil->activityLog($transaction, 'email_notification_sent', null, [], false);
                     }
                 }
                 if (in_array('sms', $notification_type)) {
                     $this->notificationUtil->sendSms($data);
 
-                    if (! empty($transaction)) {
+                    if (!empty($transaction)) {
                         $this->notificationUtil->activityLog($transaction, 'sms_notification_sent', null, [], false);
                     }
                 }
@@ -174,20 +174,20 @@ class NotificationController extends Controller
             } elseif (array_key_exists($request->input('template_for'), $supplier_notifications)) {
                 if (in_array('email', $notification_type)) {
                     if ($request->input('template_for') == 'purchase_order') {
-                        $data['pdf_name'] = 'PO-'.$transaction->ref_no.'.pdf';
+                        $data['pdf_name'] = 'PO-' . $transaction->ref_no . '.pdf';
                         $data['pdf'] = $this->transactionUtil->getPurchaseOrderPdf($business_id, $transaction_id, true);
                     }
                     Notification::route('mail', $emails_array)
-                                    ->notify(new SupplierNotification($data));
+                        ->notify(new SupplierNotification($data));
 
-                    if (! empty($transaction)) {
+                    if (!empty($transaction)) {
                         $this->notificationUtil->activityLog($transaction, 'email_notification_sent', null, [], false);
                     }
                 }
                 if (in_array('sms', $notification_type)) {
                     $this->notificationUtil->sendSms($data);
 
-                    if (! empty($transaction)) {
+                    if (!empty($transaction)) {
                         $this->notificationUtil->activityLog($transaction, 'sms_notification_sent', null, [], false);
                     }
                 }
@@ -197,14 +197,16 @@ class NotificationController extends Controller
             }
 
             $output = ['success' => 1, 'msg' => __('lang_v1.notification_sent_successfully')];
-            if (! empty($whatsapp_link)) {
+            if (!empty($whatsapp_link)) {
                 $output['whatsapp_link'] = $whatsapp_link;
             }
         } catch (\Exception $e) {
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
-                'msg' => $e->getMessage(),
+            error_log($e->getMessage());
+            $output = [
+                'success' => 0,
+                'msg' =>  __('lang_v1.technical_erorr'),
             ];
         }
 
