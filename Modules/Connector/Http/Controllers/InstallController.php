@@ -24,7 +24,7 @@ class InstallController extends Controller
      */
     public function index()
     {
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -36,8 +36,8 @@ class InstallController extends Controller
         Artisan::call('config:clear');
 
         //Check if Connector is installed or not.
-        $is_installed = System::getProperty($this->module_name.'_version');
-        if (! empty($is_installed)) {
+        $is_installed = System::getProperty($this->module_name . '_version');
+        if (!empty($is_installed)) {
             abort(404);
         }
 
@@ -56,10 +56,14 @@ class InstallController extends Controller
     {
         try {
             request()->validate(
-                ['license_code' => 'required',
-                    'login_username' => 'required', ],
-                ['license_code.required' => 'License code is required',
-                    'login_username.required' => 'Username is required', ]
+                [
+                    'license_code' => 'required',
+                    'login_username' => 'required',
+                ],
+                [
+                    'license_code.required' => 'License code is required',
+                    'login_username.required' => 'Username is required',
+                ]
             );
 
             DB::beginTransaction();
@@ -72,33 +76,34 @@ class InstallController extends Controller
             //Validate
             $response = pos_boot(url('/'), __DIR__, $license_code, $email, $login_username, $type = 1, $pid);
 
-            if (! empty($response)) {
+            if (!empty($response)) {
                 return $response;
             }
 
-            $is_installed = System::getProperty($this->module_name.'_version');
-            if (! empty($is_installed)) {
+            $is_installed = System::getProperty($this->module_name . '_version');
+            if (!empty($is_installed)) {
                 abort(404);
             }
 
             DB::statement('SET default_storage_engine=INNODB;');
             Artisan::call('module:migrate', ['module' => 'Connector', '--force' => true]);
             Artisan::call('module:publish', ['module' => 'Connector']);
-            System::addProperty($this->module_name.'_version', $this->appVersion);
+            System::addProperty($this->module_name . '_version', $this->appVersion);
 
             Artisan::call('passport:install --force');
             //Artisan::call('scribe:generate');
 
             DB::commit();
 
-            $output = ['success' => 1,
+            $output = [
+                'success' => 1,
                 'msg' => 'Connector module installed succesfully',
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            error_log($e->getMessage());
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' =>  __('lang_v1.technical_erorr'),
@@ -117,18 +122,19 @@ class InstallController extends Controller
      */
     public function uninstall()
     {
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
         try {
-            System::removeProperty($this->module_name.'_version');
+            System::removeProperty($this->module_name . '_version');
 
-            $output = ['success' => true,
+            $output = [
+                'success' => true,
                 'msg' => __('lang_v1.success'),
             ];
         } catch (\Exception $e) {
-            error_log($e->getMessage());
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' =>  __('lang_v1.technical_erorr'),
@@ -148,7 +154,7 @@ class InstallController extends Controller
         //Check if connector_version is same as appVersion then 404
         //If appVersion > connector_version - run update script.
         //Else there is some problem.
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -157,7 +163,7 @@ class InstallController extends Controller
             ini_set('max_execution_time', 0);
             ini_set('memory_limit', '512M');
 
-            $connector_version = System::getProperty($this->module_name.'_version');
+            $connector_version = System::getProperty($this->module_name . '_version');
 
             if (Comparator::greaterThan($this->appVersion, $connector_version)) {
                 ini_set('max_execution_time', 0);
@@ -171,7 +177,7 @@ class InstallController extends Controller
                 DB::statement('SET default_storage_engine=INNODB;');
                 Artisan::call('module:migrate', ['module' => 'Connector', '--force' => true]);
                 Artisan::call('module:publish', ['module' => 'Connector']);
-                System::setProperty($this->module_name.'_version', $this->appVersion);
+                System::setProperty($this->module_name . '_version', $this->appVersion);
 
                 //Artisan::call('scribe:generate');
             } else {
@@ -180,8 +186,9 @@ class InstallController extends Controller
 
             DB::commit();
 
-            $output = ['success' => 1,
-                'msg' => 'Connector module updated Succesfully to version '.$this->appVersion.' !!',
+            $output = [
+                'success' => 1,
+                'msg' => 'Connector module updated Succesfully to version ' . $this->appVersion . ' !!',
             ];
 
             return redirect()->back()->with(['status' => $output]);

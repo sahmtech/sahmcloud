@@ -902,7 +902,7 @@ class ProductController extends Controller
             DB::rollBack();
             \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            error_log($e->getMessage());
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' =>  __('lang_v1.technical_erorr'),
@@ -1270,7 +1270,7 @@ class ProductController extends Controller
             }
 
             $result = $this->productUtil->filterProduct($business_id, $search_term, $location_id, $not_for_selling, $price_group_id, $product_types, $search_fields, $check_qty);
-        
+
             return json_encode($result);
         }
     }

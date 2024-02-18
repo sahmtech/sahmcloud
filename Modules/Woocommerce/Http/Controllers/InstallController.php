@@ -24,7 +24,7 @@ class InstallController extends Controller
      */
     public function index()
     {
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -34,14 +34,15 @@ class InstallController extends Controller
         $this->installSettings();
 
         //Check if installed or not.
-        $is_installed = System::getProperty($this->module_name.'_version');
+        $is_installed = System::getProperty($this->module_name . '_version');
         if (empty($is_installed)) {
             DB::statement('SET default_storage_engine=INNODB;');
             Artisan::call('module:migrate', ['module' => 'Woocommerce', '--force' => true]);
-            System::addProperty($this->module_name.'_version', $this->appVersion);
+            System::addProperty($this->module_name . '_version', $this->appVersion);
         }
 
-        $output = ['success' => 1,
+        $output = [
+            'success' => 1,
             'msg' => 'Woocommerce module installed succesfully',
         ];
 
@@ -65,7 +66,7 @@ class InstallController extends Controller
         //Check if woocommerce_version is same as appVersion then 404
         //If appVersion > woocommerce_version - run update script.
         //Else there is some problem.
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -75,7 +76,7 @@ class InstallController extends Controller
             ini_set('max_execution_time', 0);
             ini_set('memory_limit', '512M');
 
-            $woocommerce_version = System::getProperty($this->module_name.'_version');
+            $woocommerce_version = System::getProperty($this->module_name . '_version');
 
             if (Comparator::greaterThan($this->appVersion, $woocommerce_version)) {
                 ini_set('max_execution_time', 0);
@@ -85,15 +86,16 @@ class InstallController extends Controller
                 DB::statement('SET default_storage_engine=INNODB;');
                 Artisan::call('module:migrate', ['module' => 'Woocommerce', '--force' => true]);
 
-                System::setProperty($this->module_name.'_version', $this->appVersion);
+                System::setProperty($this->module_name . '_version', $this->appVersion);
             } else {
                 abort(404);
             }
 
             DB::commit();
 
-            $output = ['success' => 1,
-                'msg' => 'Woocommerce module updated Succesfully to version '.$this->appVersion.' !!',
+            $output = [
+                'success' => 1,
+                'msg' => 'Woocommerce module updated Succesfully to version ' . $this->appVersion . ' !!',
             ];
 
             return redirect()
@@ -112,18 +114,19 @@ class InstallController extends Controller
      */
     public function uninstall()
     {
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
         try {
-            System::removeProperty($this->module_name.'_version');
+            System::removeProperty($this->module_name . '_version');
 
-            $output = ['success' => true,
+            $output = [
+                'success' => true,
                 'msg' => __('lang_v1.success'),
             ];
         } catch (\Exception $e) {
-            error_log($e->getMessage());
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' =>  __('lang_v1.technical_erorr'),
