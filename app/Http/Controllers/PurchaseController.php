@@ -420,8 +420,8 @@ class PurchaseController extends Controller
             $this->productUtil->adjustStockOverSelling($transaction);
 
             $this->transactionUtil->activityLog($transaction, 'added');
-         $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
-         
+            $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
+
             // PurchaseCreatedOrModified::dispatch($transaction);
 
             DB::commit();
@@ -776,7 +776,7 @@ class PurchaseController extends Controller
             DB::rollBack();
             \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            error_log($e->getMessage());
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' =>  __('lang_v1.technical_erorr'),
@@ -880,7 +880,7 @@ class PurchaseController extends Controller
             DB::rollBack();
             \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            error_log($e->getMessage());
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' =>  __('lang_v1.technical_erorr'),
@@ -1247,7 +1247,7 @@ class PurchaseController extends Controller
                 'html' => $html,
             ];
         } catch (\Exception $e) {
-            error_log($e->getMessage());
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' =>  __('lang_v1.technical_erorr'),
@@ -1440,7 +1440,7 @@ class PurchaseController extends Controller
             DB::rollBack();
             \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            error_log($e->getMessage());
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' =>  __('lang_v1.technical_erorr'),

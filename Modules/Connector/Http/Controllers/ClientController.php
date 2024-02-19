@@ -24,7 +24,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -32,12 +32,12 @@ class ClientController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $clients = Passport::client()
-                    ->leftJoin('users as u', 'oauth_clients.user_id', '=', 'u.id')
-                    ->where('u.business_id', $business_id)
-                    ->where('password_client', 1)
-                    ->select('oauth_clients.*')
-                    ->get()
-                    ->makeVisible('secret');
+            ->leftJoin('users as u', 'oauth_clients.user_id', '=', 'u.id')
+            ->where('u.business_id', $business_id)
+            ->where('password_client', 1)
+            ->select('oauth_clients.*')
+            ->get()
+            ->makeVisible('secret');
 
         return view('connector::clients.index')->with(compact('clients', 'is_demo'));
     }
@@ -60,7 +60,7 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -77,13 +77,15 @@ class ClientController extends Controller
 
             $client->save();
 
-            $output = ['success' => true,
+            $output = [
+                'success' => true,
                 'msg' => __('lang_v1.added_success'),
             ];
         } catch (\Exception $e) {
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => false,
+            $output = [
+                'success' => false,
                 'msg' => __('messages.something_went_wrong'),
             ];
         }
@@ -133,18 +135,19 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
         $clients = Passport::client()
-                        ->leftJoin('users as u', 'oauth_clients.user_id', '=', 'u.id')
-                        ->where('u.business_id', $business_id)
-                        ->where('oauth_clients.id', $id)
-                        ->delete();
+            ->leftJoin('users as u', 'oauth_clients.user_id', '=', 'u.id')
+            ->where('u.business_id', $business_id)
+            ->where('oauth_clients.id', $id)
+            ->delete();
 
-        $output = ['success' => true,
+        $output = [
+            'success' => true,
             'msg' => __('lang_v1.deleted_success'),
         ];
 
@@ -153,7 +156,7 @@ class ClientController extends Controller
 
     public function regenerate()
     {
-        if (! auth()->user()->can('superadmin')) {
+        if (!auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -161,11 +164,12 @@ class ClientController extends Controller
             Artisan::call('passport:install --force');
             // Artisan::call('scribe:generate');
 
-            $output = ['success' => 1,
+            $output = [
+                'success' => 1,
                 'msg' => __('lang_v1.success'),
             ];
         } catch (Exception $e) {
-            error_log($e->getMessage());
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' =>  __('lang_v1.technical_erorr'),
