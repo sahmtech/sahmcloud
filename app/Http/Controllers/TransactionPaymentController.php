@@ -134,6 +134,8 @@ class TransactionPaymentController extends Controller
                 $transaction->payment_status = $payment_status;
 
                 $this->transactionUtil->activityLog($transaction, 'payment_edited', $transaction_before);
+              
+                $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($transaction->id);
 
                 DB::commit();
             }
@@ -299,8 +301,10 @@ class TransactionPaymentController extends Controller
 
             DB::commit();
 
-            //event
-            event(new TransactionPaymentUpdated($payment, $transaction->type));
+            $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($transaction->id);
+
+            // //event
+            // event(new TransactionPaymentUpdated($payment, $transaction->type));
 
             $output = [
                 'success' => true,

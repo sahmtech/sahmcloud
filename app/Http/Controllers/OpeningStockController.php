@@ -357,7 +357,6 @@ class OpeningStockController extends Controller
                                     ]
                                 );
 
-                                return   $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
 
                                 $transaction->purchase_lines()->saveMany([$new_purchase_line]);
 
@@ -368,7 +367,10 @@ class OpeningStockController extends Controller
                     }
                 }
 
+                // $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
+                // $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($transaction->id);
 
+                
                 DB::commit();
             }
 

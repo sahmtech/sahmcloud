@@ -39,7 +39,7 @@
                                     <option value="purchase">@lang('accounting::lang.autoMigration.purchase')</option>
                                     <option value="purchase_order">@lang('accounting::lang.autoMigration.purchase_order')</option>
                                     <option value="purchase_return">@lang('accounting::lang.autoMigration.purchase_return')</option>
-                                    <option value="expens">@lang('accounting::lang.autoMigration.expens')</option>
+                                    <option value="expense">@lang('accounting::lang.autoMigration.expense')</option>
                                     <option value="sell_transfer">@lang('accounting::lang.autoMigration.sell_transfer')</option>
                                     <option value="purchase_transfer">@lang('accounting::lang.autoMigration.purchase_transfer')</option>
                                     <option value="payroll">@lang('accounting::lang.autoMigration.payroll')</option>

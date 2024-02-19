@@ -9,7 +9,7 @@
 "view" => "عرض",
 "delete" => "حذف",
 "close" => "إغلاق",
-"something_went_wrong" => "لقد حدث شيء خاطئ. شكرا على المحاولة لاحقا",
+"something_went_wrong" => "حدث شيء خاطئ. شكرا على المحاولة",
 "required" => "هذا الحقل مطلوب",
 "please_select" => "يرجى الاختيار",
 "cancel" => "إلغاء",
