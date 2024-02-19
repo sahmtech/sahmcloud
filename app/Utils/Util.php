@@ -1738,7 +1738,7 @@ class Util
 
     public function saveAutoMigration($request, $transaction, $business_id, $user_id)
     {
-           $transaction = Transaction::with(['sell_lines', 'payment_lines'])->find($transaction->id);
+        $transaction = Transaction::with(['sell_lines', 'payment_lines'])->find($transaction->id);
         // find accounting mapping setting (automated migration)by:{type,status,methode,active}
 
         $accountMappingSetting = AccountingMappingSettingAutoMigration::where('type', $transaction->type)
@@ -1796,7 +1796,8 @@ class Util
         if (!$transaction) {
             return false;
         }
-
+        // dd($transaction);
+        // dd([$transaction,$transaction->payment_lines]);
         //    $sell_lines =$transaction->sell_lines[0];
         $user_id = request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
