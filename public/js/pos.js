@@ -109,6 +109,11 @@ $(document).ready(function () {
     },
     minimumInputLength: 1,
     language: {
+      ///V5
+      inputTooShort: function (args) {
+        return LANG.please_enter + args.minimum + LANG.or_more_characters;
+    },
+    ///
       noResults: function () {
         var name = $("#customer_id").data("select2").dropdown.$search.val();
         return (
@@ -150,13 +155,16 @@ $(document).ready(function () {
 
     if (data.price_calculation_type == "selling_price_group") {
       $("#price_group").val(data.selling_price_group_id);
-      $("#price_group").val($("#price_group option:first").val());
-      // $("#price_group").change();
-    } else {
-      // $("#price_group").val("");
-      $("#price_group").val($("#price_group option:first").val());
-      // $("#price_group").change();
-    }
+      // $("#price_group").val($("#price_group option:first").val());
+      $("#price_group").change();
+    } 
+    ///V5
+    // else {
+    //   // $("#price_group").val("");
+    //   $("#price_group").val($("#price_group option:first").val());
+    //   // $("#price_group").change();
+    // }
+    ///
     if ($(".contact_due_text").length) {
       get_contact_due(data.id);
     }
