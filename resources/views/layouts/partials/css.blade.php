@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="{{ asset('css/app.css?v=' . $asset_v) }}">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200&display=swap" rel="stylesheet">
 
+
 @if (isset($pos_layout) && $pos_layout)
     <style type="text/css">
         .content {
@@ -58,6 +59,23 @@
 
     }
 
+    .dataTables_filter .input-sm {
+        border-radius: 6px !important;
+        width: 105% !important;
+    }
+
+    .dataTables_length .input-sm {
+        padding: 1px;
+        border-radius: 5px;
+        margin: 0px 7px;
+    }
+
+    /* .dt-buttons.btn-group .input-sm {
+        background: none;
+        border: 0px;
+        font-size: 27px;
+    } */
+
     .info-box-new-style {
         padding: 12px !important;
     }
@@ -74,6 +92,36 @@
     .fa-folder:before {
         color: #ffd400 !important;
         /* background-color:#ffd400; */
+    }
+
+    .treeview-menu>li.active {
+        background-image: linear-gradient(to right, #2b80ec, #1d1f33);
+        color: whitesmoke;
+        border-radius: 7px;
+        padding: 4px;
+        margin-bottom: 2px;
+    }
+
+    .treeview-menu>li:hover {
+        background-image: linear-gradient(to right, #2b80ec, #1d1f33);
+        color: whitesmoke;
+        border-left: 2px solid #1d1f33;
+        border-radius: 0px 7px 7px 0px;
+        padding: 7px;
+        margin-bottom: 2px;
+
+    }
+
+    .skin-blue-light .sidebar-menu .treeview-menu>li>a:hover {
+        color: whitesmoke;
+    }
+
+    .skin-blue-light .sidebar-menu .treeview-menu>li.active>a {
+        color: whitesmoke;
+    }
+
+    .sidebar-menu>li>a>.fa {
+        color: #073158;
     }
 
     .fa-arrow-alt-circle-right:before {

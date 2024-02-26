@@ -472,11 +472,13 @@ return [
     'add_auto_migration' => 'Add automated migration',
     'delete' => 'حذف',
     'autoMigration' => [
+        'business_location' => 'Business location',
+
         'sell' => 'Sell',
         'sell_return' => 'Sell return',
         'opening_stock' => 'Opening stock',
-        'purchase_' => 'Purchase',
-        'expens_' => 'Expens',
+        'purchase' => 'Purchase',
+        'expense' => 'Expens',
         'purchase_order' => 'Purchase order',
         'sell_transfer' => 'Sell transfer',
         'purchase_transfer' => 'Purchase transfer',

@@ -112,8 +112,8 @@ $(document).ready(function () {
       ///V5
       inputTooShort: function (args) {
         return LANG.please_enter + args.minimum + LANG.or_more_characters;
-    },
-    ///
+      },
+      ///
       noResults: function () {
         var name = $("#customer_id").data("select2").dropdown.$search.val();
         return (
@@ -157,7 +157,7 @@ $(document).ready(function () {
       $("#price_group").val(data.selling_price_group_id);
       // $("#price_group").val($("#price_group option:first").val());
       $("#price_group").change();
-    } 
+    }
     ///V5
     // else {
     //   // $("#price_group").val("");
@@ -1960,13 +1960,14 @@ function pos_order_tax(price_total, discount) {
   var calculation_type = "percentage";
   var calculation_amount = __read_number($("#tax_calculation_amount"));
   var total_amount = price_total - discount;
-
+//
   if (tax_rate_id) {
     var order_tax = __calculate_amount(
       calculation_type,
       calculation_amount,
       total_amount
     );
+   
   } else {
     var order_tax = 0;
   }
