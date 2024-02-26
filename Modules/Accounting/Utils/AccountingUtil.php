@@ -1392,26 +1392,24 @@ class AccountingUtil extends Util
             'sell_return_bill',
             'opening_stock',
             'purchase_bill',
-            'purchase_order_bill',
             'purchase_return_bill',
             'expens_bill',
             'sell_transfer',
             'purchase_transfer',
             'payroll',
-            'opening_balance',
+            
         ];
         $types = [
             'sell',
             'sell_return',
             'opening_stock',
             'purchase',
-            'purchase_order',
             'purchase_return',
             'expense',
             'sell_transfer',
             'purchase_transfer',
             'payroll',
-            'opening_balance',
+           
         ];
         $payment_status = [
             'paid',

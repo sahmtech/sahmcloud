@@ -20,7 +20,7 @@ return [
     'view' => 'View',
     'delete' => 'Delete',
     'close' => 'Close',
-    'something_went_wrong' => 'Something went wrong, please try again later',
+    'something_went_wrong' => 'Technical error, please try again.',
     'required' => 'This field is required',
     'please_select' => 'Please Select',
     'cancel' => 'Cancel',

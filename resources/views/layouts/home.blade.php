@@ -14,7 +14,6 @@
     <!-- Fonts -->
     <!-- <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,600" rel="stylesheet" type="text/css"> -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="{{ asset('css/vendor.css') }}">
 
     <!-- Styles -->
@@ -44,6 +43,23 @@
         .fa-arrow-alt-circle-right:before {
             color: #3936f5;
         }
+
+        .dataTables_filter .input-sm {
+            border-radius: 6px !important;
+            width: 105% !important;
+        }
+
+        .dataTables_length .input-sm {
+            padding: 1px;
+            border-radius: 5px;
+            margin: 0px 7px;
+        }
+
+        /* .dt-buttons.btn-group .input-sm {
+            background: none;
+            border: 0px;
+            font-size: 27px;
+        } */
 
         body {
             min-height: 100vh;
