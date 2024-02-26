@@ -102,6 +102,40 @@
         margin-bottom: 2px;
     }
 
+    .skin-blue-light .content-wrapper .content-header-custom {
+        background-color: transparent;
+        background-image: none;
+    }
+
+    .skin-blue-light .content-wrapper .content-header-custom h1 {
+        color: rgb(33 0 159) !important;
+    }
+
+    .skin-blue-light .main-header .logo {
+        background-color: #1a153c;
+        color: #ebebeb;
+    }
+
+
+    .skin-blue-light .main-header .logo:hover {
+        background: #b5c5d9f0;
+        color: #1a153c;
+    }
+
+    .skin-blue-light .main-header .navbar {
+        background-color: #1a153c;
+        background-image: none;
+
+    }
+
+    .skin-blue-light .main-header .navbar .sidebar-toggle {
+        color: #a10000;
+    }
+
+    .skin-blue-light .main-header .navbar .nav>li>a {
+        color: #f0f0f0;
+    }
+
     .treeview-menu>li:hover {
         background-image: linear-gradient(to right, #2b80ec, #1d1f33);
         color: whitesmoke;
@@ -128,6 +162,11 @@
         color: #3936f5;
     }
 
+    .btn.btn-flat {
+
+        border-width: 2px;
+        border-radius: 4px;
+    }
 
     .pos_controll .btn {
         font-size: larger;
@@ -149,6 +188,16 @@
     .patt-circ.e {
         -webkit-transform: rotate(0);
         transform: rotate(0);
+    }
+
+    .info-box-new-style {
+        padding: 12px !important;
+        border: 1px solid #7e6f7e44;
+    }
+
+
+    .skin-blue-light .main-header li.user-header {
+        background-color: #1e2b3cfc;
     }
 
     .patt-circ.s-e {

@@ -6,7 +6,7 @@
 <!-- Notifications: style can be found in dropdown.less -->
 <li class="dropdown notifications-menu">
   <a href="#" class="dropdown-toggle load_notifications" data-toggle="dropdown" id="show_unread_notifications" data-loaded="false">
-    <i class="fas fa-bell"></i>
+    <i class="fas fa-bell" style="color: #f5ce03;"></i>
     <span class="label label-warning notifications_count">@if(!empty($total_unread)){{$total_unread}}@endif</span>
   </a>
   <ul class="dropdown-menu">
