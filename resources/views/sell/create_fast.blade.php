@@ -78,7 +78,7 @@
                             <div class="col-sm-8">
                                 <span class="navbar-brand mb-0 h1" style="margin: 5px;">{{ $title }}</span>
                             </div>
-                           
+
                             @if (count($business_locations) > 0)
                                 <div class="col-sm-4"
                                     style="margin-top: 16px;
@@ -637,12 +637,7 @@
                         border: 0;
                         background: white;width: 100%;">
 
-                                    <div class="col-md-6 " style="font-size: x-large;">
 
-                                        <b>@lang('sale.total'): </b>
-                                        <span class="price_total" style="color: #05cf8b;">0</span>
-
-                                    </div>
                                 </td>
                             </tr>
 
@@ -791,12 +786,34 @@
                                 </td>
                                 <td style="display: flex;text-align: start;border: 0;background: white; width: 100%;">
 
-                                    <div class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif">
-                                        <b>@lang('sale.order_tax'):</b>(+)
+                                    <div class="row">
+                                        <div
+                                            class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif">
+                                            <b>@lang('sale.total-without-tax'):</b>
 
-                                        <span class="display_currency" id="order_tax">0</span>
+                                            <span class="display_currency" id="total-without-tax">0</span>
+                                        </div>
+
+
+                                        <div class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif"
+                                            style="padding-top: 3px;">
+                                            <b>@lang('sale.order_tax'):</b>(+)
+
+                                            <span class="display_currency" id="order_tax">0</span>
+                                        </div>
+
+                                        <div class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif"
+                                            style="padding-top: 3px;">
+                                            <b>@lang('sale.total-with-tax'): </b>
+                                            <span class="price_total">0</span>
+                                        </div>
                                     </div>
+
+
+
+
                                 </td>
+
                             </tr>
                         </table>
                     </div>

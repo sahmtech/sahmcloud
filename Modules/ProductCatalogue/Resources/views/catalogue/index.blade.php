@@ -44,30 +44,35 @@
 
             /* CSS styles for Extra Small screens */
             #product_container {
-                width: inherit;
+                /* width: inherit; */
+            }
+
+            #main_card_div {
+                padding: 5px;
             }
 
             #business_logos_div {
                 padding: 0px 1px;
-                padding-top: 37px;
-                padding-left: 5px;
+                padding-top: 38px;
+                padding-left: 32px;
             }
 
-
-
-
+            #business_name {
+                margin-top: 40px !important;
+                font-size: larger !important;
+            }
         }
 
 
         #custom_product_card_info {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            align-content: center;
-            justify-items: center;
-            padding: 34px;
-            background-image: url('/uploads/img/bg.png');
-            background-size: cover;
+            /* display: flex;
+                                                                                                                                                                                        justify-content: center;
+                                                                                                                                                                                        align-items: center;
+                                                                                                                                                                                        align-content: center;
+                                                                                                                                                                                        justify-items: center; */
+            /* padding: 34px; */
+            /* background-image: url('/uploads/img/bg.png');
+                                                                                                                                                                                            background-size: cover; */
         }
 
         .page-header {
@@ -76,24 +81,25 @@
         }
     </style>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-2 col-xs-2" id="business_logos_div">
-                @if (!empty($business->logo))
-                    <img style="    width: 100%;" src="{{ asset('uploads/business_logos/' . $business->logo) }}" alt="Logo"
-                        width="30">
-                @else
-                    <i class="fas fa-boxes"></i>
-                @endif
-            </div>
-            <div class="col-sm-10 col-xs-10">
-                <h2>{{ $business->name }}</h2>
-                <h4 class="mb-0">{{ $business_location->name }}</h4>
-                <p style="color: #958e8e;">{!! $business_location->location_address !!}</p>
-            </div>
 
+    <div class="row">
+        <div class="col-sm-2 col-xs-3" id="business_logos_div" style="padding-left: 41px;
+        ">
+            @if (!empty($business->logo))
+                <img style="width: 100%;" src="{{ asset('uploads/business_logos/' . $business->logo) }}" alt="Logo"
+                    width="30">
+            @else
+                <i class="fas fa-boxes"></i>
+            @endif
         </div>
+        <div class="col-sm-10 col-xs-9">
+            <h3 style="margin-top: 56px" id="business_name">{{ $business->name }} - {{ $business_location->name }}</h3>
+
+            <p style="color: #958e8e;    font-size: smaller;">{!! $business_location->location_address !!}</p>
+        </div>
+
     </div>
+
     <hr style="border-top: 1px solid #5555554d;margin-top:0px" />
 
     <section class="no-print">
@@ -103,41 +109,42 @@
              
           ">
             <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                {{-- <div class="navbar-header">
+                    {{-- <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                         aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
-                    </button>
-                  
-                </div>
-                <div id="navbar" class="navbar-collapse collapse" id="product_category_div" style="padding: 0px 26px;">
-                    <ul class="nav navbar-nav"
-                        style="    display: -webkit-inline-box;
+                    </button> --}}
+                {{-- </div> --}}
+
+            </div>
+            <div id="navbar" class="navbar " id="product_category_div" style="padding: 0px 26px;">
+                <ul class="nav navbar-nav"
+                    style="    display: -webkit-inline-box;
                         padding: 14px;
-                    overflow-x: scroll;">
-                        @foreach ($categories as $key => $value)
-                            <li
-                                style="border: 1px solid #bbbbbb17;
+                    overflow-x: scroll;width: -webkit-fill-available;">
+                    @foreach ($categories as $key => $value)
+                        <li
+                            style="border: 1px solid #bbbbbb17;
                                 border-radius: 5px;
                                 background: #f3f1f1;
                                 margin: 3px;
                                 ">
-                                <a href="#category{{ $key }}" class="menu">{{ $value }}</a>
-                            </li>
-                        @endforeach
-                        <li
-                            style="border: 1px solid #bbbbbb17;
+                            <a href="#category{{ $key }}" class="menu">{{ $value }}</a>
+                        </li>
+                    @endforeach
+                    <li
+                        style="border: 1px solid #bbbbbb17;
                             border-radius: 5px;
                             background: #f3f1f1;
                             margin: 3px;
                             ">
-                            <a href="#category0" class="menu">Uncategorized</a>
-                        </li>
-                    </ul>
-                </div><!--/.nav-collapse -->
+                        <a href="#category0" class="menu">Uncategorized</a>
+                    </li>
+                </ul>
+            </div><!--/.nav-collapse -->
             </div><!--/.container-fluid -->
         </nav>
 
@@ -161,21 +168,21 @@
 
                 <div class="row eq-height-row">
                     @foreach ($product_category as $product)
-                        <div class="col-lg-6 col-md-12 eq-height-col col-xs-12 col-sm-12">
+                        <div class="col-lg-3 col-md-12 eq-height-col col-xs-6 col-sm-4" id="main_card_div">
 
                             <div class="container" id="product_container">
                                 <a href="#" class="show-product-details"
                                     data-href="{{ action([\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController::class, 'show'], [$business->id, $product->id]) }}?location_id={{ $business_location->id }}">
 
                                     <div class="row"
-                                        style="box-shadow: 1px 1px 4px rgb(0 0 0 / 74%); min-height: 19rem; border-radius: 13px 0px 0px 13px; border-right: 9px solid;margin-bottom: 18px;">
-                                        <div class="col-sm-6 col-xs-12 col-md-6"
-                                            style="background-image: url({{ $product->image_url }});    background-repeat: no-repeat;background-size: cover;height: 24rem;    border-radius: 13px 0px 0px 13px;">
+                                        style="    border: 1px solid #b9b9b9ad; min-height: 19rem; border-radius: 13px; margin-bottom: 18px;  max-height: 28rem;height:28rem; ">
+                                        <div class="col-sm-12 col-xs-12 col-md-12"
+                                            style="background-image: url({{ $product->image_url }});    background-repeat: round;background-size: cover;height: 15rem;border-radius: 13px 13px 0px 0px;">
 
                                         </div>
 
 
-                                        <div class="col-sm-6 col-xs-12 col-md-6" id="custom_product_card_info">
+                                        <div class="col-sm-12 col-xs-12 col-md-12" id="custom_product_card_info">
 
                                             @php
                                                 $discount = $discounts->firstWhere('brand_id', $product->brand_id);
@@ -189,12 +196,29 @@
                                                 $max_price = $product->variations->max('sell_price_inc_tax');
                                                 $min_price = $product->variations->min('sell_price_inc_tax');
                                             @endphp
-                                            <div class="row" style="text-align: center;    padding-top: 23px;">
-                                                <h4 style="color: #6a3e08;padding-top:15px;">{{ $product->name }} </h4>
+                                            <div class="row" style="text-align: right;padding-right: 18px;">
+                                                <h5 style="color: #090329;padding-top:15px;font-weight: bold;">
+                                                    ({{ $product->sku }})
+                                                    -
+                                                    {{ $product->name }}
+                                                </h5>
 
-
+                                                <p
+                                                    style="color: #808180dd;    display: -webkit-box;
+                                                max-width: 400px;
+                                                -webkit-line-clamp: 2;
+                                                -webkit-box-orient: vertical;
+                                                overflow: hidden;
+                                                text-overflow: ellipsis; ">
+                                                    @if ($product->product_description)
+                                                        {{ $product->product_description }}
+                                                    @else
+                                                        .. لا يوجد وصف للمنتج
+                                                        <br>
+                                                    @endif
+                                                </p>
                                                 @if (!empty($discount))
-                                                    <h4 class="display_currency" style="color: #3aa304;">
+                                                    <h4 class="display_currency" style="color: #090329;">
 
                                                         <span class="label label-warning discount-badge">-
                                                             {{ $discount->discount_amount }}%</span>
@@ -203,7 +227,7 @@
                                                     </h4>
                                                 @endif
 
-                                                <h4 style="color: #3aa304;">
+                                                <h5 style="color: #090329;    font-weight: bold;">
 
                                                     <span class="display_currency"
                                                         data-currency_symbol="true">{{ $max_price }}</span>
@@ -212,9 +236,9 @@
                                                             data-currency_symbol="true">{{ $min_price }}</span>
                                                     @endif
 
-                                                </h4>
-                                                <h4 style="color: #6a3e08;padding-bottom:30px"> @lang('product.sku') :
-                                                    {{ $product->sku }}</h4>
+                                                </h5>
+                                                {{-- <h4 style="color: #090329;padding-bottom:30px"> @lang('product.sku') :
+                                                    {{ $product->sku }}</h4> --}}
                                             </div>
 
                                         </div>
@@ -224,7 +248,7 @@
                             </div>
 
                         </div>
-                      
+
                         @if ($loop->iteration % 4 == 0)
                             <div class="clearfix"></div>
                         @endif
