@@ -7,7 +7,7 @@
     <style>
         .navbar-default .navbar-nav>li>a:hover {
             background: #6495ed36;
-            border-bottom: 1px solid #7f39bf;
+            border-bottom: 2px solid #7f39bf;
             transition: 2;
             border-radius: 5px;
 
@@ -66,13 +66,13 @@
 
         #custom_product_card_info {
             /* display: flex;
-                                                                                                                                                                                        justify-content: center;
-                                                                                                                                                                                        align-items: center;
-                                                                                                                                                                                        align-content: center;
-                                                                                                                                                                                        justify-items: center; */
+                                                                                                                                                                                            justify-content: center;
+                                                                                                                                                                                            align-items: center;
+                                                                                                                                                                                            align-content: center;
+                                                                                                                                                                                            justify-items: center; */
             /* padding: 34px; */
             /* background-image: url('/uploads/img/bg.png');
-                                                                                                                                                                                            background-size: cover; */
+                                                                                                                                                                                                background-size: cover; */
         }
 
         .page-header {
