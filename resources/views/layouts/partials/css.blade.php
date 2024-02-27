@@ -102,39 +102,39 @@
         margin-bottom: 2px;
     }
 
-    .skin-blue-light .content-wrapper .content-header-custom {
+    /* .skin-blue-light .content-wrapper .content-header-custom {
         background-color: transparent;
         background-image: none;
-    }
+    } */
 
-    .skin-blue-light .content-wrapper .content-header-custom h1 {
+    /* .skin-blue-light .content-wrapper .content-header-custom h1 {
         color: rgb(33 0 159) !important;
-    }
+    } */
 
-    .skin-blue-light .main-header .logo {
+    /* .skin-blue-light .main-header .logo {
         background-color: #1a153c;
         color: #ebebeb;
-    }
+    } */
 
 
-    .skin-blue-light .main-header .logo:hover {
+    /* .skin-blue-light .main-header .logo:hover {
         background: #b5c5d9f0;
         color: #1a153c;
-    }
+    } */
 
-    .skin-blue-light .main-header .navbar {
+    /* .skin-blue-light .main-header .navbar {
         background-color: #1a153c;
         background-image: none;
 
-    }
+    } */
 
-    .skin-blue-light .main-header .navbar .sidebar-toggle {
+    /* .skin-blue-light .main-header .navbar .sidebar-toggle {
         color: #a10000;
-    }
+    } */
 
-    .skin-blue-light .main-header .navbar .nav>li>a {
+    /* .skin-blue-light .main-header .navbar .nav>li>a {
         color: #f0f0f0;
-    }
+    } */
 
     .treeview-menu>li:hover {
         background-image: linear-gradient(to right, #2b80ec, #1d1f33);
@@ -196,9 +196,9 @@
     }
 
 
-    .skin-blue-light .main-header li.user-header {
+    /* .skin-blue-light .main-header li.user-header {
         background-color: #1e2b3cfc;
-    }
+    } */
 
     .patt-circ.s-e {
         -webkit-transform: rotate(45deg);
