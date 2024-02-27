@@ -94,13 +94,13 @@
         /* background-color:#ffd400; */
     }
 
-    .treeview-menu>li.active {
+    /* .treeview-menu>li.active {
         background-image: linear-gradient(to right, #2b80ec, #1d1f33);
         color: whitesmoke;
         border-radius: 7px;
         padding: 4px;
         margin-bottom: 2px;
-    }
+    } */
 
     /* .skin-blue-light .content-wrapper .content-header-custom {
         background-color: transparent;
@@ -136,7 +136,7 @@
         color: #f0f0f0;
     } */
 
-    .treeview-menu>li:hover {
+    /* .treeview-menu>li:hover {
         background-image: linear-gradient(to right, #2b80ec, #1d1f33);
         color: whitesmoke;
         border-left: 2px solid #1d1f33;
@@ -144,15 +144,15 @@
         padding: 7px;
         margin-bottom: 2px;
 
-    }
+    } */
 
-    .skin-blue-light .sidebar-menu .treeview-menu>li>a:hover {
+    /* .skin-blue-light .sidebar-menu .treeview-menu>li>a:hover {
         color: whitesmoke;
     }
 
     .skin-blue-light .sidebar-menu .treeview-menu>li.active>a {
         color: whitesmoke;
-    }
+    } */
 
     .sidebar-menu>li>a>.fa {
         color: #073158;
