@@ -396,18 +396,21 @@
 
 
                     @if ($receipt_details->show_qr_code && !empty($receipt_details->qr_code_text))
-                        <img class="center-block mt-6"
-                            src="data:image/png;base64,{{ DNS2D::getBarcodePNG($receipt_details->qr_code_text, 'QRCODE', 3, 3, [39, 48, 54]) }}">
+                        <div class="col-xs-6">
+                            <img class="center-block mt-6"
+                                src="data:image/png;base64,{{ DNS2D::getBarcodePNG($receipt_details->qr_code_text, 'QRCODE', 3, 3, [39, 48, 54]) }}">
                     @endif
                     <br />
-
-                    {{-- Barcode --}}
                     @if ($receipt_details->show_barcode)
-                        <div class="col-xs-6">
-                            <img class="center-block"
-                                src="data:image/png;base64,{{ DNS1D::getBarcodePNG($receipt_details->invoice_no, 'C128', 2, 30, [39, 48, 54], true) }}">
-                        </div>
+                        <img class="center-block"
+                            src="data:image/png;base64,{{ DNS1D::getBarcodePNG($receipt_details->invoice_no, 'C128', 2, 30, [39, 48, 54], true) }}">
                     @endif
+                </div>
+
+
+
+                {{-- Barcode --}}
+
                 </div>
 
                 @if (!empty($receipt_details->footer_text))
