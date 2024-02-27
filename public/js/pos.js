@@ -1820,6 +1820,7 @@ function pos_total_row() {
   });
 
   //$('span.unit_price_total').html(unit_price_total);
+
   $("span.price_total").html(__currency_trans_from_en(price_total, false));
   calculate_billing_details(price_total);
 }
@@ -1840,6 +1841,7 @@ function get_subtotal() {
       .find(".modifiers_quantity")
       .val();
     var modifier_subtotal = modifier_price * modifier_quantity;
+
     price_total = price_total + modifier_subtotal;
   });
 
@@ -1960,20 +1962,24 @@ function pos_order_tax(price_total, discount) {
   var calculation_type = "percentage";
   var calculation_amount = __read_number($("#tax_calculation_amount"));
   var total_amount = price_total - discount;
-//
+  //
   if (tax_rate_id) {
     var order_tax = __calculate_amount(
       calculation_type,
       calculation_amount,
       total_amount
     );
-   
   } else {
     var order_tax = 0;
   }
 
   $("span#order_tax").text(__currency_trans_from_en(order_tax, false));
 
+  if(price_total){
+    $("span#total-without-tax").text(price_total - calculation_amount);
+
+  }
+  
   return order_tax;
 }
 

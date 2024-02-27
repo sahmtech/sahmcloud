@@ -69,4 +69,7 @@ return [
     'shipping' => 'Shipping',
     'shipping_details' => 'Shipping Details',
     'shipping_charges' => 'Shipping Charges',
+    'total-with-tax' => 'Total with tax',
+    'total-without-tax'=>'Total without tax',
+
 ];
