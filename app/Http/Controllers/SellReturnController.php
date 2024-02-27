@@ -272,7 +272,7 @@ class SellReturnController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        try {
+        // try {
             $input = $request->except('_token');
 
             if (!empty($input['products'])) {
@@ -301,21 +301,21 @@ class SellReturnController extends Controller
                     'receipt' => $receipt,
                 ];
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
 
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
-                $msg = $e->getMessage();
-            } else {
-                \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
-                $msg = __('messages.something_went_wrong');
-            }
+        //     if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+        //         $msg = $e->getMessage();
+        //     } else {
+        //         \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+        //         $msg = __('messages.something_went_wrong');
+        //     }
 
-            $output = [
-                'success' => 0,
-                'msg' => $msg,
-            ];
-        }
+        //     $output = [
+        //         'success' => 0,
+        //         'msg' => $msg,
+        //     ];
+        // }
 
         return $output;
     }
@@ -513,6 +513,16 @@ class SellReturnController extends Controller
             $receipt_printer_type = is_null($printer_type) ? $location_details->receipt_printer_type : $printer_type;
 
             $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type);
+
+            $lines=[];
+            foreach ($receipt_details->lines as $line) {
+                if ($line['quantity'] == 0) {
+                    continue;
+                }
+                array_push($lines,$line);
+            }
+
+            $receipt_details->lines = $lines;
 
             //If print type browser - return the content, printer - return printer config data, and invoice format config
             $output['print_title'] = $receipt_details->invoice_no;

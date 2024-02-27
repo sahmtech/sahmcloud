@@ -1311,6 +1311,7 @@ class TransactionUtil extends Util
             $total_line_discount = 0;
             $total_line_taxes = 0;
             $subtotal_exc_tax = 0;
+            $total_line_taxes = 0;
             $unique_items = [];
             foreach ($details['lines'] as $line) {
                 if (!empty($line['group_tax_details'])) {
@@ -1586,14 +1587,19 @@ class TransactionUtil extends Util
         //Barcode related information.
         $output['show_barcode'] = !empty($il->show_barcode) ? true : false;
 
-        if (in_array($transaction_type, ['sell', 'sales_order'])) {
+        if (in_array($transaction_type, ['sell', 'sales_order', 'sell_return'])) {
             //Qr code related information.
             $output['show_qr_code'] = !empty($il->show_qr_code) ? true : false;
 
             $zatca_qr = !empty($il->common_settings['zatca_qr']) ? true : false;
 
             if ($zatca_qr) {
-                $total_order_tax = $transaction->tax_amount + $total_line_taxes;
+                if ($transaction_type != 'sell_return') {
+                    $total_order_tax = $transaction->tax_amount + $total_line_taxes;
+                } else {
+                    $total_order_tax = $transaction->tax_amount;
+                }
+              
                 $qr_code_text = $this->_zatca_qr_text($business_details->name, $business_details->tax_number_1, $transaction->transaction_date, $transaction->final_total, $total_order_tax);
             } else {
                 $is_label_enabled = !empty($il->common_settings['show_qr_code_label']) ? true : false;
