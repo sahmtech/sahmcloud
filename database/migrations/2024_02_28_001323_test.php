@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('test', function (Blueprint $table) {
+        Schema::create('test', function (Blueprint $table) {
             $table->bigIncrements('id');
 
         });
