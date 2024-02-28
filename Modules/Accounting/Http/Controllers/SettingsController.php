@@ -67,7 +67,7 @@ class SettingsController extends Controller
 
     public function resetData()
     {
-        $business_id = request()->session()->get('user.business_id');
+            $business_id = request()->session()->get('user.business_id');
 
 
         if (!(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') || auth()->user()->can('accounting.rest_accounting_data'))) {
@@ -93,7 +93,7 @@ class SettingsController extends Controller
 
         AccountingMappingSettingAutoMigration::where('business_id', $business_id)->delete();
 
-        return back();
+        return redirect()->back();
     }
 
     /**

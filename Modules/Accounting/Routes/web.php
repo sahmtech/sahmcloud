@@ -84,6 +84,7 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
 
     Route::resource('payment_vouchers', PaymentVouchersController::class);
     Route::get('/accounting/payment_vouchers', [PaymentVouchersController::class, 'index'])->name('index-payment_vouchers');
+    Route::post('/accounting/payment_vouchers', [PaymentVouchersController::class, 'store'])->name('index-store');
     Route::get('/accounting/payment_vouchers/load/data', [PaymentVouchersController::class, 'loadNeededData'])->name('payment_vouchers.load');
 
     Route::resource('receipt_vouchers', ReceiptVouchersController::class);

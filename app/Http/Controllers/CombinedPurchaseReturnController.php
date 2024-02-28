@@ -139,14 +139,16 @@ class CombinedPurchaseReturnController extends Controller
                 }
 
                 $purchase_return = Transaction::create($input_data);
-            
-                $auto_migration = $this->transactionUtil->saveAutoMigration($request, $purchase_return, $business_id, $user_id);
+
 
                 $purchase_return->purchase_lines()->createMany($product_data);
 
                 //update payment status
                 $this->transactionUtil->updatePaymentStatus($purchase_return->id, $purchase_return->final_total);
+
+                $auto_migration = $this->transactionUtil->createTransactionJournal_entry( $purchase_return->id);
             }
+
 
             $output = [
                 'success' => 1,

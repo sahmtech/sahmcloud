@@ -208,11 +208,15 @@ class OpeningBalanceController extends Controller
         if (\request()->ajax()) {
             AccountingAccountsTransaction::query()->find($id)->delete();
             OpeningBalance::query()->where('acc_transaction_id', $id)->first()->delete();
-            return [
+            redirect()->back()->with([
                 'success' => true,
                 'msg' => __("lang_v1.deleted_success")
-            ];
+            ]);
         }
+        redirect()->back()->with([
+            'success' => true,
+            'msg' => __("lang_v1.deleted_success")
+        ]);
     }
 
     protected function calcEquation()
@@ -249,9 +253,7 @@ class OpeningBalanceController extends Controller
             ]);
         }
         $openingBalanceBeforImport = OpeningBalance::count();
-        // try {
-
-
+        try {
         if ($request->hasFile('opeining_balance_csv')) {
             $file = $request->file('opeining_balance_csv');
             $parsed_array = Excel::toArray([], $file);
@@ -301,12 +303,12 @@ class OpeningBalanceController extends Controller
                     'msg' => __('messages.something_went_wrong'),
                 ]);
         }
-        // } catch (\Exception $e) {
-        //     return redirect()->back()
-        //         ->with('status', [
-        //             'success' => 0,
-        //             'msg' => __('messages.something_went_wrong'),
-        //         ]);
-        // }
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('status', [
+                    'success' => 0,
+                    'msg' => __('messages.something_went_wrong'),
+                ]);
+        }
     }
 }

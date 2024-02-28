@@ -137,7 +137,7 @@
                 @can('sell.create')
                     <a style="    justify-content: center;
                     align-items: center;
-                    display: flex;width:85px;"
+                    display: flex;width: 132px;"
                         href="{{ action([\App\Http\Controllers\SellPosController::class, 'create']) }}"
                         title="@lang('sale.pos_sale')" class="btn btn-success btn-flat m-6 btn-xs m-5 pull-right">
                         <strong><i class="fa fa-th-large"></i> &nbsp; @lang('sale.pos_sale')</strong>

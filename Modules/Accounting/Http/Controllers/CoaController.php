@@ -151,7 +151,7 @@ class CoaController extends Controller
         if (
             !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
                 $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
-            auth()->user()->can('accounting.manage_accounts'))
+                auth()->user()->can('accounting.manage_accounts'))
         ) {
             abort(403, 'Unauthorized action.');
         }
@@ -181,7 +181,7 @@ class CoaController extends Controller
         if (
             !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
                 $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
-            auth()->user()->can('accounting.manage_accounts'))
+                auth()->user()->can('accounting.manage_accounts'))
         ) {
             abort(403, 'Unauthorized action.');
         }
@@ -469,9 +469,9 @@ class CoaController extends Controller
 
         if (
             !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
-                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module')||
-            auth()->user()->can('accounting.manage_accounts')))
-         {
+                $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
+                auth()->user()->can('accounting.manage_accounts'))
+        ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -619,54 +619,57 @@ class CoaController extends Controller
         }
 
         try {
-      
-        if ($request->hasFile('accounts_csv')) {
-            $file = $request->file('accounts_csv');
-            $parsed_array = Excel::toArray([], $file);
-            $accounts_csv = array_splice($parsed_array[0], 1);
-            FacadesDB::beginTransaction();
-            $business_id = request()->session()->get('user.business_id');
-               
-            $user_id = request()->session()->get('user.id');
 
-            foreach ($accounts_csv as  $value) {
+            if ($request->hasFile('accounts_csv')) {
+                $file = $request->file('accounts_csv');
+                $parsed_array = Excel::toArray([], $file);
+                $accounts_csv = array_splice($parsed_array[0], 1);
+                FacadesDB::beginTransaction();
+                $business_id = request()->session()->get('user.business_id');
 
-             
-                if (!$value[0] || !$value[1] || !$value[2]  || !$value[3] || !$value[4]) {
-                    continue;
-                } else {
-                    $accountingAccountType = AccountingAccountType::where('name', $value[4])->first();
-                    if (!$accountingAccountType || AccountingAccount::where('gl_code', $value[3])->first()) {
+                $user_id = request()->session()->get('user.id');
+
+                foreach ($accounts_csv as  $value) {
+
+
+                    if (!$value[0] || !$value[1] || !$value[2]  || !$value[3] || !$value[4]) {
                         continue;
                     } else {
+                        $accountingAccountType = AccountingAccountType::where('name', $value[4])->first();
+                        if (!$accountingAccountType || AccountingAccount::where('gl_code', $value[3])->first()) {
+                            continue;
+                        } else {
 
-                        AccountingAccount::create([
-                            'name' => $value[0],
-                            'business_id' => $business_id,
-                           
-                            'account_primary_type' => $value[2],
-                            'account_sub_type_id' => $accountingAccountType->id,
-                            'detail_type_id' =>  $accountingAccountType->account_type == 'sub_type' ? null : AccountingAccountType::find($accountingAccountType->parent_id)->id,
-                            'gl_code' => $value[3],
-                            'status' => 'active',
-                            'created_by' => $user_id,
-                            'created_at' => Carbon::now(),
-                            'updated_at' => Carbon::now(),
-                        ]);
+                            AccountingAccount::create([
+                                'name' => $value[0],
+                                'business_id' => $business_id,
+
+                                'account_primary_type' => $value[2],
+                                'account_sub_type_id' => $accountingAccountType->id,
+                                'detail_type_id' =>  $accountingAccountType->account_type == 'sub_type' ? null : AccountingAccountType::find($accountingAccountType->parent_id)->id,
+                                'gl_code' => $value[3],
+                                'status' => 'active',
+                                'created_by' => $user_id,
+                                'created_at' => Carbon::now(),
+                                'updated_at' => Carbon::now(),
+                            ]);
+                        }
                     }
                 }
+
+                DB::commit();
+
+                return redirect()->back()
+                    ->with('status', [
+                        'success' => 1,
+                        'msg' => __('lang_v1.added_success')
+                    ]);
             }
-        }
-        DB::commit();
-
-
-
-        return redirect()->back()
-            ->with('status', [
-                'success' => 1,
-                'msg' => __('lang_v1.added_success')
-            ]);
-
+            return redirect()->back()
+                ->with('status', [
+                    'success' => 1,
+                    'msg' => __('lang_v1.added_success')
+                ]);
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('status', [
