@@ -153,6 +153,9 @@
     .skin-blue-light .sidebar-menu .treeview-menu>li.active>a {
         color: whitesmoke;
     } */
+    .box .box-body {
+        color: black;
+    }
 
     .sidebar-menu>li>a>.fa {
         color: #073158;
