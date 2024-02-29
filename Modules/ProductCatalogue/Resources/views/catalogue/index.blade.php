@@ -64,20 +64,18 @@
         }
 
 
-        #custom_product_card_info {
-            /* display: flex;
-                                                                                                                                                                                                justify-content: center;
-                                                                                                                                                                                                align-items: center;
-                                                                                                                                                                                                align-content: center;
-                                                                                                                                                                                                justify-items: center; */
-            /* padding: 34px; */
-            /* background-image: url('/uploads/img/bg.png');
-                                                                                                                                                                                                    background-size: cover; */
-        }
+        
 
         .page-header {
             text-align: center;
             font-weight: bold;
+        }
+
+        #product_description_section {
+            color: #808180dd;
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 
@@ -109,15 +107,6 @@
              
           ">
             <div class="container-fluid">
-                {{-- <div class="navbar-header">
-                    {{-- <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                        aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button> --}}
-                {{-- </div> --}}
 
             </div>
             <div id="navbar" class="navbar " id="product_category_div" style="padding: 0px 26px;">
@@ -163,9 +152,6 @@
                             {{ $product_category->first()->category->name ?? 'Uncategorized' }}</h2>
                     </div>
                 </div>
-
-
-
                 <div class="row eq-height-row">
                     @foreach ($product_category as $product)
                         <div class="col-lg-3 col-md-12 eq-height-col col-xs-6 col-sm-4" id="main_card_div">
@@ -203,17 +189,14 @@
                                                     {{ $product->name }}
                                                 </h5>
 
-                                                <p
-                                                    style="color: #808180dd;    display: -webkit-box;
-                                                max-width: 400px;
-                                                -webkit-line-clamp: 2;
-                                                -webkit-box-orient: vertical;
-                                                overflow: hidden;
-                                                text-overflow: ellipsis; ">
+                                                <p id="product_description_section"
+                                                    style=" display: -webkit-box;
+                                                            -webkit-line-clamp: 2;
+                                                            -webkit-box-orient: vertical;">
                                                     @if ($product->product_description)
                                                         {{ $product->product_description }}
                                                     @else
-                                                        .. لا يوجد وصف للمنتج
+                                                       dfdghj
                                                         <br>
                                                     @endif
                                                 </p>
@@ -222,12 +205,10 @@
 
                                                         <span class="label label-warning discount-badge">-
                                                             {{ $discount->discount_amount }}%</span>
-
-
                                                     </h4>
                                                 @endif
 
-                                                <h5 style="color: #090329;    font-weight: bold;">
+                                                <h5 style="color: #090329;font-weight: bold;">
 
                                                     <span class="display_currency"
                                                         data-currency_symbol="true">{{ $max_price }}</span>
@@ -237,12 +218,11 @@
                                                     @endif
 
                                                 </h5>
-                                                {{-- <h4 style="color: #090329;padding-bottom:30px"> @lang('product.sku') :
-                                                    {{ $product->sku }}</h4> --}}
+
                                             </div>
 
                                         </div>
-                                        {{-- <hr /> --}}
+
                                     </div>
                                 </a>
                             </div>

@@ -453,7 +453,7 @@ return [
     'autoMigration' => [
         'business_location' => 'فرع الشركة',
         'sell' => 'مبيعات',
-        'sell_return' => 'بيع العائد',
+        'sell_return' => 'مردود المبيعات',
         'opening_stock' => 'افتتاح المخزون',
         'purchase' => 'شراء',
         'expense' => 'مصروف',
@@ -462,7 +462,7 @@ return [
         'purchase_transfer' => 'نقل الشراء',
         'payroll' => 'كشف رواتب',
         'opening_balance' => 'الرصيد الافتتاحي',
-        'purchase_return' => 'عوائد الشراء',
+        'purchase_return' => 'مردود المشتريات',
         'final' => 'نهائي',
         'paid' => 'مدفوع',
         'due' => 'مستحق',

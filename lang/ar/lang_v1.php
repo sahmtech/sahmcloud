@@ -1418,5 +1418,5 @@ return [
     'Actions' => 'العمليات',
     'enable_fast_store' => 'تفعيل التخزين السريع',
     'technical_erorr' => 'خطأ تقني الرجاء المحاولة مجددا',
-
+    'no_description'=>' .. لا يوجد وصف للمنتج',
 ];
