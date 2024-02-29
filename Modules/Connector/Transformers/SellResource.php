@@ -44,7 +44,7 @@ class SellResource extends JsonResource
 
             $array['sell_lines'][$key]['product_name'] =   Product::where('id', $product_id)->first()?->name ?? '';
             $array['sell_lines'][$key]['variation_name'] = Variation::where('id', $variation_id)->first()?->name ?? '';
-            $array['sell_lines'][$key]['is_tax_group'] =   Product::where('id', $product_id)->first()?->product_tax?->is_tax_group ?? '0';
+            $array['sell_lines'][$key]['is_tax_group'] =   Product::where('id', $product_id)->first()?->product_tax?->is_tax_group ?? 0;
         }
         $commonUtil = new Util;
         $array['invoice_url'] = $commonUtil->getInvoiceUrl($array['id'], $array['business_id']);
