@@ -196,7 +196,7 @@
                                                     @if ($product->product_description)
                                                         {{ $product->product_description }}
                                                     @else
-                                                       dfdghj
+                                                       @lang('lang_v1.no_description')
                                                         <br>
                                                     @endif
                                                 </p>
