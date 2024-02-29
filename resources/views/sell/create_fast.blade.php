@@ -131,7 +131,11 @@
                                         </span>
                                         @php
                                             reset($price_groups);
-                                            $selected_price_group = !empty($default_price_group_id) && array_key_exists($default_price_group_id, $price_groups) ? $default_price_group_id : null;
+                                            $selected_price_group =
+                                                !empty($default_price_group_id) &&
+                                                array_key_exists($default_price_group_id, $price_groups)
+                                                    ? $default_price_group_id
+                                                    : null;
                                         @endphp
 
                                         {!! Form::hidden('hidden_price_group', key($price_groups), ['id' => 'hidden_price_group']) !!}
@@ -392,21 +396,45 @@
                     @endcan
 
                     @php
-                        $custom_field_1_label = !empty($custom_labels['sell']['custom_field_1']) ? $custom_labels['sell']['custom_field_1'] : '';
+                        $custom_field_1_label = !empty($custom_labels['sell']['custom_field_1'])
+                            ? $custom_labels['sell']['custom_field_1']
+                            : '';
 
-                        $is_custom_field_1_required = !empty($custom_labels['sell']['is_custom_field_1_required']) && $custom_labels['sell']['is_custom_field_1_required'] == 1 ? true : false;
+                        $is_custom_field_1_required =
+                            !empty($custom_labels['sell']['is_custom_field_1_required']) &&
+                            $custom_labels['sell']['is_custom_field_1_required'] == 1
+                                ? true
+                                : false;
 
-                        $custom_field_2_label = !empty($custom_labels['sell']['custom_field_2']) ? $custom_labels['sell']['custom_field_2'] : '';
+                        $custom_field_2_label = !empty($custom_labels['sell']['custom_field_2'])
+                            ? $custom_labels['sell']['custom_field_2']
+                            : '';
 
-                        $is_custom_field_2_required = !empty($custom_labels['sell']['is_custom_field_2_required']) && $custom_labels['sell']['is_custom_field_2_required'] == 1 ? true : false;
+                        $is_custom_field_2_required =
+                            !empty($custom_labels['sell']['is_custom_field_2_required']) &&
+                            $custom_labels['sell']['is_custom_field_2_required'] == 1
+                                ? true
+                                : false;
 
-                        $custom_field_3_label = !empty($custom_labels['sell']['custom_field_3']) ? $custom_labels['sell']['custom_field_3'] : '';
+                        $custom_field_3_label = !empty($custom_labels['sell']['custom_field_3'])
+                            ? $custom_labels['sell']['custom_field_3']
+                            : '';
 
-                        $is_custom_field_3_required = !empty($custom_labels['sell']['is_custom_field_3_required']) && $custom_labels['sell']['is_custom_field_3_required'] == 1 ? true : false;
+                        $is_custom_field_3_required =
+                            !empty($custom_labels['sell']['is_custom_field_3_required']) &&
+                            $custom_labels['sell']['is_custom_field_3_required'] == 1
+                                ? true
+                                : false;
 
-                        $custom_field_4_label = !empty($custom_labels['sell']['custom_field_4']) ? $custom_labels['sell']['custom_field_4'] : '';
+                        $custom_field_4_label = !empty($custom_labels['sell']['custom_field_4'])
+                            ? $custom_labels['sell']['custom_field_4']
+                            : '';
 
-                        $is_custom_field_4_required = !empty($custom_labels['sell']['is_custom_field_4_required']) && $custom_labels['sell']['is_custom_field_4_required'] == 1 ? true : false;
+                        $is_custom_field_4_required =
+                            !empty($custom_labels['sell']['is_custom_field_4_required']) &&
+                            $custom_labels['sell']['is_custom_field_4_required'] == 1
+                                ? true
+                                : false;
                     @endphp
                     @if (!empty($custom_field_1_label))
                         @php
@@ -552,6 +580,9 @@
                         <input type="hidden" name="sell_price_tax" id="sell_price_tax"
                             value="{{ $business_details->sell_price_tax }}">
 
+                            <input type="hidden" name="business_enable_inline_tax" id="business_enable_inline_tax"
+                            value="{{ session()->get('business.enable_inline_tax') }}">
+
                         <!-- Keeps count of product rows -->
                         <input type="hidden" id="product_row_count" value="0">
                         @php
@@ -666,7 +697,9 @@
                                         </div>
                                     </div>
                                     @php
-                                        $max_discount = !is_null(auth()->user()->max_sales_discount_percent) ? auth()->user()->max_sales_discount_percent : '';
+                                        $max_discount = !is_null(auth()->user()->max_sales_discount_percent)
+                                            ? auth()->user()->max_sales_discount_percent
+                                            : '';
 
                                         //if sale discount is more than user max discount change it to max discount
                                         $sales_discount = $business_details->default_sales_discount;
@@ -892,25 +925,55 @@
                         </div>
                     </div>
                     @php
-                        $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1']) ? $custom_labels['shipping']['custom_field_1'] : '';
+                        $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1'])
+                            ? $custom_labels['shipping']['custom_field_1']
+                            : '';
 
-                        $is_shipping_custom_field_1_required = !empty($custom_labels['shipping']['is_custom_field_1_required']) && $custom_labels['shipping']['is_custom_field_1_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_1_required =
+                            !empty($custom_labels['shipping']['is_custom_field_1_required']) &&
+                            $custom_labels['shipping']['is_custom_field_1_required'] == 1
+                                ? true
+                                : false;
 
-                        $shipping_custom_label_2 = !empty($custom_labels['shipping']['custom_field_2']) ? $custom_labels['shipping']['custom_field_2'] : '';
+                        $shipping_custom_label_2 = !empty($custom_labels['shipping']['custom_field_2'])
+                            ? $custom_labels['shipping']['custom_field_2']
+                            : '';
 
-                        $is_shipping_custom_field_2_required = !empty($custom_labels['shipping']['is_custom_field_2_required']) && $custom_labels['shipping']['is_custom_field_2_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_2_required =
+                            !empty($custom_labels['shipping']['is_custom_field_2_required']) &&
+                            $custom_labels['shipping']['is_custom_field_2_required'] == 1
+                                ? true
+                                : false;
 
-                        $shipping_custom_label_3 = !empty($custom_labels['shipping']['custom_field_3']) ? $custom_labels['shipping']['custom_field_3'] : '';
+                        $shipping_custom_label_3 = !empty($custom_labels['shipping']['custom_field_3'])
+                            ? $custom_labels['shipping']['custom_field_3']
+                            : '';
 
-                        $is_shipping_custom_field_3_required = !empty($custom_labels['shipping']['is_custom_field_3_required']) && $custom_labels['shipping']['is_custom_field_3_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_3_required =
+                            !empty($custom_labels['shipping']['is_custom_field_3_required']) &&
+                            $custom_labels['shipping']['is_custom_field_3_required'] == 1
+                                ? true
+                                : false;
 
-                        $shipping_custom_label_4 = !empty($custom_labels['shipping']['custom_field_4']) ? $custom_labels['shipping']['custom_field_4'] : '';
+                        $shipping_custom_label_4 = !empty($custom_labels['shipping']['custom_field_4'])
+                            ? $custom_labels['shipping']['custom_field_4']
+                            : '';
 
-                        $is_shipping_custom_field_4_required = !empty($custom_labels['shipping']['is_custom_field_4_required']) && $custom_labels['shipping']['is_custom_field_4_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_4_required =
+                            !empty($custom_labels['shipping']['is_custom_field_4_required']) &&
+                            $custom_labels['shipping']['is_custom_field_4_required'] == 1
+                                ? true
+                                : false;
 
-                        $shipping_custom_label_5 = !empty($custom_labels['shipping']['custom_field_5']) ? $custom_labels['shipping']['custom_field_5'] : '';
+                        $shipping_custom_label_5 = !empty($custom_labels['shipping']['custom_field_5'])
+                            ? $custom_labels['shipping']['custom_field_5']
+                            : '';
 
-                        $is_shipping_custom_field_5_required = !empty($custom_labels['shipping']['is_custom_field_5_required']) && $custom_labels['shipping']['is_custom_field_5_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_5_required =
+                            !empty($custom_labels['shipping']['is_custom_field_5_required']) &&
+                            $custom_labels['shipping']['is_custom_field_5_required'] == 1
+                                ? true
+                                : false;
                     @endphp
 
                     @if (!empty($shipping_custom_label_1))
@@ -1295,7 +1358,11 @@
                                                 <i class="fas fa-money-bill-alt"></i>
                                             </span>
                                             @php
-                                                $_payment_method = empty($change_return['method']) && array_key_exists('cash', $payment_types) ? 'cash' : $change_return['method'];
+                                                $_payment_method =
+                                                    empty($change_return['method']) &&
+                                                    array_key_exists('cash', $payment_types)
+                                                        ? 'cash'
+                                                        : $change_return['method'];
 
                                                 $_payment_types = $payment_types;
                                                 if (isset($_payment_types['advance'])) {

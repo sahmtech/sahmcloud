@@ -1959,6 +1959,7 @@ function pos_discount(total_amount) {
 
 function pos_order_tax(price_total, discount) {
   var tax_rate_id = $("#tax_rate_id").val();
+  var business_enable_inline_tax = $("#business_enable_inline_tax").val();
   var calculation_type = "percentage";
   var calculation_amount = __read_number($("#tax_calculation_amount"));
   var total_amount = price_total - discount;
@@ -1975,11 +1976,15 @@ function pos_order_tax(price_total, discount) {
 
   $("span#order_tax").text(__currency_trans_from_en(order_tax, false));
 
-  if(price_total){
-    $("span#total-without-tax").text(price_total - calculation_amount);
-
+ 
+  if (price_total) {
+    if (business_enable_inline_tax == 0) {
+      $("span#total-without-tax").text(price_total);
+    } else {
+      $("span#total-without-tax").text(price_total - calculation_amount);
+    }
   }
-  
+
   return order_tax;
 }
 
