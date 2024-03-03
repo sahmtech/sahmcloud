@@ -1442,23 +1442,24 @@ $(document).ready(function () {
     onScan.detachFrom(document);
   });
 
-  $("#weighing_scale_barcode").keydown(function (e) {
+  $("#weighing_scale_barcode").keyup(function (e) {
     if ($("#weighing_scale_barcode").val().length > 5) {
-      setTimeout(function () {
-        // $("button#weighing_scale_submit").click(function () {
-        var price_group = "";
-        if ($("#price_group").length > 0) {
-          price_group = $("#price_group").val();
-        }
+      // setTimeout(function () {
+      // $("button#weighing_scale_submit").click(function () {
+      var price_group = "";
+      if ($("#price_group").length > 0) {
+        price_group = $("#price_group").val();
+      }
 
-        if ($("#weighing_scale_barcode").val().length > 0) {
-          pos_product_row(null, null, $("#weighing_scale_barcode").val());
-          // $("#weighing_scale_modal").modal("hide");
-          $("input#weighing_scale_barcode").val("");
-        } else {
-          $("input#weighing_scale_barcode").focus();
-        }
-      }, 4000);
+      if ($("#weighing_scale_barcode").val().length > 0) {
+        pos_product_row(null, null, $("#weighing_scale_barcode").val());
+        // $("#weighing_scale_modal").modal("hide");
+        $("input#weighing_scale_barcode").val("");
+        $("input#weighing_scale_barcode").focus();
+      } else {
+        $("input#weighing_scale_barcode").focus();
+      }
+      // }, 1000);
     }
   });
 
@@ -1807,6 +1808,15 @@ function pos_total_row() {
       total_quantity + __read_number($(this).find("input.pos_quantity"));
   });
 
+  var total_without_tax = 0;
+  $("table#pos_table tbody tr").each(function () {
+    total_without_tax =
+      total_without_tax +
+      __read_number($(this).find("input.pos_line_total"));
+  });
+
+  $("span#total-without-tax").text(total_without_tax);
+
   //updating shipping charges
   $("span#shipping_charges_amount").text(
     __currency_trans_from_en(
@@ -1828,6 +1838,7 @@ function pos_total_row() {
 function get_subtotal() {
   var price_total = 0;
 
+  var calculation_amount = __read_number($("#tax_calculation_amount"));
   $("table#pos_table tbody tr").each(function () {
     price_total =
       price_total + __read_number($(this).find("input.pos_line_total"));
@@ -1844,7 +1855,7 @@ function get_subtotal() {
 
     price_total = price_total + modifier_subtotal;
   });
-
+  console.log(price_total);
   return price_total;
 }
 
@@ -1960,6 +1971,7 @@ function pos_discount(total_amount) {
 function pos_order_tax(price_total, discount) {
   var tax_rate_id = $("#tax_rate_id").val();
   var business_enable_inline_tax = $("#business_enable_inline_tax").val();
+
   var calculation_type = "percentage";
   var calculation_amount = __read_number($("#tax_calculation_amount"));
   var total_amount = price_total - discount;
@@ -1976,14 +1988,13 @@ function pos_order_tax(price_total, discount) {
 
   $("span#order_tax").text(__currency_trans_from_en(order_tax, false));
 
- 
-  if (price_total) {
-    if (business_enable_inline_tax == 0) {
-      $("span#total-without-tax").text(price_total);
-    } else {
-      $("span#total-without-tax").text(price_total - calculation_amount);
-    }
-  }
+  // if (price_total) {
+  //   if (business_enable_inline_tax == 0) {
+  //     $("span#total-without-tax").text(price_total);
+  //   } else {
+
+  //   }
+  // }
 
   return order_tax;
 }
