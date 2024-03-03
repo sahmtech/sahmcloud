@@ -321,7 +321,7 @@ class SellPosController extends Controller
             return redirect()->action([\App\Http\Controllers\CashRegisterController::class, 'create']);
         }
 
-        try {
+        // try {
             $input = $request->except('_token');
 
             $input['is_quotation'] = 0;
@@ -650,23 +650,23 @@ class SellPosController extends Controller
                     'msg' => trans('messages.something_went_wrong'),
                 ];
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
-            $msg = trans('messages.something_went_wrong');
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+        //     $msg = trans('messages.something_went_wrong');
 
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
-                $msg = $e->getMessage();
-            }
-            if (get_class($e) == \App\Exceptions\AdvanceBalanceNotAvailable::class) {
-                $msg = $e->getMessage();
-            }
+        //     if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+        //         $msg = $e->getMessage();
+        //     }
+        //     if (get_class($e) == \App\Exceptions\AdvanceBalanceNotAvailable::class) {
+        //         $msg = $e->getMessage();
+        //     }
 
-            $output = [
-                'success' => 0,
-                'msg' => $msg,
-            ];
-        }
+        //     $output = [
+        //         'success' => 0,
+        //         'msg' => $msg,
+        //     ];
+        // }
 
         if (!$is_direct_sale) {
             return $output;

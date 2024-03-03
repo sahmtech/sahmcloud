@@ -580,7 +580,7 @@
                         <input type="hidden" name="sell_price_tax" id="sell_price_tax"
                             value="{{ $business_details->sell_price_tax }}">
 
-                            <input type="hidden" name="business_enable_inline_tax" id="business_enable_inline_tax"
+                        <input type="hidden" name="business_enable_inline_tax" id="business_enable_inline_tax"
                             value="{{ session()->get('business.enable_inline_tax') }}">
 
                         <!-- Keeps count of product rows -->
@@ -862,7 +862,7 @@
                     </div>
                     <input type="hidden" name="is_direct_sale" value="1">
                 @endcomponent
-                @component('components.widget', ['class' => 'box-solid'])
+                {{-- @component('components.widget', ['class' => 'box-solid'])
                     <div class="col-md-4">
                         <div class="form-group">
                             {!! Form::label('shipping_details', __('sale.shipping_details')) !!}
@@ -1197,12 +1197,17 @@
                             <br />
                             <input type="hidden" name="round_off_amount" id="round_off_amount" value=0>
                         @endif
-                        <div><b>@lang('sale.total_payable'): </b>
+                        <div hidden><b>@lang('sale.total_payable'): </b>
                             <input type="hidden" name="final_total" id="final_total_input">
                             <span id="total_payable">0</span>
                         </div>
                     </div>
-                @endcomponent
+                @endcomponent --}}
+
+                <div hidden><b>@lang('sale.total_payable'): </b>
+                    <input type="hidden" name="final_total" id="final_total_input">
+                    <span id="total_payable">0</span>
+                </div>
             </div>
         </div>
         @if (!empty($common_settings['is_enabled_export']) && $sale_type != 'sales_order')

@@ -741,6 +741,153 @@ class SellController extends Controller
 
         $change_return = $this->dummyPaymentLine;
 
+        return view('sell.create')
+            ->with(compact(
+                'business_details',
+                'taxes',
+                'walk_in_customer',
+                'business_locations',
+                'bl_attributes',
+                'default_location',
+                'commission_agent',
+                'types',
+                'customer_groups',
+                'payment_line',
+                'payment_types',
+                'price_groups',
+                'default_datetime',
+                'pos_settings',
+                'invoice_schemes',
+                'default_invoice_schemes',
+                'types_of_service',
+                'accounts',
+                'shipping_statuses',
+                'status',
+                'sale_type',
+                'statuses',
+                'is_order_request_enabled',
+                'users',
+                'default_price_group_id',
+                'change_return'
+            ));
+    }
+
+
+    public function create_fast()
+    {
+        $sale_type = request()->get('sale_type', '');
+
+        if ($sale_type == 'sales_order') {
+            if (!auth()->user()->can('so.create')) {
+                abort(403, 'Unauthorized action.');
+            }
+        } else {
+            if (!auth()->user()->can('direct_sell.access')) {
+                abort(403, 'Unauthorized action.');
+            }
+        }
+
+        $business_id = request()->session()->get('user.business_id');
+
+        //Check if subscribed or not, then check for users quota
+        if (!$this->moduleUtil->isSubscribed($business_id)) {
+            return $this->moduleUtil->expiredResponse();
+        } elseif (!$this->moduleUtil->isQuotaAvailable('invoices', $business_id)) {
+            return $this->moduleUtil->quotaExpiredResponse('invoices', $business_id, action([\App\Http\Controllers\SellController::class, 'index']));
+        }
+
+        $walk_in_customer = $this->contactUtil->getWalkInCustomer($business_id);
+
+        $business_details = $this->businessUtil->getDetails($business_id);
+        $taxes = TaxRate::forBusinessDropdown($business_id, true, true);
+
+        $business_locations = BusinessLocation::forDropdown($business_id, false, true);
+        $bl_attributes = $business_locations['attributes'];
+        $business_locations = $business_locations['locations'];
+
+        $default_location = null;
+        foreach ($business_locations as $id => $name) {
+            $default_location = BusinessLocation::findOrFail($id);
+            break;
+        }
+
+        $commsn_agnt_setting = $business_details->sales_cmsn_agnt;
+        $commission_agent = [];
+        if ($commsn_agnt_setting == 'user') {
+            $commission_agent = User::forDropdown($business_id);
+        } elseif ($commsn_agnt_setting == 'cmsn_agnt') {
+            $commission_agent = User::saleCommissionAgentsDropdown($business_id);
+        }
+
+        $types = [];
+        if (auth()->user()->can('supplier.create')) {
+            $types['supplier'] = __('report.supplier');
+        }
+        if (auth()->user()->can('customer.create')) {
+            $types['customer'] = __('report.customer');
+        }
+        if (auth()->user()->can('supplier.create') && auth()->user()->can('customer.create')) {
+            $types['both'] = __('lang_v1.both_supplier_customer');
+        }
+        $customer_groups = CustomerGroup::forDropdown($business_id);
+
+        $payment_line = $this->dummyPaymentLine;
+        $payment_types = $this->transactionUtil->payment_types(null, true, $business_id);
+
+        //Selling Price Group Dropdown
+        $price_groups = SellingPriceGroup::forDropdown($business_id);
+
+        $default_price_group_id = !empty($default_location->selling_price_group_id) && array_key_exists($default_location->selling_price_group_id, $price_groups) ? $default_location->selling_price_group_id : null;
+
+        $default_datetime = $this->businessUtil->format_date('now', true);
+
+        $pos_settings = empty($business_details->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business_details->pos_settings, true);
+
+        $invoice_schemes = InvoiceScheme::forDropdown($business_id);
+        $default_invoice_schemes = InvoiceScheme::getDefault($business_id);
+        if (!empty($default_location) && !empty($default_location->sale_invoice_scheme_id)) {
+            $default_invoice_schemes = InvoiceScheme::where('business_id', $business_id)
+                ->findorfail($default_location->sale_invoice_scheme_id);
+        }
+        $shipping_statuses = $this->transactionUtil->shipping_statuses();
+
+        //Types of service
+        $types_of_service = [];
+        if ($this->moduleUtil->isModuleEnabled('types_of_service')) {
+            $types_of_service = TypesOfService::forDropdown($business_id);
+        }
+
+        //Accounts
+        $accounts = [];
+        if ($this->moduleUtil->isModuleEnabled('account')) {
+            $accounts = Account::forDropdown($business_id, true, false);
+        }
+
+        $status = request()->get('status', '');
+
+        $statuses = Transaction::sell_statuses();
+
+        if ($sale_type == 'sales_order') {
+            $status = 'ordered';
+        }
+
+        $is_order_request_enabled = false;
+        $is_crm = $this->moduleUtil->isModuleInstalled('Crm');
+        if ($is_crm) {
+            $crm_settings = Business::where('id', auth()->user()->business_id)
+                ->value('crm_settings');
+            $crm_settings = !empty($crm_settings) ? json_decode($crm_settings, true) : [];
+
+            if (!empty($crm_settings['enable_order_request'])) {
+                $is_order_request_enabled = true;
+            }
+        }
+
+        //Added check because $users is of no use if enable_contact_assign if false
+        $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
+
+        $change_return = $this->dummyPaymentLine;
+        
         return view('sell.create_fast')
             ->with(compact(
                 'business_details',
