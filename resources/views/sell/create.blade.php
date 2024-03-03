@@ -838,7 +838,7 @@
                                         <div class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif"
                                             style="padding-top: 3px;">
                                             <b>@lang('sale.total-with-tax'): </b>
-                                            <span class="price_total">0</span>
+                                            <span id="total_payable">0</span>
                                         </div>
                                     </div>
 
@@ -1197,14 +1197,14 @@
                             <br />
                             <input type="hidden" name="round_off_amount" id="round_off_amount" value=0>
                         @endif
-                        <div ><b>@lang('sale.total_payable'): </b>
+                        <div><b>@lang('sale.total_payable'): </b>
                             <input type="hidden" name="final_total" id="final_total_input">
                             <span id="total_payable">0</span>
                         </div>
                     </div>
                 @endcomponent
 
-              
+
             </div>
         </div>
         @if (!empty($common_settings['is_enabled_export']) && $sale_type != 'sales_order')

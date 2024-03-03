@@ -1812,8 +1812,7 @@ function pos_total_row() {
   $("table#pos_table tbody tr").each(function () {
     total_without_tax =
       total_without_tax +
-      __read_number($(this).find("input.pos_unit_price")) *
-        __read_number($(this).find("input.pos_quantity"));
+      __read_number($(this).find("input.pos_line_total"));
   });
 
   $("span#total-without-tax").text(total_without_tax);

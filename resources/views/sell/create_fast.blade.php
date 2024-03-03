@@ -6,7 +6,7 @@
     } elseif (!empty($status) && $status == 'draft') {
         $title = __('lang_v1.add_draft');
     } else {
-        $title = __('sale.add_sale');
+        $title = __('sale.create_sale');
     }
 
     if ($sale_type == 'sales_order') {
@@ -838,7 +838,8 @@
                                         <div class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif"
                                             style="padding-top: 3px;">
                                             <b>@lang('sale.total-with-tax'): </b>
-                                            <span class="price_total">0</span>
+                                            {{-- <span class="price_total">0</span> --}}
+                                            <span id="total_payable">0</span>
                                         </div>
                                     </div>
 

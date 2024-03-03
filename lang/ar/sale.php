@@ -62,5 +62,6 @@ return [
     'total-with-tax' => 'الاجمالي مع ضريبة',
     'total-without-tax'=>'الاجمالي بدون ضريبة',
     'create_sale'=>'إنشاء فاتورة',
+    
 
 ];
