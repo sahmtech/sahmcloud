@@ -1738,9 +1738,12 @@ class Util
 
     public function saveAutoMigration($request, $transaction, $business_id, $user_id)
     {
+        
         $transaction = Transaction::with(['sell_lines', 'payment_lines'])->find($transaction->id);
         // find accounting mapping setting (automated migration)by:{type,status,methode,active}
-
+        if (!$request->payment) {
+            return false;
+        }
         $accountMappingSetting = AccountingMappingSettingAutoMigration::where('type', $transaction->type)
             ->where('payment_status', $transaction->payment_status)
             ->where('method', $request->payment['0']['method'])
