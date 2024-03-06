@@ -18,9 +18,9 @@
 
 @section('content')
     <!-- Content Header (Page header) -->
-    <section class="content-header">
+    {{-- <section class="content-header">
         <h1>{{ $title }}</h1>
-    </section>
+    </section> --}}
     <!-- Main content -->
     <section class="content no-print">
         <input type="hidden" id="amount_rounding_method" value="{{ $pos_settings['amount_rounding_method'] ?? '' }}">
@@ -30,7 +30,7 @@
         @if (session('business.enable_rp') == 1)
             <input type="hidden" id="reward_point_enabled">
         @endif
-        @if (count($business_locations) > 0)
+        {{-- @if (count($business_locations) > 0)
             <div class="row">
                 <div class="col-sm-3">
                     <div class="form-group">
@@ -52,7 +52,7 @@
                     </div>
                 </div>
             </div>
-        @endif
+        @endif --}}
 
         @php
             $custom_labels = json_decode(session('business.custom_labels'), true);
@@ -70,7 +70,48 @@
         @endif
         <div class="row">
             <div class="col-md-12 col-sm-12">
+
                 @component('components.widget', ['class' => 'box-solid'])
+                    <nav class="navbar navbar-light bg-light" style="background: #e4e9ed69;">
+
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span class="navbar-brand mb-0 h1" style="margin: 5px;">{{ $title }}</span>
+                            </div>
+
+                            @if (count($business_locations) > 0)
+                                <div class="col-sm-4"
+                                    style="margin-top: 16px;
+                                padding: 0px 24px;">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon" style="background: transparent;color: #5b0391;">
+                                                <i class="fa fa-map-marker"></i>
+                                            </span>
+                                            {!! Form::select(
+                                                'select_location_id',
+                                                $business_locations,
+                                                $default_location->id ?? null,
+                                                [
+                                                    'class' => 'form-control input-sm',
+                                                    'id' => 'select_location_id',
+                                                    'style' => 'padding: 1px;background: transparent; font-size: small;',
+                                                    'required',
+                                                    'autofocus',
+                                                ],
+                                                $bl_attributes,
+                                            ) !!}
+                                            <span class="input-group-addon" style="background: transparent;">
+                                                @show_tooltip(__('tooltip.sale_location'))
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </nav>
+
+                    <hr style="width:100%;text-align:left;margin:0; border-top: 1px solid #ddd;margin-bottom: 37px;">
                     {!! Form::hidden('location_id', !empty($default_location) ? $default_location->id : null, [
                         'id' => 'location_id',
                         'data-receipt_printer_type' => !empty($default_location->receipt_printer_type)
@@ -90,7 +131,11 @@
                                         </span>
                                         @php
                                             reset($price_groups);
-                                            $selected_price_group = !empty($default_price_group_id) && array_key_exists($default_price_group_id, $price_groups) ? $default_price_group_id : null;
+                                            $selected_price_group =
+                                                !empty($default_price_group_id) &&
+                                                array_key_exists($default_price_group_id, $price_groups)
+                                                    ? $default_price_group_id
+                                                    : null;
                                         @endphp
 
                                         {!! Form::hidden('hidden_price_group', key($price_groups), ['id' => 'hidden_price_group']) !!}
@@ -113,7 +158,6 @@
                         @endif
                     @endif
 
-                  
                     @if (in_array('types_of_service', $enabled_modules) && !empty($types_of_service))
                         <div class="col-md-4 col-sm-6">
                             <div class="form-group">
@@ -145,9 +189,15 @@
 
                     @if (in_array('subscription', $enabled_modules))
                         <div class="col-md-4 pull-right col-sm-6">
-                            <div class="checkbox">
+                            {{-- <div class="checkbox">
                                 <label>
-                                    {!! Form::checkbox('is_recurring', 1, false, ['class' => 'input-icheck', 'id' => 'is_recurring']) !!} @lang('lang_v1.subscribe')?
+                                  <input type="checkbox" data-toggle="modal" data-target="#recurringInvoiceModal" id="is_recurring">
+                                  @lang('lang_v1.subscribe')؟
+                                </label>
+                              </div> --}}
+                            <div class="checkbox" style=" margin: 0;">
+                                <label style="padding: 0px;">
+                                    {!! Form::checkbox('is_recurring', 1, false, ['class' => 'input-icheck', 'id' => 'is_recurring']) !!} @lang('lang_v1.subscribe')؟
                                 </label><button type="button" data-toggle="modal" data-target="#recurringInvoiceModal"
                                     class="btn btn-link"><i
                                         class="fa fa-external-link"></i></button>@show_tooltip(__('lang_v1.recurring_invoice_help'))
@@ -157,7 +207,7 @@
                     <div class="clearfix"></div>
                     <div class="@if (!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
                         <div class="form-group">
-                            {!! Form::label('contact_id', __('contact.customer') . ':*') !!}
+                            {!! Form::label('contact_id', __('contact.customer') . '  ') !!} <span style="color: red; font-size:15px">*</span>
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <i class="fa fa-user"></i>
@@ -188,15 +238,17 @@
                             <small class="text-danger hide contact_due_text"><strong>@lang('account.customer_due'):</strong>
                                 <span></span></small>
                         </div>
-                        <small>
-                            <strong>
+                        {{-- <small>
+                            <strong style="font-size: small;
+                            color: #221162;">
                                 @lang('lang_v1.billing_address'):
                             </strong>
                             <div id="billing_address_div">
                                 {!! $walk_in_customer['contact_address'] ?? '' !!}
                             </div>
                             <br>
-                            <strong>
+                            <strong style="font-size: small;
+                            color: #221162;">
                                 @lang('lang_v1.shipping_address'):
                             </strong>
                             <div id="shipping_address_div">
@@ -204,44 +256,106 @@
                                 {{ $walk_in_customer['name'] ?? '' }},<br>
                                 {{ $walk_in_customer['shipping_address'] ?? '' }}
                             </div>
-                        </small>
+                        </small> --}}
+                    </div>
+                    <div class="col-md-4" style="margin-top: 7px;">
+                        <strong style="font-size: small;
+                        color: #221162;">
+                            @lang('lang_v1.billing_address'):
+                        </strong>
+                        <div id="billing_address_div">
+                            {!! $walk_in_customer['contact_address'] ?? '' !!}
+                        </div>
                     </div>
 
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <div class="multi-input">
-                                @php
-                                    $is_pay_term_required = !empty($pos_settings['is_pay_term_required']);
-                                @endphp
-                                {!! Form::label('pay_term_number', __('contact.pay_term') . ':') !!} @show_tooltip(__('tooltip.pay_term'))
-                                <br />
-                                {!! Form::number('pay_term_number', $walk_in_customer['pay_term_number'], [
-                                    'class' => 'form-control width-40 pull-left',
-                                    'placeholder' => __('contact.pay_term'),
-                                    'required' => $is_pay_term_required,
-                                ]) !!}
+                    <div class="col-md-4" style="margin-top: 7px;">
+                        <strong style="font-size: small;
+                        color: #221162;">
+                            @lang('lang_v1.shipping_address'):
+                        </strong>
+                        <div id="shipping_address_div">
+                            {{ $walk_in_customer['supplier_business_name'] ?? '' }}@if ($walk_in_customer['supplier_business_name'])
+                                ,<br>
+                            @endif
+                            {{ $walk_in_customer['name'] ?? '' }}
+                            @if ($walk_in_customer['name'])
+                                ,<br>
+                            @endif
+                            {{ $walk_in_customer['shipping_address'] ?? '' }}
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row" style="padding: 0px 15px;">
+                        @if (!empty($status))
+                            <input type="hidden" name="status" id="status" value="{{ $status }}">
 
-                                {!! Form::select(
-                                    'pay_term_type',
-                                    ['months' => __('lang_v1.months'), 'days' => __('lang_v1.days')],
-                                    $walk_in_customer['pay_term_type'],
-                                    [
-                                        'class' => 'form-control width-60 pull-left',
+                            @if (in_array($status, ['draft', 'quotation']))
+                                <input type="hidden" id="disable_qty_alert">
+                            @endif
+                        @else
+                            <div class="@if (!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
+                                <div class="form-group">
+                                    {!! Form::label('status', __('sale.status') . ' ') !!} <span style="color: red; font-size:15px">*</span>
+                                    {!! Form::select('status', $statuses, null, [
+                                        'class' => 'form-control ',
                                         'placeholder' => __('messages.please_select'),
+                                        'required',
+                                        'style' => 'border-radius:5px;padding: 0px 5px;',
+                                    ]) !!}
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="col-md-4" style="padding: 0px 15px;">
+                            <div class="form-group">
+                                <div class="multi-input">
+                                    @php
+                                        $is_pay_term_required = !empty($pos_settings['is_pay_term_required']);
+                                    @endphp
+                                    {!! Form::label('pay_term_number', __('contact.pay_term') . ' ') !!} @show_tooltip(__('tooltip.pay_term'))
+                                    <br />
+                                    {!! Form::number('pay_term_number', $walk_in_customer['pay_term_number'], [
+                                        'class' => 'form-control width-40 pull-left',
+                                        'placeholder' => __('contact.pay_term'),
                                         'required' => $is_pay_term_required,
-                                    ],
-                                ) !!}
+                                        'style' => 'border-radius: 0px 5px 5px 0px;    border-left: none;',
+                                    ]) !!}
+
+                                    {!! Form::select(
+                                        'pay_term_type',
+                                        ['months' => __('lang_v1.months'), 'days' => __('lang_v1.days')],
+                                        $walk_in_customer['pay_term_type'],
+                                        [
+                                            'class' => 'form-control width-60 pull-left',
+                                            'placeholder' => __('messages.please_select'),
+                                            'required' => $is_pay_term_required,
+                                            'style' => 'border-radius: 5px 0px 0px 5px;padding: 1px;',
+                                        ],
+                                    ) !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="@if (!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
+                            <div class="form-group">
+                                {!! Form::label('transaction_date', __('sale.sale_date') . ' ') !!} <span style="color: red; font-size:15px">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                    {!! Form::text('transaction_date', $default_datetime, ['class' => 'form-control', 'readonly', 'required']) !!}
+                                </div>
                             </div>
                         </div>
                     </div>
+
 
                     @if (!empty($commission_agent))
                         @php
                             $is_commission_agent_required = !empty($pos_settings['is_commission_agent_required']);
                         @endphp
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
+                                {!! Form::label('commission_agent', __('lang_v1.commission_agent') . ' ') !!}
                                 {!! Form::select('commission_agent', $commission_agent, null, [
                                     'class' => 'form-control select2',
                                     'id' => 'commission_agent',
@@ -250,48 +364,23 @@
                             </div>
                         </div>
                     @endif
-                    <div class="@if (!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
-                        <div class="form-group">
-                            {!! Form::label('transaction_date', __('sale.sale_date') . ':*') !!}
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </span>
-                                {!! Form::text('transaction_date', $default_datetime, ['class' => 'form-control', 'readonly', 'required']) !!}
-                            </div>
-                        </div>
-                    </div>
-                    @if (!empty($status))
-                        <input type="hidden" name="status" id="status" value="{{ $status }}">
 
-                        @if (in_array($status, ['draft', 'quotation']))
-                            <input type="hidden" id="disable_qty_alert">
-                        @endif
-                    @else
-                        <div class="@if (!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
-                            <div class="form-group">
-                                {!! Form::label('status', __('sale.status') . ':*') !!}
-                                {!! Form::select('status', $statuses, null, [
-                                    'class' => 'form-control select2',
-                                    'placeholder' => __('messages.please_select'),
-                                    'required',
-                                ]) !!}
-                            </div>
-                        </div>
-                    @endif
+
+
                     @if ($sale_type != 'sales_order')
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('invoice_scheme_id', __('invoice.invoice_scheme') . ':') !!}
+                                {!! Form::label('invoice_scheme_id', __('invoice.invoice_scheme') . ' ') !!}
                                 {!! Form::select('invoice_scheme_id', $invoice_schemes, $default_invoice_schemes->id, [
-                                    'class' => 'form-control select2',
+                                    'class' => 'form-control ',
                                     'placeholder' => __('messages.please_select'),
+                                    'style' => 'border-radius:5px;padding: 0px 5px;',
                                 ]) !!}
                             </div>
                         </div>
                     @endif
                     @can('edit_invoice_number')
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 {!! Form::label(
                                     'invoice_no',
@@ -307,21 +396,45 @@
                     @endcan
 
                     @php
-                        $custom_field_1_label = !empty($custom_labels['sell']['custom_field_1']) ? $custom_labels['sell']['custom_field_1'] : '';
+                        $custom_field_1_label = !empty($custom_labels['sell']['custom_field_1'])
+                            ? $custom_labels['sell']['custom_field_1']
+                            : '';
 
-                        $is_custom_field_1_required = !empty($custom_labels['sell']['is_custom_field_1_required']) && $custom_labels['sell']['is_custom_field_1_required'] == 1 ? true : false;
+                        $is_custom_field_1_required =
+                            !empty($custom_labels['sell']['is_custom_field_1_required']) &&
+                            $custom_labels['sell']['is_custom_field_1_required'] == 1
+                                ? true
+                                : false;
 
-                        $custom_field_2_label = !empty($custom_labels['sell']['custom_field_2']) ? $custom_labels['sell']['custom_field_2'] : '';
+                        $custom_field_2_label = !empty($custom_labels['sell']['custom_field_2'])
+                            ? $custom_labels['sell']['custom_field_2']
+                            : '';
 
-                        $is_custom_field_2_required = !empty($custom_labels['sell']['is_custom_field_2_required']) && $custom_labels['sell']['is_custom_field_2_required'] == 1 ? true : false;
+                        $is_custom_field_2_required =
+                            !empty($custom_labels['sell']['is_custom_field_2_required']) &&
+                            $custom_labels['sell']['is_custom_field_2_required'] == 1
+                                ? true
+                                : false;
 
-                        $custom_field_3_label = !empty($custom_labels['sell']['custom_field_3']) ? $custom_labels['sell']['custom_field_3'] : '';
+                        $custom_field_3_label = !empty($custom_labels['sell']['custom_field_3'])
+                            ? $custom_labels['sell']['custom_field_3']
+                            : '';
 
-                        $is_custom_field_3_required = !empty($custom_labels['sell']['is_custom_field_3_required']) && $custom_labels['sell']['is_custom_field_3_required'] == 1 ? true : false;
+                        $is_custom_field_3_required =
+                            !empty($custom_labels['sell']['is_custom_field_3_required']) &&
+                            $custom_labels['sell']['is_custom_field_3_required'] == 1
+                                ? true
+                                : false;
 
-                        $custom_field_4_label = !empty($custom_labels['sell']['custom_field_4']) ? $custom_labels['sell']['custom_field_4'] : '';
+                        $custom_field_4_label = !empty($custom_labels['sell']['custom_field_4'])
+                            ? $custom_labels['sell']['custom_field_4']
+                            : '';
 
-                        $is_custom_field_4_required = !empty($custom_labels['sell']['is_custom_field_4_required']) && $custom_labels['sell']['is_custom_field_4_required'] == 1 ? true : false;
+                        $is_custom_field_4_required =
+                            !empty($custom_labels['sell']['is_custom_field_4_required']) &&
+                            $custom_labels['sell']['is_custom_field_4_required'] == 1
+                                ? true
+                                : false;
                     @endphp
                     @if (!empty($custom_field_1_label))
                         @php
@@ -399,7 +512,8 @@
                             </div>
                         </div>
                     @endif
-                    <div class="col-sm-3">
+
+                    <div class="col-sm-4">
                         <div class="form-group">
                             {!! Form::label('upload_document', __('purchase.attach_document') . ':') !!}
                             {!! Form::file('sell_document', [
@@ -415,7 +529,7 @@
                     <div class="clearfix"></div>
 
                     @if ((!empty($pos_settings['enable_sales_order']) && $sale_type != 'sales_order') || $is_order_request_enabled)
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 {!! Form::label('sales_order_ids', __('lang_v1.sales_order') . ':') !!}
                                 {!! Form::select('sales_order_ids[]', [], null, [
@@ -466,6 +580,9 @@
                         <input type="hidden" name="sell_price_tax" id="sell_price_tax"
                             value="{{ $business_details->sell_price_tax }}">
 
+                        <input type="hidden" name="business_enable_inline_tax" id="business_enable_inline_tax"
+                            value="{{ session()->get('business.enable_inline_tax') }}">
+
                         <!-- Keeps count of product rows -->
                         <input type="hidden" id="product_row_count" value="0">
                         @php
@@ -476,178 +593,266 @@
                         @endphp
                         <div class="table-responsive">
                             <table class="table table-condensed table-bordered table-striped table-responsive" id="pos_table">
-                                <thead>
+                                <thead
+                                    style="    background: #afddd32e;
+                                    font-size: medium;
+                                    color: #1b0544;">
                                     <tr>
-                                        <th class="text-center">
+                                        <th class="text-center" style="border: none;">
                                             @lang('sale.product')
                                         </th>
-                                        <th class="text-center">
+                                        <th class="text-center" style="border: none;">
                                             @lang('sale.qty')
                                         </th>
                                         @if (!empty($pos_settings['inline_service_staff']))
-                                            <th class="text-center">
+                                            <th class="text-center" style="border: none;">
                                                 @lang('restaurant.service_staff')
                                             </th>
                                         @endif
-                                        <th class="@if (!auth()->user()->can('edit_product_price_from_sale_screen')) hide @endif">
+                                        <th class="@if (!auth()->user()->can('edit_product_price_from_sale_screen')) hide @endif" style="border: none;">
                                             @lang('sale.unit_price')
                                         </th>
-                                        <th class="@if (!auth()->user()->can('edit_product_discount_from_sale_screen')) hide @endif">
+                                        <th class="@if (!auth()->user()->can('edit_product_discount_from_sale_screen')) hide @endif" style="border: none;">
                                             @lang('receipt.discount')
                                         </th>
-                                        <th class="text-center {{ $hide_tax }}">
+                                        <th class="text-center {{ $hide_tax }}" style="border: none;">
                                             @lang('sale.tax')
                                         </th>
-                                        <th class="text-center {{ $hide_tax }}">
+                                        <th class="text-center {{ $hide_tax }}" style="border: none;">
                                             @lang('sale.price_inc_tax')
                                         </th>
                                         @if (!empty($common_settings['enable_product_warranty']))
-                                            <th>@lang('lang_v1.warranty')</th>
+                                            <th style="border: none;">@lang('lang_v1.warranty')</th>
                                         @endif
-                                        <th class="text-center">
+                                        <th class="text-center" style="border: none;">
                                             @lang('sale.subtotal')
                                         </th>
-                                        <th class="text-center"><i class="fas fa-times" aria-hidden="true"></i></th>
+                                        <th class="text-center"
+                                            style="    font-size: x-small;border: none;
+                                        color: #c90000;">
+                                            <i class="fa fa-trash fa-2x cursor-pointer" aria-hidden="true"></i>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-condensed table-bordered table-striped">
-                                <tr>
-                                    <td>
-                                        <div class="pull-right">
-                                            <b>@lang('sale.item'):</b>
-                                            <span class="total_quantity">0</span>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <b>@lang('sale.total'): </b>
-                                            <span class="price_total">0</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+                        <hr style="width:100%;text-align:left;margin:0; border-top: 1px solid #ddd;margin:15px;">
+
                     </div>
                 @endcomponent
                 @component('components.widget', ['class' => 'box-solid'])
-                    <div class="col-md-4  @if ($sale_type == 'sales_order') hide @endif">
-                        <div class="form-group">
-                            {!! Form::label('discount_type', __('sale.discount_type') . ':*') !!}
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-info"></i>
-                                </span>
-                                {!! Form::select(
-                                    'discount_type',
-                                    ['fixed' => __('lang_v1.fixed'), 'percentage' => __('lang_v1.percentage')],
-                                    'percentage',
-                                    [
-                                        'class' => 'form-control',
-                                        'placeholder' => __('messages.please_select'),
-                                        'required',
-                                        'data-default' => 'percentage',
-                                    ],
-                                ) !!}
-                            </div>
-                        </div>
-                    </div>
-                    @php
-                        $max_discount = !is_null(auth()->user()->max_sales_discount_percent) ? auth()->user()->max_sales_discount_percent : '';
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-bordered table-striped" style="border: 0;">
+                            <tr
+                                style=" display: flex;
+                        text-align: start;
+                        border: 0;
+                        background: white;">
+                                <td
+                                    style="display: flex;
+                            text-align: start;
+                            border: 0;
+                            background: white;width: 100%;">
+                                    <div class="col-md-6 " style="font-size: x-large;">
+                                        <b>@lang('sale.item'):</b>
+                                        <span class="total_quantity" style="color: #05cf8b;">0</span>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
 
-                        //if sale discount is more than user max discount change it to max discount
-                        $sales_discount = $business_details->default_sales_discount;
-                        if ($max_discount != '' && $sales_discount > $max_discount) {
-                            $sales_discount = $max_discount;
-                        }
+                                    </div>
 
-                        $default_sales_tax = $business_details->default_sales_tax;
+                                </td>
+                                <td
+                                    style="display: flex;
+                        text-align: start;
+                        border: 0;
+                        background: white;width: 100%;">
 
-                        if ($sale_type == 'sales_order') {
-                            $sales_discount = 0;
-                            $default_sales_tax = null;
-                        }
-                    @endphp
-                    <div class="col-md-4 @if ($sale_type == 'sales_order') hide @endif">
-                        <div class="form-group">
-                            {!! Form::label('discount_amount', __('sale.discount_amount') . ':*') !!}
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-info"></i>
-                                </span>
-                                {!! Form::text('discount_amount', @num_format($sales_discount), [
-                                    'class' => 'form-control input_number',
-                                    'data-default' => $sales_discount,
-                                    'data-max-discount' => $max_discount,
-                                    'data-max-discount-error_msg' => __('lang_v1.max_discount_error_msg', [
-                                        'discount' => $max_discount != '' ? @num_format($max_discount) : '',
-                                    ]),
-                                ]) !!}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 @if ($sale_type == 'sales_order') hide @endif"><br>
-                        <b>@lang('sale.discount_amount'):</b>(-)
-                        <span class="display_currency" id="total_discount">0</span>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="col-md-12 well well-sm bg-light-gray @if (session('business.enable_rp') != 1 || $sale_type == 'sales_order') hide @endif">
-                        <input type="hidden" name="rp_redeemed" id="rp_redeemed" value="0">
-                        <input type="hidden" name="rp_redeemed_amount" id="rp_redeemed_amount" value="0">
-                        <div class="col-md-12">
-                            <h4>{{ session('business.rp_name') }}</h4>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('rp_redeemed_modal', __('lang_v1.redeemed') . ':') !!}
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-gift"></i>
-                                    </span>
-                                    {!! Form::number('rp_redeemed_modal', 0, [
-                                        'class' => 'form-control direct_sell_rp_input',
-                                        'data-amount_per_unit_point' => session('business.redeem_amount_per_unit_rp'),
-                                        'min' => 0,
-                                        'data-max_points' => 0,
-                                        'data-min_order_total' => session('business.min_order_total_for_redeem'),
-                                    ]) !!}
-                                    <input type="hidden" id="rp_name" value="{{ session('business.rp_name') }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>@lang('lang_v1.available'):</strong> <span id="available_rp">0</span></p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>@lang('lang_v1.redeemed_amount'):</strong> (-)<span id="rp_redeemed_amount_text">0</span></p>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="col-md-4  @if ($sale_type == 'sales_order') hide @endif">
-                        <div class="form-group">
-                            {!! Form::label('tax_rate_id', __('sale.order_tax') . ':*') !!}
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-info"></i>
-                                </span>
-                                {!! Form::select(
-                                    'tax_rate_id',
-                                    $taxes['tax_rates'],
-                                    $default_sales_tax,
-                                    ['placeholder' => __('messages.please_select'), 'class' => 'form-control', 'data-default' => $default_sales_tax],
-                                    $taxes['attributes'],
-                                ) !!}
 
-                                <input type="hidden" name="tax_calculation_amount" id="tax_calculation_amount"
-                                    value="@if (empty($edit)) {{ @num_format($business_details->tax_calculation_amount) }} @else {{ @num_format($transaction->tax?->amount) }} @endif"
-                                    data-default="{{ $business_details->tax_calculation_amount }}">
-                            </div>
-                        </div>
+                                </td>
+                            </tr>
+
+
+                            <tr style=" display: flex;text-align: start; border: 0; background: white;">
+                                <td style="display: flex;text-align: start;border: 0;background: white;width: 100%;">
+                                    <div class="col-md-12  @if ($sale_type == 'sales_order') hide @endif">
+                                        <div class="form-group">
+                                            {!! Form::label('discount_type', __('sale.discount_type') . ' ') !!} <span style="color: red; font-size:15px">*</span>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-info"></i>
+                                                </span>
+                                                {!! Form::select(
+                                                    'discount_type',
+                                                    ['fixed' => __('lang_v1.fixed'), 'percentage' => __('lang_v1.percentage')],
+                                                    'percentage',
+                                                    [
+                                                        'class' => 'form-control',
+                                                        'placeholder' => __('messages.please_select'),
+                                                        'required',
+                                                        'data-default' => 'percentage',
+                                                    ],
+                                                ) !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @php
+                                        $max_discount = !is_null(auth()->user()->max_sales_discount_percent)
+                                            ? auth()->user()->max_sales_discount_percent
+                                            : '';
+
+                                        //if sale discount is more than user max discount change it to max discount
+                                        $sales_discount = $business_details->default_sales_discount;
+                                        if ($max_discount != '' && $sales_discount > $max_discount) {
+                                            $sales_discount = $max_discount;
+                                        }
+
+                                        $default_sales_tax = $business_details->default_sales_tax;
+
+                                        if ($sale_type == 'sales_order') {
+                                            $sales_discount = 0;
+                                            $default_sales_tax = null;
+                                        }
+                                    @endphp
+                                </td>
+                                <td style="display: flex;text-align: start;border: 0;background: white;width: 100%;">
+                                    <div class="col-md-12 @if ($sale_type == 'sales_order') hide @endif">
+                                        <div class="form-group">
+                                            {!! Form::label('discount_amount', __('sale.discount_amount') . ' ') !!} <span style="color: red; font-size:15px">*</span>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-info"></i>
+                                                </span>
+                                                {!! Form::text('discount_amount', @num_format($sales_discount), [
+                                                    'class' => 'form-control input_number',
+                                                    'data-default' => $sales_discount,
+                                                    'data-max-discount' => $max_discount,
+                                                    'data-max-discount-error_msg' => __('lang_v1.max_discount_error_msg', [
+                                                        'discount' => $max_discount != '' ? @num_format($max_discount) : '',
+                                                    ]),
+                                                ]) !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="display: flex;text-align: start;border: 0;background: white; width: 100%;">
+                                    <div class="col-md-12 @if ($sale_type == 'sales_order') hide @endif"><br>
+                                        <b>@lang('sale.discount_amount'):</b>(-)
+                                        <span class="display_currency" id="total_discount">0</span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr style=" display: flex;text-align: start; border: 0; background: white;">
+
+                                <td style="display: flex;text-align: start;border: 0;background: white;width: 100%;">
+
+                                    <div class="col-md-8  @if ($sale_type == 'sales_order') hide @endif">
+                                        <div class="form-group">
+                                            {!! Form::label('tax_rate_id', __('sale.order_tax') . '') !!} <span style="color: red; font-size:15px">*</span>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-info"></i>
+                                                </span>
+                                                {!! Form::select(
+                                                    'tax_rate_id',
+                                                    $taxes['tax_rates'],
+                                                    $default_sales_tax,
+                                                
+                                                    [
+                                                        'placeholder' => __('messages.please_select'),
+                                                        'style' => 'border-radius: 5px 0px 0px 5px;    padding: 1px;',
+                                                        'class' => 'form-control',
+                                                        'data-default' => $default_sales_tax,
+                                                    ],
+                                                    $taxes['attributes'],
+                                                ) !!}
+
+                                                <input type="hidden" name="tax_calculation_amount"
+                                                    id="tax_calculation_amount"
+                                                    value="@if (empty($edit)) {{ @num_format($business_details->tax_calculation_amount) }} @else {{ @num_format($transaction->tax?->amount) }} @endif"
+                                                    data-default="{{ $business_details->tax_calculation_amount }}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                </td>
+                                <td class="@if (session('business.enable_rp') != 1 || $sale_type == 'sales_order') hide @endif"
+                                    style="display: flex;text-align: start;border: 0;background: white;width: 100%;">
+                                    <div
+                                        class="col-md-12 well well-sm bg-light-gray @if (session('business.enable_rp') != 1 || $sale_type == 'sales_order') hide @endif">
+                                        <input type="hidden" name="rp_redeemed" id="rp_redeemed" value="0">
+                                        <input type="hidden" name="rp_redeemed_amount" id="rp_redeemed_amount"
+                                            value="0">
+                                        <div class="col-md-12">
+                                            <h4>{{ session('business.rp_name') }}</h4>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {!! Form::label('rp_redeemed_modal', __('lang_v1.redeemed') . ':') !!}
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-gift"></i>
+                                                    </span>
+                                                    {!! Form::number('rp_redeemed_modal', 0, [
+                                                        'class' => 'form-control direct_sell_rp_input',
+                                                        'data-amount_per_unit_point' => session('business.redeem_amount_per_unit_rp'),
+                                                        'min' => 0,
+                                                        'data-max_points' => 0,
+                                                        'data-min_order_total' => session('business.min_order_total_for_redeem'),
+                                                    ]) !!}
+                                                    <input type="hidden" id="rp_name"
+                                                        value="{{ session('business.rp_name') }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p><strong>@lang('lang_v1.available'):</strong> <span id="available_rp">0</span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p><strong>@lang('lang_v1.redeemed_amount'):</strong> (-)<span
+                                                    id="rp_redeemed_amount_text">0</span></p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="display: flex;text-align: start;border: 0;background: white; width: 100%;">
+
+                                    <div class="row">
+                                        <div
+                                            class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif">
+                                            <b>@lang('sale.total-without-tax'):</b>
+
+                                            <span class="display_currency" id="total-without-tax">0</span>
+                                        </div>
+
+
+                                        <div class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif"
+                                            style="padding-top: 3px;">
+                                            <b>@lang('sale.order_tax'):</b>(+)
+
+                                            <span class="display_currency" id="order_tax">0</span>
+                                        </div>
+
+                                        <div class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif"
+                                            style="padding-top: 3px;">
+                                            <b>@lang('sale.total-with-tax'): </b>
+                                            <span id="total_payable">0</span>
+                                        </div>
+                                    </div>
+
+
+
+
+                                </td>
+
+                            </tr>
+                        </table>
                     </div>
-                    <div class="col-md-4 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif">
-                        <b>@lang('sale.order_tax'):</b>(+)
-                        <span class="display_currency" id="order_tax">0</span>
-                    </div>
+
+
+
 
                     <div class="col-md-12">
                         <div class="form-group">
@@ -720,25 +925,55 @@
                         </div>
                     </div>
                     @php
-                        $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1']) ? $custom_labels['shipping']['custom_field_1'] : '';
+                        $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1'])
+                            ? $custom_labels['shipping']['custom_field_1']
+                            : '';
 
-                        $is_shipping_custom_field_1_required = !empty($custom_labels['shipping']['is_custom_field_1_required']) && $custom_labels['shipping']['is_custom_field_1_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_1_required =
+                            !empty($custom_labels['shipping']['is_custom_field_1_required']) &&
+                            $custom_labels['shipping']['is_custom_field_1_required'] == 1
+                                ? true
+                                : false;
 
-                        $shipping_custom_label_2 = !empty($custom_labels['shipping']['custom_field_2']) ? $custom_labels['shipping']['custom_field_2'] : '';
+                        $shipping_custom_label_2 = !empty($custom_labels['shipping']['custom_field_2'])
+                            ? $custom_labels['shipping']['custom_field_2']
+                            : '';
 
-                        $is_shipping_custom_field_2_required = !empty($custom_labels['shipping']['is_custom_field_2_required']) && $custom_labels['shipping']['is_custom_field_2_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_2_required =
+                            !empty($custom_labels['shipping']['is_custom_field_2_required']) &&
+                            $custom_labels['shipping']['is_custom_field_2_required'] == 1
+                                ? true
+                                : false;
 
-                        $shipping_custom_label_3 = !empty($custom_labels['shipping']['custom_field_3']) ? $custom_labels['shipping']['custom_field_3'] : '';
+                        $shipping_custom_label_3 = !empty($custom_labels['shipping']['custom_field_3'])
+                            ? $custom_labels['shipping']['custom_field_3']
+                            : '';
 
-                        $is_shipping_custom_field_3_required = !empty($custom_labels['shipping']['is_custom_field_3_required']) && $custom_labels['shipping']['is_custom_field_3_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_3_required =
+                            !empty($custom_labels['shipping']['is_custom_field_3_required']) &&
+                            $custom_labels['shipping']['is_custom_field_3_required'] == 1
+                                ? true
+                                : false;
 
-                        $shipping_custom_label_4 = !empty($custom_labels['shipping']['custom_field_4']) ? $custom_labels['shipping']['custom_field_4'] : '';
+                        $shipping_custom_label_4 = !empty($custom_labels['shipping']['custom_field_4'])
+                            ? $custom_labels['shipping']['custom_field_4']
+                            : '';
 
-                        $is_shipping_custom_field_4_required = !empty($custom_labels['shipping']['is_custom_field_4_required']) && $custom_labels['shipping']['is_custom_field_4_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_4_required =
+                            !empty($custom_labels['shipping']['is_custom_field_4_required']) &&
+                            $custom_labels['shipping']['is_custom_field_4_required'] == 1
+                                ? true
+                                : false;
 
-                        $shipping_custom_label_5 = !empty($custom_labels['shipping']['custom_field_5']) ? $custom_labels['shipping']['custom_field_5'] : '';
+                        $shipping_custom_label_5 = !empty($custom_labels['shipping']['custom_field_5'])
+                            ? $custom_labels['shipping']['custom_field_5']
+                            : '';
 
-                        $is_shipping_custom_field_5_required = !empty($custom_labels['shipping']['is_custom_field_5_required']) && $custom_labels['shipping']['is_custom_field_5_required'] == 1 ? true : false;
+                        $is_shipping_custom_field_5_required =
+                            !empty($custom_labels['shipping']['is_custom_field_5_required']) &&
+                            $custom_labels['shipping']['is_custom_field_5_required'] == 1
+                                ? true
+                                : false;
                     @endphp
 
                     @if (!empty($shipping_custom_label_1))
@@ -866,6 +1101,9 @@
                             </div>
                         </div>
                     @endif
+
+
+
                     <div class="col-md-4">
                         <div class="form-group">
                             {!! Form::label('shipping_documents', __('lang_v1.shipping_documents') . ':') !!}
@@ -965,6 +1203,8 @@
                         </div>
                     </div>
                 @endcomponent
+
+
             </div>
         </div>
         @if (!empty($common_settings['is_enabled_export']) && $sale_type != 'sales_order')
@@ -1011,8 +1251,27 @@
                 @component('components.widget', [
                     'class' => 'box-solid',
                     'id' => $payment_body_id,
-                    'title' => __('purchase.add_payment'),
+                    // 'title' => __('purchase.add_payment'),
                 ])
+                    <nav class="navbar navbar-light bg-light" style="background: #e4e9ed69;">
+
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span class="navbar-brand mb-0 h1" style="margin: 5px;"> @lang('purchase.add_payment')</span>
+                            </div>
+                            <div class="col-sm-4" style="    margin-top: 21px;">
+
+                                <strong style="margin: 5px;">@lang('lang_v1.advance_balance'):</strong> <span id="advance_balance_text"
+                                    style="color: #05cf8b;"></span>
+                                {!! Form::hidden('advance_balance', null, [
+                                    'id' => 'advance_balance',
+                                    'data-error-msg' => __('lang_v1.required_advance_balance_not_available'),
+                                ]) !!}
+
+
+                            </div>
+                        </div>
+                    </nav>
                     @if ($is_enabled_download_pdf)
                         <div class="well row">
                             <div class="col-md-6">
@@ -1049,7 +1308,7 @@
                     @endif
                     @if (empty($status) || !in_array($status, ['quotation', 'draft']))
                         <div class="payment_row" @if ($is_enabled_download_pdf) id="payment_rows_div" @endif>
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-md-12 mb-12">
                                     <strong>@lang('lang_v1.advance_balance'):</strong> <span id="advance_balance_text"></span>
                                     {!! Form::hidden('advance_balance', null, [
@@ -1057,7 +1316,7 @@
                                         'data-error-msg' => __('lang_v1.required_advance_balance_not_available'),
                                     ]) !!}
                                 </div>
-                            </div>
+                            </div> --}}
                             @include('sale_pos.partials.payment_row_form', [
                                 'row_index' => 0,
                                 'show_date' => true,
@@ -1065,14 +1324,18 @@
                             ])
                         </div>
                         <div class="payment_row">
+                            {{-- <br />
+                            <br />
+                            <hr style="width:100%;text-align:left;margin:0; border-top: 1px solid #ddd;margin-bottom: 10px;"> --}}
+                            <br />
                             <div class="row">
-                                <div class="col-md-12">
-                                    <hr>
-                                    <strong>
+                                <div class="col-md-6" style="text-align: center;">
+
+                                    <strong style="font-size: x-large;">
                                         @lang('lang_v1.change_return'):
                                     </strong>
-                                    <br />
-                                    <span class="lead text-bold change_return_span">0</span>
+
+                                    <span class="lead text-bold change_return_span" style="color: #05cf8b;">0</span>
                                     {!! Form::hidden('change_return', $change_return['amount'], [
                                         'class' => 'form-control change_return input_number',
                                         'required',
@@ -1083,17 +1346,25 @@
                                         <input type="hidden" name="change_return_id" value="{{ $change_return['id'] }}">
                                     @endif
                                 </div>
+                                <div class="col-sm-6" style="text-align: center;">
+                                    <strong style="font-size: x-large;">@lang('lang_v1.balance'):</strong> <span class="balance_due"
+                                        style="font-size: x-large;color: #05cf8b;">0.00</span>
+                                </div>
                             </div>
                             <div class="row hide payment_row" id="change_return_payment_data">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        {!! Form::label('change_return_method', __('lang_v1.change_return_payment_method') . ':*') !!}
+                                        {!! Form::label('change_return_method', __('lang_v1.change_return_payment_method') . ' ') !!} <span style="color: red; font-size:15px">*</span>
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="fas fa-money-bill-alt"></i>
                                             </span>
                                             @php
-                                                $_payment_method = empty($change_return['method']) && array_key_exists('cash', $payment_types) ? 'cash' : $change_return['method'];
+                                                $_payment_method =
+                                                    empty($change_return['method']) &&
+                                                    array_key_exists('cash', $payment_types)
+                                                        ? 'cash'
+                                                        : $change_return['method'];
 
                                                 $_payment_types = $payment_types;
                                                 if (isset($_payment_types['advance'])) {
@@ -1131,13 +1402,11 @@
                                     'row_index' => 'change_return',
                                 ])
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="pull-right"><strong>@lang('lang_v1.balance'):</strong> <span
-                                            class="balance_due">0.00</span></div>
-                                </div>
-                            </div>
+                            <br />
+                            <br />
+                            <hr style="width:100%;text-align:left;margin:0; border-top: 1px solid #ddd;margin-bottom: 10px;">
+
+
                         </div>
                     @endif
                 @endcomponent
@@ -1151,7 +1420,6 @@
                 <button type="button" id="save-and-print" class="btn btn-success btn-big">@lang('lang_v1.save_and_print')</button>
             </div>
         </div>
-
         @if (empty($pos_settings['disable_recurring_invoice']))
             @include('sale_pos.partials.recurring_invoice_modal')
         @endif
@@ -1179,7 +1447,7 @@
     <script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/opening_stock.js?v=' . $asset_v) }}"></script>
-
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <!-- Call restaurant module if defined -->
     @if (in_array('tables', $enabled_modules) ||
             in_array('modifiers', $enabled_modules) ||
