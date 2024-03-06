@@ -5,10 +5,15 @@ namespace Modules\Connector\Http\Controllers\Api;
 use App\CashRegister;
 use App\CashRegisterTransaction;
 use App\Transaction;
+use App\Utils\CashRegisterUtil;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Modules\Connector\Transformers\CommonResource;
+use DB;
+
 
 /**
  * @group Cash register management
@@ -18,6 +23,18 @@ use Modules\Connector\Transformers\CommonResource;
  */
 class CashRegisterController extends ApiController
 {
+
+
+    protected $cashRegisterUtil;
+
+
+
+    public function __construct(CashRegisterUtil $cashRegisterUtil)
+    {
+        $this->cashRegisterUtil = $cashRegisterUtil;
+    }
+
+
     /**
      * List Cash Registers
      *
@@ -119,29 +136,29 @@ class CashRegisterController extends ApiController
         $filters = request()->only(['status', 'user_id', 'location_id', 'start_date', 'end_date', 'per_page']);
 
         $query = CashRegister::where('business_id', $business_id)
-                            ->with(['cash_register_transactions']);
+            ->with(['cash_register_transactions']);
 
-        if (! empty($filters['status']) && in_array($filters['status'], ['open', 'close'])) {
+        if (!empty($filters['status']) && in_array($filters['status'], ['open', 'close'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (! empty($filters['user_id'])) {
+        if (!empty($filters['user_id'])) {
             $query->where('user_id', $filters['user_id']);
         }
 
-        if (! empty($filters['location_id'])) {
+        if (!empty($filters['location_id'])) {
             $query->where('location_id', $filters['location_id']);
         }
 
-        if (! empty($filters['start_date'])) {
+        if (!empty($filters['start_date'])) {
             $query->whereDate('created_at', '>=', $filters['start_date']);
         }
 
-        if (! empty($filters['end_date'])) {
+        if (!empty($filters['end_date'])) {
             $query->whereDate('created_at', '<=', $filters['end_date']);
         }
 
-        $perPage = ! empty($filters['per_page']) ? $filters['per_page'] : $this->perPage;
+        $perPage = !empty($filters['per_page']) ? $filters['per_page'] : $this->perPage;
         if ($perPage == -1) {
             $cash_registers = $query->get();
         } else {
@@ -184,16 +201,18 @@ class CashRegisterController extends ApiController
         $user = Auth::user();
         $business_id = $user->business_id;
 
-        $register_data = $request->only(['status', 'location_id',
-            'created_at', 'closed_at', 'closing_note', 'closing_amount', 'total_card_slips', 'total_cheques', ]);
+        $register_data = $request->only([
+            'status', 'location_id',
+            'created_at', 'closed_at', 'closing_note', 'closing_amount', 'total_card_slips', 'total_cheques',
+        ]);
         $register_data['business_id'] = $business_id;
         $register_data['user_id'] = $user->id;
 
         $register = CashRegister::create($register_data);
 
-        $initial_amount = ! empty($request->input('initial_amount')) ? $request->input('initial_amount') : 0;
+        $initial_amount = !empty($request->input('initial_amount')) ? $request->input('initial_amount') : 0;
         $cash_register_payments = [];
-        if (! empty($initial_amount)) {
+        if (!empty($initial_amount)) {
             $cash_register_payments[] = new CashRegisterTransaction([
                 'amount' => $initial_amount,
                 'pay_method' => 'cash',
@@ -206,12 +225,12 @@ class CashRegisterController extends ApiController
         $transaction_ids = explode(',', $transaction_ids_string);
 
         $sells = Transaction::where('business_id', $business_id)
-                            ->whereIn('id', $transaction_ids)
-                            ->where('status', 'final')
-                            ->where('type', 'sell')
-                            ->where('created_by', $user->id)
-                            ->with(['payment_lines'])
-                            ->get();
+            ->whereIn('id', $transaction_ids)
+            ->where('status', 'final')
+            ->where('type', 'sell')
+            ->where('created_by', $user->id)
+            ->with(['payment_lines'])
+            ->get();
 
         foreach ($sells as $sell) {
             foreach ($sell->payment_lines as $payment) {
@@ -225,7 +244,7 @@ class CashRegisterController extends ApiController
             }
         }
 
-        if (! empty($cash_register_payments)) {
+        if (!empty($cash_register_payments)) {
             $register->cash_register_transactions()->saveMany($cash_register_payments);
         }
 
@@ -287,10 +306,45 @@ class CashRegisterController extends ApiController
 
         $register_ids = explode(',', $register_ids);
         $cash_registers = CashRegister::where('business_id', $business_id)
-                            ->whereIn('id', $register_ids)
-                            ->with(['cash_register_transactions'])
-                            ->get();
+            ->whereIn('id', $register_ids)
+            ->with(['cash_register_transactions'])
+            ->get();
 
         return CommonResource::collection($cash_registers);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $user = Auth::user();
+            DB::beginTransaction();
+
+
+            $input = $request->only(['closing_amount', 'total_card_slips', 'total_cheques', 'closing_note']);
+            $input['closing_amount'] = $this->cashRegisterUtil->num_uf($input['closing_amount']);
+            $user_id = $user->id;
+            $input['closed_at'] = Carbon::now()->format('Y-m-d H:i:s');
+            $input['status'] = 'close';
+            $input['denominations'] = !empty(request()->input('denominations')) ? json_encode(request()->input('denominations')) : null;
+
+            $register = CashRegister::find($id)->where('user_id', $user_id)
+                ->where('status', 'open')
+                ->update($input);
+
+            DB::commit();
+
+            return new CommonResource($register);
+        } catch (ModelNotFoundException $e) {
+            DB::rollback();
+
+            return $this->modelNotFoundExceptionResult($e);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+
+            return $this->otherExceptions($e);
+        }
     }
 }
