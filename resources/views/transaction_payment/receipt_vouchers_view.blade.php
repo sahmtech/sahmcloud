@@ -32,7 +32,7 @@
                               padding-top: 37px;
                     align-items: center;
                     justify-content: end;
-                    
+                   
                                 font-weight: bold;
                     ">
                     @if (!empty($transaction->business->tax_number_1))
@@ -48,7 +48,8 @@
                     style="    display: flex;
                             justify-content: center;
                             justify-content: center;
-    margin-top: -35px;
+    /* margin-top: -35px; */
+    margin-top: -10px;
     margin-bottom: 24px;
                 ">
                     @if (!empty($transaction?->contact->tax_number))
