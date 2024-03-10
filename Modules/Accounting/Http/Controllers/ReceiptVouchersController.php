@@ -42,7 +42,7 @@ class ReceiptVouchersController extends Controller
             ]);
         }
 
-        $transactions = TransactionPayment::with('transaction')->where('payment_type', 'credit')
+        $transactions = TransactionPayment::with('transaction')->where('business_id', $business_id)->where('payment_type', 'credit')
             ->orWhereHas('transaction', function ($q) {
                 $q->where('type', 'sell');
             })

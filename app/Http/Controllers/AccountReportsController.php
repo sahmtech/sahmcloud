@@ -35,14 +35,14 @@ class AccountReportsController extends Controller
      */
     public function balanceSheet()
     {
-        if (! auth()->user()->can('account.access')) {
+        if (!auth()->user()->can('account.access')) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = session()->get('user.business_id');
         if (request()->ajax()) {
-            $end_date = ! empty(request()->input('end_date')) ? $this->transactionUtil->uf_date(request()->input('end_date')) : \Carbon::now()->format('Y-m-d');
-            $location_id = ! empty(request()->input('location_id')) ? request()->input('location_id') : null;
+            $end_date = !empty(request()->input('end_date')) ? $this->transactionUtil->uf_date(request()->input('end_date')) : \Carbon::now()->format('Y-m-d');
+            $location_id = !empty(request()->input('location_id')) ? request()->input('location_id') : null;
 
             $purchase_details = $this->transactionUtil->getPurchaseTotals(
                 $business_id,
@@ -100,15 +100,17 @@ class AccountReportsController extends Controller
      */
     public function trialBalance()
     {
-        if (! auth()->user()->can('account.access')) {
+
+        if (!auth()->user()->can('account.access')) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = session()->get('user.business_id');
 
         if (request()->ajax()) {
-            $end_date = ! empty(request()->input('end_date')) ? $this->transactionUtil->uf_date(request()->input('end_date')) : \Carbon::now()->format('Y-m-d');
-            $location_id = ! empty(request()->input('location_id')) ? request()->input('location_id') : null;
+          
+            $end_date = !empty(request()->input('end_date')) ? $this->transactionUtil->uf_date(request()->input('end_date')) : \Carbon::now()->format('Y-m-d');
+            $location_id = !empty(request()->input('location_id')) ? request()->input('location_id') : null;
 
             $purchase_details = $this->transactionUtil->getPurchaseTotals(
                 $business_id,
@@ -133,7 +135,7 @@ class AccountReportsController extends Controller
                 'account_balances' => $account_details,
                 'capital_account_details' => null,
             ];
-
+          
             return $output;
         }
 
@@ -155,10 +157,10 @@ class AccountReportsController extends Controller
             '=',
             'accounts.id'
         )
-                                // ->NotClosed()
-                                ->whereNull('AT.deleted_at')
-                                ->where('business_id', $business_id)
-                                ->whereDate('AT.operation_date', '<=', $end_date);
+            // ->NotClosed()
+            ->whereNull('AT.deleted_at')
+            ->where('business_id', $business_id)
+            ->whereDate('AT.operation_date', '<=', $end_date);
 
         // if ($account_type == 'others') {
         //    $query->NotCapital();
@@ -170,14 +172,14 @@ class AccountReportsController extends Controller
         $account_ids = [];
         if ($permitted_locations != 'all') {
             $locations = BusinessLocation::where('business_id', $business_id)
-                            ->whereIn('id', $permitted_locations)
-                            ->get();
+                ->whereIn('id', $permitted_locations)
+                ->get();
 
             foreach ($locations as $location) {
-                if (! empty($location->default_payment_accounts)) {
+                if (!empty($location->default_payment_accounts)) {
                     $default_payment_accounts = json_decode($location->default_payment_accounts, true);
                     foreach ($default_payment_accounts as $key => $account) {
-                        if (! empty($account['is_enabled']) && ! empty($account['account'])) {
+                        if (!empty($account['is_enabled']) && !empty($account['account'])) {
                             $account_ids[] = $account['account'];
                         }
                     }
@@ -191,13 +193,13 @@ class AccountReportsController extends Controller
             $query->whereIn('accounts.id', $account_ids);
         }
 
-        if (! empty($location_id)) {
+        if (!empty($location_id)) {
             $location = BusinessLocation::find($location_id);
-            if (! empty($location->default_payment_accounts)) {
+            if (!empty($location->default_payment_accounts)) {
                 $default_payment_accounts = json_decode($location->default_payment_accounts, true);
                 $account_ids = [];
                 foreach ($default_payment_accounts as $key => $account) {
-                    if (! empty($account['is_enabled']) && ! empty($account['account'])) {
+                    if (!empty($account['is_enabled']) && !empty($account['account'])) {
                         $account_ids[] = $account['account'];
                     }
                 }
@@ -206,11 +208,13 @@ class AccountReportsController extends Controller
             }
         }
 
-        $account_details = $query->select(['name',
-            DB::raw("SUM( IF(AT.type='credit', amount, -1*amount) ) as balance"), ])
-                                ->groupBy('accounts.id')
-                                ->get()
-                                ->pluck('balance', 'name');
+        $account_details = $query->select([
+            'name',
+            DB::raw("SUM( IF(AT.type='credit', amount, -1*amount) ) as balance"),
+        ])
+            ->groupBy('accounts.id')
+            ->get()
+            ->pluck('balance', 'name');
 
         return $account_details;
     }
@@ -222,7 +226,7 @@ class AccountReportsController extends Controller
      */
     public function paymentAccountReport()
     {
-        if (! auth()->user()->can('account.access')) {
+        if (!auth()->user()->can('account.access')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -235,125 +239,125 @@ class AccountReportsController extends Controller
                 '=',
                 'T.id'
             )
-                                    ->leftjoin('accounts as A', 'transaction_payments.account_id', '=', 'A.id')
-                                    ->where('transaction_payments.business_id', $business_id)
-                                    ->whereNull('transaction_payments.parent_id')
-                                    ->where('transaction_payments.method', '!=', 'advance')
-                                    ->leftjoin('contacts as c', 'transaction_payments.payment_for', '=', 'c.id')
-                                    ->select([
-                                        'paid_on',
-                                        'payment_ref_no',
-                                        'T.ref_no',
-                                        'T.invoice_no',
-                                        'T.type',
-                                        'T.id as transaction_id',
-                                        'A.name as account_name',
-                                        'A.account_number',
-                                        'transaction_payments.id as payment_id',
-                                        'transaction_payments.account_id',
-                                        'c.name as contact_name',
-                                        'c.type as contact_type',
-                                        'transaction_payments.is_advance',
-                                        'transaction_payments.amount',
-                                    ]);
+                ->leftjoin('accounts as A', 'transaction_payments.account_id', '=', 'A.id')
+                ->where('transaction_payments.business_id', $business_id)
+                ->whereNull('transaction_payments.parent_id')
+                ->where('transaction_payments.method', '!=', 'advance')
+                ->leftjoin('contacts as c', 'transaction_payments.payment_for', '=', 'c.id')
+                ->select([
+                    'paid_on',
+                    'payment_ref_no',
+                    'T.ref_no',
+                    'T.invoice_no',
+                    'T.type',
+                    'T.id as transaction_id',
+                    'A.name as account_name',
+                    'A.account_number',
+                    'transaction_payments.id as payment_id',
+                    'transaction_payments.account_id',
+                    'c.name as contact_name',
+                    'c.type as contact_type',
+                    'transaction_payments.is_advance',
+                    'transaction_payments.amount',
+                ]);
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
                 $query->whereIn('T.location_id', $permitted_locations);
             }
 
-            $start_date = ! empty(request()->input('start_date')) ? request()->input('start_date') : '';
-            $end_date = ! empty(request()->input('end_date')) ? request()->input('end_date') : '';
+            $start_date = !empty(request()->input('start_date')) ? request()->input('start_date') : '';
+            $end_date = !empty(request()->input('end_date')) ? request()->input('end_date') : '';
 
-            if (! empty($start_date) && ! empty($end_date)) {
+            if (!empty($start_date) && !empty($end_date)) {
                 $query->whereBetween(DB::raw('date(paid_on)'), [$start_date, $end_date]);
             }
 
-            $account_id = ! empty(request()->input('account_id')) ? request()->input('account_id') : '';
+            $account_id = !empty(request()->input('account_id')) ? request()->input('account_id') : '';
 
             if ($account_id == 'none') {
                 $query->whereNull('account_id');
-            } elseif (! empty($account_id)) {
+            } elseif (!empty($account_id)) {
                 $query->where('account_id', $account_id);
             }
 
             return DataTables::of($query)
-                    ->editColumn('paid_on', function ($row) {
-                        return $this->transactionUtil->format_date($row->paid_on, true);
-                    })
-                    ->editColumn('amount', function ($row) {
-                        return $this->transactionUtil->num_f($row->amount, true);
-                    })
-                    ->addColumn('details', function ($row) {
-                        $details = '';
+                ->editColumn('paid_on', function ($row) {
+                    return $this->transactionUtil->format_date($row->paid_on, true);
+                })
+                ->editColumn('amount', function ($row) {
+                    return $this->transactionUtil->num_f($row->amount, true);
+                })
+                ->addColumn('details', function ($row) {
+                    $details = '';
 
-                        if ($row->contact_type == 'supplier') {
-                            $details = '<b>'.__('role.supplier').':</b> '.$row->contact_name;
-                        } else {
-                            $details = '<b>'.__('role.customer').':</b> '.$row->contact_name;
-                        }
+                    if ($row->contact_type == 'supplier') {
+                        $details = '<b>' . __('role.supplier') . ':</b> ' . $row->contact_name;
+                    } else {
+                        $details = '<b>' . __('role.customer') . ':</b> ' . $row->contact_name;
+                    }
 
-                        return $details;
-                    })
-                    ->addColumn('action', function ($row) {
-                        $action = '<button type="button" class="btn btn-info 
+                    return $details;
+                })
+                ->addColumn('action', function ($row) {
+                    $action = '<button type="button" class="btn btn-info 
                         btn-xs btn-modal"
                         data-container=".view_modal" 
-                        data-href="'.action([\App\Http\Controllers\AccountReportsController::class, 'getLinkAccount'], [$row->payment_id]).'">'.__('account.link_account').'</button>';
+                        data-href="' . action([\App\Http\Controllers\AccountReportsController::class, 'getLinkAccount'], [$row->payment_id]) . '">' . __('account.link_account') . '</button>';
 
-                        return $action;
-                    })
-                    ->addColumn('account', function ($row) {
-                        $account = '';
-                        if (! empty($row->account_id)) {
-                            $account = $row->account_name.' - '.$row->account_number;
-                        }
+                    return $action;
+                })
+                ->addColumn('account', function ($row) {
+                    $account = '';
+                    if (!empty($row->account_id)) {
+                        $account = $row->account_name . ' - ' . $row->account_number;
+                    }
 
-                        return $account;
-                    })
-                    ->addColumn('transaction_number', function ($row) {
-                        $html = $row->ref_no;
-                        if ($row->type == 'sell') {
-                            $html = '<button type="button" class="btn btn-link btn-modal"
-                                    data-href="'.action([\App\Http\Controllers\SellController::class, 'show'], [$row->transaction_id]).'" data-container=".view_modal">'.$row->invoice_no.'</button>';
-                        } elseif ($row->type == 'purchase') {
-                            $html = '<button type="button" class="btn btn-link btn-modal"
-                                    data-href="'.action([\App\Http\Controllers\PurchaseController::class, 'show'], [$row->transaction_id]).'" data-container=".view_modal">'.$row->ref_no.'</button>';
-                        }
+                    return $account;
+                })
+                ->addColumn('transaction_number', function ($row) {
+                    $html = $row->ref_no;
+                    if ($row->type == 'sell') {
+                        $html = '<button type="button" class="btn btn-link btn-modal"
+                                    data-href="' . action([\App\Http\Controllers\SellController::class, 'show'], [$row->transaction_id]) . '" data-container=".view_modal">' . $row->invoice_no . '</button>';
+                    } elseif ($row->type == 'purchase') {
+                        $html = '<button type="button" class="btn btn-link btn-modal"
+                                    data-href="' . action([\App\Http\Controllers\PurchaseController::class, 'show'], [$row->transaction_id]) . '" data-container=".view_modal">' . $row->ref_no . '</button>';
+                    }
 
-                        return $html;
-                    })
-                    ->editColumn('type', function ($row) {
-                        $type = $row->type;
-                        if ($row->type == 'sell') {
-                            $type = __('sale.sale');
-                        } elseif ($row->type == 'purchase') {
-                            $type = __('lang_v1.purchase');
-                        } elseif ($row->type == 'expense') {
-                            $type = __('lang_v1.expense');
-                        } elseif ($row->is_advance == 1) {
-                            $type = __('lang_v1.advance');
-                        }
+                    return $html;
+                })
+                ->editColumn('type', function ($row) {
+                    $type = $row->type;
+                    if ($row->type == 'sell') {
+                        $type = __('sale.sale');
+                    } elseif ($row->type == 'purchase') {
+                        $type = __('lang_v1.purchase');
+                    } elseif ($row->type == 'expense') {
+                        $type = __('lang_v1.expense');
+                    } elseif ($row->is_advance == 1) {
+                        $type = __('lang_v1.advance');
+                    }
 
-                        return $type;
-                    })
-                    ->filterColumn('account', function ($query, $keyword) {
-                        $query->where('A.name', 'like', ["%{$keyword}%"])
-                            ->orWhere('account_number', 'like', ["%{$keyword}%"]);
-                    })
-                    ->filterColumn('transaction_number', function ($query, $keyword) {
-                        $query->where('T.invoice_no', 'like', ["%{$keyword}%"])
-                            ->orWhere('T.ref_no', 'like', ["%{$keyword}%"]);
-                    })
-                    ->rawColumns(['action', 'transaction_number', 'details'])
-                    ->make(true);
+                    return $type;
+                })
+                ->filterColumn('account', function ($query, $keyword) {
+                    $query->where('A.name', 'like', ["%{$keyword}%"])
+                        ->orWhere('account_number', 'like', ["%{$keyword}%"]);
+                })
+                ->filterColumn('transaction_number', function ($query, $keyword) {
+                    $query->where('T.invoice_no', 'like', ["%{$keyword}%"])
+                        ->orWhere('T.ref_no', 'like', ["%{$keyword}%"]);
+                })
+                ->rawColumns(['action', 'transaction_number', 'details'])
+                ->make(true);
         }
 
         $accounts = Account::forDropdown($business_id, false);
         $accounts = ['' => __('messages.all'), 'none' => __('lang_v1.none')] + $accounts;
 
         return view('account_reports.payment_account_report')
-                ->with(compact('accounts'));
+            ->with(compact('accounts'));
     }
 
     /**
@@ -363,7 +367,7 @@ class AccountReportsController extends Controller
      */
     public function getLinkAccount($id)
     {
-        if (! auth()->user()->can('account.access')) {
+        if (!auth()->user()->can('account.access')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -385,7 +389,7 @@ class AccountReportsController extends Controller
      */
     public function postLinkAccount(Request $request)
     {
-        if (! auth()->user()->can('account.access')) {
+        if (!auth()->user()->can('account.access')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -399,21 +403,23 @@ class AccountReportsController extends Controller
                 $payment->account_id = $account_id;
                 $payment->save();
 
-                $payment_type = ! empty($payment->transaction->type) ? $payment->transaction->type : null;
+                $payment_type = !empty($payment->transaction->type) ? $payment->transaction->type : null;
                 if (empty($payment_type)) {
                     $child_payment = TransactionPayment::where('parent_id', $payment->id)->first();
-                    $payment_type = ! empty($child_payment->transaction->type) ? $child_payment->transaction->type : null;
+                    $payment_type = !empty($child_payment->transaction->type) ? $child_payment->transaction->type : null;
                 }
 
                 AccountTransaction::updateAccountTransaction($payment, $payment_type);
             }
-            $output = ['success' => true,
+            $output = [
+                'success' => true,
                 'msg' => __('account.account_linked_success'),
             ];
         } catch (\Exception $e) {
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => false,
+            $output = [
+                'success' => false,
                 'msg' => __('messages.something_went_wrong'),
             ];
         }
