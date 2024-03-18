@@ -42,11 +42,14 @@ class ReceiptVouchersController extends Controller
             ]);
         }
 
-        $transactions = TransactionPayment::with('transaction')->where('payment_type', 'credit')
-            ->orWhereHas('transaction', function ($q) {
-                $q->where('type', 'sell');
-            })
-            ->orderBy('id');
+        $transactions = TransactionPayment::where('business_id', $business_id)->with('transaction');
+
+            $transactions->where(function ($q) {
+                $q->where('payment_type', 'credit')->orWhereHas('transaction', function ($q) {
+                    $q->where('type', 'sell');
+                });
+            })->orderBy('id');
+        // error_log($transactions);
         $contacts = Contact::where('business_id', $business_id)->whereNot('id', 1)->where('type', 'customer')->get();
         $transactionUtil = new TransactionUtil();
         $moduleUtil = new ModuleUtil();
@@ -84,6 +87,12 @@ class ReceiptVouchersController extends Controller
                     }
                 )
                 ->addColumn(
+                    'business_id',
+                    function ($row) {
+                        return $row->business_id;
+                    }
+                )
+                ->addColumn(
                     'contact_id',
                     function ($row) {
                         if ($row->contact) {
@@ -102,6 +111,7 @@ class ReceiptVouchersController extends Controller
                     'voucher_number',
                     'contact_id',
                     'action',
+                    'business_id'
                 ])
                 ->make(true);
         }

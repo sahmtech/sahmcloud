@@ -70,7 +70,7 @@ class PaymentVouchersController extends Controller
         $payment_types = $transactionUtil->payment_types(null, true, $business_id);
 
         if (request()->ajax()) {
-            $transactions = TransactionPayment::with('transaction');
+            $transactions = TransactionPayment::where('business_id', $business_id)->with('transaction');
             if (!empty(request()->start_date) && !empty(request()->end_date)) {
                 $start = request()->start_date;
                 $end =  request()->end_date;
