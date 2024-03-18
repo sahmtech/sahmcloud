@@ -47,8 +47,8 @@ Route::middleware('auth:api', 'timezone')->prefix('connector/api')->group(functi
     Route::get('expense-refund', [Modules\Connector\Http\Controllers\Api\ExpenseController::class, 'listExpenseRefund']);
 
     Route::get('expense-categories', [Modules\Connector\Http\Controllers\Api\ExpenseController::class, 'listExpenseCategories']);
-
-    Route::resource('cash-register', Modules\Connector\Http\Controllers\Api\CashRegisterController::class)->only('index', 'store', 'show', 'update');
+    Route::post('cash-register/{id}', [Modules\Connector\Http\Controllers\Api\CashRegisterController::class, 'update']);
+    Route::resource('cash-register', Modules\Connector\Http\Controllers\Api\CashRegisterController::class)->only('index', 'store', 'show',);
 
     Route::get('business-details', [Modules\Connector\Http\Controllers\Api\CommonResourceController::class, 'getBusinessDetails']);
 

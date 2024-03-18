@@ -328,10 +328,10 @@ class CashRegisterController extends ApiController
             $input['status'] = 'close';
             $input['denominations'] = !empty(request()->input('denominations')) ? json_encode(request()->input('denominations')) : null;
 
-            $register = CashRegister::find($id)->where('user_id', $user_id)
+            CashRegister::find($id)->where('user_id', $user_id)
                 ->where('status', 'open')
                 ->update($input);
-
+            $register =  CashRegister::find($id);
             DB::commit();
 
             return new CommonResource($register);
