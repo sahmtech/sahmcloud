@@ -18,9 +18,9 @@
 
 @section('content')
     <!-- Content Header (Page header) -->
-    {{-- <section class="content-header">
+    <section class="content-header">
         <h1>{{ $title }}</h1>
-    </section> --}}
+    </section>
     <!-- Main content -->
     <section class="content no-print">
         <input type="hidden" id="amount_rounding_method" value="{{ $pos_settings['amount_rounding_method'] ?? '' }}">
@@ -30,7 +30,9 @@
         @if (session('business.enable_rp') == 1)
             <input type="hidden" id="reward_point_enabled">
         @endif
-        {{-- @if (count($business_locations) > 0)
+
+
+        @if (count($business_locations) > 0)
             <div class="row">
                 <div class="col-sm-3">
                     <div class="form-group">
@@ -52,7 +54,7 @@
                     </div>
                 </div>
             </div>
-        @endif --}}
+        @endif
 
         @php
             $custom_labels = json_decode(session('business.custom_labels'), true);
@@ -72,46 +74,18 @@
             <div class="col-md-12 col-sm-12">
 
                 @component('components.widget', ['class' => 'box-solid'])
-                    <nav class="navbar navbar-light bg-light" style="background: #e4e9ed69;">
+                    {{-- <nav class="navbar navbar-light bg-light" style="background: #e4e9ed69;">
 
                         <div class="row">
                             <div class="col-sm-8">
                                 <span class="navbar-brand mb-0 h1" style="margin: 5px;">{{ $title }}</span>
                             </div>
 
-                            @if (count($business_locations) > 0)
-                                <div class="col-sm-4"
-                                    style="margin-top: 16px;
-                                padding: 0px 24px;">
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <span class="input-group-addon" style="background: transparent;color: #5b0391;">
-                                                <i class="fa fa-map-marker"></i>
-                                            </span>
-                                            {!! Form::select(
-                                                'select_location_id',
-                                                $business_locations,
-                                                $default_location->id ?? null,
-                                                [
-                                                    'class' => 'form-control input-sm',
-                                                    'id' => 'select_location_id',
-                                                    'style' => 'padding: 1px;background: transparent; font-size: small;',
-                                                    'required',
-                                                    'autofocus',
-                                                ],
-                                                $bl_attributes,
-                                            ) !!}
-                                            <span class="input-group-addon" style="background: transparent;">
-                                                @show_tooltip(__('tooltip.sale_location'))
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                    </nav>
 
-                    <hr style="width:100%;text-align:left;margin:0; border-top: 1px solid #ddd;margin-bottom: 37px;">
+                        </div>
+                    </nav> --}}
+
+                    {{-- <hr style="width:100%;text-align:left;margin:0; border-top: 1px solid #ddd;margin-bottom: 37px;"> --}}
                     {!! Form::hidden('location_id', !empty($default_location) ? $default_location->id : null, [
                         'id' => 'location_id',
                         'data-receipt_printer_type' => !empty($default_location->receipt_printer_type)
