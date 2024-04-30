@@ -143,7 +143,7 @@ class Util
      *
      * @return array
      */
-    public function payment_types($location = null, $show_advance = false, $business_id = null)
+    public function payment_types($location = null, $show_advance = true, $business_id = null)
     {
         if (!empty($location)) {
             $location = is_object($location) ? $location : BusinessLocation::find($location);
@@ -1738,15 +1738,21 @@ class Util
 
     public function saveAutoMigration($request, $transaction, $business_id, $user_id)
     {
-        
+
         $transaction = Transaction::with(['sell_lines', 'payment_lines'])->find($transaction->id);
         // find accounting mapping setting (automated migration)by:{type,status,methode,active}
-        if (!$request->payment) {
+        if (!isset($request->payment[0])) {
             return false;
+        }
+        $method = '';
+        if (isset($request->payment['0']['method'])) {
+            $method = $request->payment['0']['method'];
+        } else {
+            $method = '';
         }
         $accountMappingSetting = AccountingMappingSettingAutoMigration::where('type', $transaction->type)
             ->where('payment_status', $transaction->payment_status)
-            ->where('method', $request->payment['0']['method'])
+            ->where('method',  $method)
             ->where('location_id', $transaction->location_id)
             ->where('active', true)->first();
         // return   [$transaction->type, $transaction->payment_status, $transaction->location_id];
