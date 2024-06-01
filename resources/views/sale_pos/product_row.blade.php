@@ -89,7 +89,10 @@
         @endif
 
         @php
-            $warranty_id = !empty($action) && $action == 'edit' && !empty($product->warranties->first()) ? $product->warranties->first()->id : $product->warranty_id;
+            $warranty_id =
+                !empty($action) && $action == 'edit' && !empty($product->warranties->first())
+                    ? $product->warranties->first()->id
+                    : $product->warranty_id;
 
             if ($discount_type == 'fixed') {
                 $discount_amount = $discount_amount * $multiplier;
@@ -124,7 +127,12 @@
                 if (!empty($so_line)) {
                     $qty_available = $so_line->quantity - $so_line->so_quantity_invoiced + $product->quantity_ordered;
                     $max_quantity = $qty_available;
-                    $formatted_max_quantity = number_format($qty_available, session('business.quantity_precision', 2), session('currency')['decimal_separator'], session('currency')['thousand_separator']);
+                    $formatted_max_quantity = number_format(
+                        $qty_available,
+                        session('business.quantity_precision', 2),
+                        session('currency')['decimal_separator'],
+                        session('currency')['thousand_separator'],
+                    );
                 }
             } else {
                 if (!empty($so_line) && $so_line->qty_available <= $max_quantity) {
@@ -134,7 +142,10 @@
             }
 
             $max_qty_rule = $max_quantity;
-            $max_qty_msg = __('validation.custom-messages.quantity_not_available', ['qty' => $formatted_max_quantity, 'unit' => $product->unit]);
+            $max_qty_msg = __('validation.custom-messages.quantity_not_available', [
+                'qty' => $formatted_max_quantity,
+                'unit' => $product->unit,
+            ]);
         @endphp
 
         @if (session()->get('business.enable_lot_number') == 1 || session()->get('business.enable_product_expiry') == 1)
@@ -157,7 +168,10 @@
                                 $selected = 'selected';
 
                                 $max_qty_rule = $lot_number->qty_available;
-                                $max_qty_msg = __('lang_v1.quantity_error_msg_in_lot', ['qty' => $lot_number->qty_formated, 'unit' => $product->unit]);
+                                $max_qty_msg = __('lang_v1.quantity_error_msg_in_lot', [
+                                    'qty' => $lot_number->qty_formated,
+                                    'unit' => $product->unit,
+                                ]);
                             }
 
                             $expiry_text = '';
@@ -172,7 +186,10 @@
                                 $selected = 'selected';
 
                                 $max_qty_rule = $lot_number->qty_available;
-                                $max_qty_msg = __('lang_v1.quantity_error_msg_in_lot', ['qty' => $lot_number->qty_formated, 'unit' => $product->unit]);
+                                $max_qty_msg = __('lang_v1.quantity_error_msg_in_lot', [
+                                    'qty' => $lot_number->qty_formated,
+                                    'unit' => $product->unit,
+                                ]);
                             }
                         @endphp
                         <option value="{{ $lot_number->purchase_line_id }}"
@@ -229,10 +246,16 @@
                 @php
                     $max_qty_rule = $max_qty_rule / $multiplier;
                     $unit_name = $value['name'];
-                    $max_qty_msg = __('validation.custom-messages.quantity_not_available', ['qty' => $max_qty_rule, 'unit' => $unit_name]);
+                    $max_qty_msg = __('validation.custom-messages.quantity_not_available', [
+                        'qty' => $max_qty_rule,
+                        'unit' => $unit_name,
+                    ]);
 
                     if (!empty($product->lot_no_line_id)) {
-                        $max_qty_msg = __('lang_v1.quantity_error_msg_in_lot', ['qty' => $max_qty_rule, 'unit' => $unit_name]);
+                        $max_qty_msg = __('lang_v1.quantity_error_msg_in_lot', [
+                            'qty' => $max_qty_rule,
+                            'unit' => $unit_name,
+                        ]);
                     }
 
                     if ($value['allow_decimal']) {
@@ -349,7 +372,9 @@
             </td>
         @endif
         @php
-            $pos_unit_price = !empty($product->unit_price_before_discount) ? $product->unit_price_before_discount : $product->default_sell_price;
+            $pos_unit_price = !empty($product->unit_price_before_discount)
+                ? $product->unit_price_before_discount
+                : $product->default_sell_price;
 
             if (!empty($so_line) && $action !== 'edit') {
                 $pos_unit_price = $so_line->unit_price_before_discount;

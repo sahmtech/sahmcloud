@@ -12,12 +12,15 @@ use App\User;
 use App\Utils\BusinessUtil;
 use App\Utils\ModuleUtil;
 use App\Utils\RestaurantUtil;
+use Bl\FatooraZatca\Classes\InvoiceReportType;
 use Carbon\Carbon;
 use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
+
+use function Ramsey\Uuid\v1;
 
 class BusinessController extends Controller
 {
@@ -339,7 +342,56 @@ class BusinessController extends Controller
 
         $payment_types = $this->moduleUtil->payment_types(null, false, $business_id);
 
-        return view('business.settings', compact('business', 'currencies', 'tax_rates', 'timezone_list', 'months', 'accounting_methods', 'commission_agent_dropdown', 'units_dropdown', 'date_formats', 'shortcuts', 'pos_settings', 'modules', 'theme_colors', 'email_settings', 'sms_settings', 'mail_drivers', 'allow_superadmin_email_settings', 'custom_labels', 'common_settings', 'weighing_scale_setting', 'payment_types'));
+        $zatca_settings = [
+            'otp' =>  $business->fatoora_otp ?? null,
+            'emailAddress' => $business->email ?? null,
+            'commonName' => $business->common_name ?? null,
+            'organizationalUnitName' => $business->organizational_unit_name ?? null,
+            'organizationName' => $business->organization_name ?? null,
+            'taxNumber' => $business->tax_number_1 ?? null,
+            'registeredAddress' => $business->registered_address ?? null,
+            'businessCategory' => $business->business_category ?? null,
+            'egsSerialNumber' => $business->egs_serial_number ?? null,
+            'registrationNumber' => $business->registration_number ?? null,
+            'invoiceType' => $business->invoice_type ?? null,
+        ];
+
+        $invoiceTypes = [
+            InvoiceReportType::SIMPLIFIED => __('zatca.invoiceTypes.SIMPLIFIED'),
+            InvoiceReportType::STANDARD => __('zatca.invoiceTypes.STANDARD'),
+            InvoiceReportType::BOTH => __('zatca.invoiceTypes.BOTH'),
+        ];
+
+        $zatca_seller = [
+            'street_name' => $business->street_name ?? null,
+            'building_number' => $business->building_number ?? null,
+            'city_sub_division' => $business->city_sub_division ?? null,
+            'city' => $business->city ?? null,
+            'postal_number' => $business->postal_number ?? null,
+        ];
+
+        // $zatca_Invoice = [
+        //     'id' => 1,
+        //     'invoice_number' => 'INV100',
+        //     'invoice_uuid' => '42156fac-991b-4a12-a6f0-54c024edd29e',
+        //     'invoice_date' => '2023-11-17',
+        //     'invoice_time' => '15:54:00',
+        //     'invoice_type' => $invoiceType,
+        //     'payment_type' => $paymentType,
+        //     'price' => 460,
+        //     'discount' => 0,
+        //     'tax' => 25,
+        //     'total' => 485,
+        //     'invoice_items' => $invoiceItems,
+        //     'previous_hash' => NULL,
+        //     'invoice_billing_id' => 1,
+        //     'invoice_note' => NULL,
+        //     'payment_note' => 'cash,visa',
+        //     'currency' => 'SAR',
+        //     'tax_percent' => 15,
+        //     'delivery_date' => '2023-11-21'
+        // ];
+        return view('business.settings', compact('zatca_settings', 'invoiceTypes', 'zatca_seller', 'business', 'currencies', 'tax_rates', 'timezone_list', 'months', 'accounting_methods', 'commission_agent_dropdown', 'units_dropdown', 'date_formats', 'shortcuts', 'pos_settings', 'modules', 'theme_colors', 'email_settings', 'sms_settings', 'mail_drivers', 'allow_superadmin_email_settings',  'custom_labels', 'common_settings', 'weighing_scale_setting', 'payment_types'));
     }
 
     /**
@@ -350,6 +402,8 @@ class BusinessController extends Controller
      */
     public function postBusinessSettings(Request $request)
     {
+
+
         if (!auth()->user()->can('business_settings.access')) {
             abort(403, 'Unauthorized action.');
         }
@@ -481,6 +535,41 @@ class BusinessController extends Controller
             //update current financial year to session
             $financial_year = $this->businessUtil->getCurrentFinancialYear($business->id);
             $request->session()->put('financial_year', $financial_year);
+
+
+            $settingsData = $request->input('zatca_settings');
+            $sellerData = $request->input('zatca_seller');
+
+
+
+            $zatca_settings = [
+                'fatoora_otp' =>  $settingsData['otp'] ?? null,
+                'email' =>  $settingsData['emailAddress'] ?? null,
+                'organizational_unit_name' =>  $settingsData['organizationalUnitName'] ?? null,
+                'organization_name' =>  $settingsData['organizationName'] ?? null,
+                'registered_address' =>  $settingsData['registeredAddress'] ?? null,
+                'business_category' =>   $settingsData['businessCategory'] ?? null,
+                'registration_number' =>   $settingsData['registrationNumber'] ?? null,
+                'egs_serial_number' =>   $settingsData['egsSerialNumber'] ?? null,
+                'common_name' =>  $settingsData['commonName'] ?? null,
+                'tax_number_1' =>  $settingsData['taxNumber'] ?? null,
+                'postal_number' =>  $sellerData['postal_number'] >> null,
+                'city' =>  $sellerData['city'] ?? null,
+                'street_name' =>  $sellerData['street_name'] ?? null,
+                'building_number' =>  $sellerData['building_number'] ?? null,
+                'plot_identification' =>  $sellerData['plot_identification'] ?? null,
+                'city_sub_division' =>  $sellerData['city_sub_division'] ?? null,
+                'invoice_type' =>   $settingsData['invoiceType'] ?? null,
+            ];
+
+            $zatca_settings = array_filter($zatca_settings, function ($value) {
+                return !is_null($value);
+            });
+
+            Business::where('id', $business_id)->update($zatca_settings);
+
+
+
 
             $output = [
                 'success' => 1,

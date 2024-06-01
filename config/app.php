@@ -200,6 +200,8 @@ return [
         ConsoleTVs\Charts\ChartsServiceProvider::class,
         Nwidart\Menus\MenusServiceProvider::class,
         Knox\Pesapal\PesapalServiceProvider::class,
+        Bl\FatooraZatca\FatooraZatcaServiceProvider::class,
+
     ],
 
     /*

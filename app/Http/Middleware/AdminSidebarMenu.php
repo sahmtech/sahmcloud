@@ -269,8 +269,13 @@ class AdminSidebarMenu
                                 ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
                             );
                         }
-
-
+                        //////////////////// zatca create ////////////////////
+                        $sub->url(
+                            route('creat_zatca'),
+                            __('zatca.create_zatca_invoice'),
+                            ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == 'create_zatca' && empty(request()->get('status'))]
+                        );
+                        //////////////////////////////////////////////////////
                         if (in_array('add_sale', $enabled_modules) && auth()->user()->can('direct_sell.access')) {
                             $sub->url(
                                 action([\App\Http\Controllers\SellController::class, 'create']),

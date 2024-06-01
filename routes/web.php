@@ -59,8 +59,11 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
+use App\Http\Controllers\ZatcaController;
 use Illuminate\Support\Facades\Route;
 use App\Transaction;
+use Bl\FatooraZatca\Classes\TaxCategoryCode;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -206,6 +209,12 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/sells/draft-dt', 'SellController@getDraftDatables');
     Route::resource('sells', 'SellController')->except(['show']);
     Route::get('sells/create-fast', [SellController::class, 'create_fast'])->name('create_fast');
+    Route::get('sells/create_zatca', [ZatcaController::class, 'creat_zatca'])->name('creat_zatca');
+    Route::post('sells/store_zatca', [ZatcaController::class, 'store_zatca'])->name('store_zatca');
+    Route::get('/dummy-invoice/pdf', [ZatcaController::class, 'generateDummyInvoicePdf'])->name('dummy.invoice.pdf');
+    Route::get('/sells_zetca_invoice/{transaction_id}', [ZatcaController::class, 'printZatcaInvoice'])->name('sell.printZatcaInvoice');
+
+
 
 
     Route::get('/sells/copy-quotation/{id}', [SellPosController::class, 'copyQuotation']);
@@ -235,12 +244,14 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/revert-sale-import/{batch}', [ImportSalesController::class, 'revertSaleImport']);
 
     Route::get('/sells/pos/get_product_row/{variation_id}/{location_id}', [SellPosController::class, 'getProductRow']);
+    Route::get('/sells/pos/zatca_get_product_row/{variation_id}/{location_id}', [SellPosController::class, 'zatca_getProductRow']);
     Route::post('/sells/pos/get_payment_row', [SellPosController::class, 'getPaymentRow']);
     Route::post('/sells/pos/get-reward-details', [SellPosController::class, 'getRewardDetails']);
     Route::get('/sells/pos/get-recent-transactions', [SellPosController::class, 'getRecentTransactions']);
     Route::get('/sells/pos/get-product-suggestion', [SellPosController::class, 'getProductSuggestion']);
     Route::get('/sells/pos/get-featured-products/{location_id}', [SellPosController::class, 'getFeaturedProducts']);
     Route::get('/reset-mapping', [SellController::class, 'resetMapping']);
+
 
     Route::resource('pos', SellPosController::class);
 
@@ -518,6 +529,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
     Route::get('/download-purchase-order/{id}/pdf', [PurchaseOrderController::class, 'downloadPdf'])->name('purchaseOrder.downloadPdf');
     Route::get('/sells/{id}', [SellController::class, 'show']);
     Route::get('/sells/{transaction_id}/print', [SellPosController::class, 'printInvoice'])->name('sell.printInvoice');
+
     Route::get('/download-sells/{transaction_id}/pdf', [SellPosController::class, 'downloadPdf'])->name('sell.downloadPdf');
     Route::get('/download-quotation/{id}/pdf', [SellPosController::class, 'downloadQuotationPdf'])
         ->name('quotation.downloadPdf');
@@ -525,4 +537,117 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
         ->name('packing.downloadPdf');
     Route::get('/sells/invoice-url/{id}', [SellPosController::class, 'showInvoiceUrl']);
     Route::get('/show-notification/{id}', [HomeController::class, 'showNotification']);
+});
+
+
+
+
+Route::get('/test', function () {
+
+    $settings = new \Bl\FatooraZatca\Objects\Setting(
+        123456,
+        'Support@hermosaapp.com',
+        'TST-886431145-399999999900003',
+        'Riyadh Branch',
+        'Maximum Speed Tech Supply LTD',
+        '399999999900003',
+        'RRRD2929',
+        'Supply activities',
+        '1-TST|2-TST|3-ed22f1d8-e6a2-1118-9b58-d9a8f11e445f',
+        '2252039485'
+    );
+
+    $result   = \Bl\FatooraZatca\Zatca::generateZatcaSetting($settings);
+    $privateKey     = $result->private_key;
+    $certificate    = $result->cert_production;
+    $secret         = $result->secret_production;
+
+    $seller  = new \Bl\FatooraZatca\Objects\Seller(
+        $settings->registrationNumber,
+        'King Abdulaziz Road',
+        '1234',
+        '1234',
+        'Al Amal',
+        'Riyadh',
+        '12643',
+        $settings->taxNumber,
+        $settings->organizationName,
+        $privateKey,
+        $certificate,
+        $secret
+    );
+
+    $invoiceType = \Bl\FatooraZatca\Classes\InvoiceType::TAX_INVOICE;
+    $paymentType = \Bl\FatooraZatca\Classes\PaymentType::MULTIPLE;
+
+    $invoiceItems = [
+        new \Bl\FatooraZatca\Objects\InvoiceItem(1, 'Product Name', 1, 100, 0, 15, 15, 115),
+        new \Bl\FatooraZatca\Objects\InvoiceItem(10, 'Product Name', 2, 200, 0, 10, 5, 210),
+        new \Bl\FatooraZatca\Objects\InvoiceItem(2, 'Product ZZZ', 1, 50, 0, 0, 0, 50, null, TaxCategoryCode::ZERO_RATE),
+        new \Bl\FatooraZatca\Objects\InvoiceItem(3, 'Product ZZZ', 1, 100, 0, 0, 0, 100, null, TaxCategoryCode::EXEMPT),
+        new \Bl\FatooraZatca\Objects\InvoiceItem(4, 'Product ZZZ', 1, 10, 0, 0, 0, 10, null, TaxCategoryCode::OUT_OF_SCOPE),
+    ];
+
+    $invoice = new \Bl\FatooraZatca\Objects\Invoice(
+        1,
+        'INV100',
+        '42156fac-991b-4a12-a6f0-54c024edd29e',
+        '2023-11-17',
+        '15:54:00',
+        $invoiceType,
+        $paymentType,
+        460,
+        0,
+        25,
+        485,
+        $invoiceItems,
+        NULL,
+        1,
+        NULL,
+        'cash,visa',
+        'SAR',
+        15,
+        '2023-11-21'
+    );
+
+    $client  = new \Bl\FatooraZatca\Objects\Client(
+        'Salon X',
+        '300385711800003',
+        '12345',
+        'King Abdulaziz Road',
+        'C23',
+        '1234',
+        '123',
+        'Riyadh'
+    );
+
+    // $b2c = \Bl\FatooraZatca\Invoices\B2C::make($seller, $invoice)->report();
+    // echo $b2c->getQrImage();
+    // dd(
+    //     $b2c->getReportingStatus(),
+    //     $b2c->getValidationResults(),
+    //     $b2c->getInfoMessages(),
+    //     $b2c->getWarningMessages(),
+    //     $b2c->getErrorMessages(),
+    //     $b2c->getValidationResultStatus(),
+    //     $b2c->getResult(),
+    //     $b2c->getClearedInvoice(),
+    //     $b2c->getQr(),
+    //     $b2c->getInvoiceHash()
+    // );
+
+    $b2b = \Bl\FatooraZatca\Invoices\B2B::make($seller, $invoice, $client)->report();
+    echo $b2b->getQrImage();
+    dd(
+        // $b2b->getReportingStatus(),
+        $b2b->getValidationResults(),
+        $b2b->getInfoMessages(),
+        $b2b->getWarningMessages(),
+        $b2b->getErrorMessages(),
+        $b2b->getValidationResultStatus(),
+        $b2b->getResult(),
+        $b2b->getClearedInvoice(),
+        $b2b->getQr(),
+        $b2b->getInvoiceHash()
+    );
 });

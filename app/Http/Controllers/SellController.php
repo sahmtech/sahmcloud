@@ -22,11 +22,15 @@ use App\Utils\ModuleUtil;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use App\Warranty;
+
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Razorpay\Api\Item;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
+
+
 
 class SellController extends Controller
 {
@@ -405,6 +409,8 @@ class SellController extends Controller
 
                         if ($row->type == 'sell') {
                             if (auth()->user()->can('print_invoice')) {
+                                $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printZatcaInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i> ' . __('lang_v1.printZatcaInvoice') . '</a></li>';
+
                                 $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i> ' . __('lang_v1.print_invoice') . '</a></li>
                                     <li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '?package_slip=true"><i class="fas fa-file-alt" aria-hidden="true"></i> ' . __('lang_v1.packing_slip') . '</a></li>';
 
@@ -887,7 +893,7 @@ class SellController extends Controller
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
 
         $change_return = $this->dummyPaymentLine;
-        
+
         return view('sell.create_fast')
             ->with(compact(
                 'business_details',
