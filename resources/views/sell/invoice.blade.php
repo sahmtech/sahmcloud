@@ -113,6 +113,17 @@
         .totals td {
             border: none;
         }
+
+        @media print {
+            body {
+                font-size: 12pt;
+                color: #000;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
     </style>
 </head>
 
