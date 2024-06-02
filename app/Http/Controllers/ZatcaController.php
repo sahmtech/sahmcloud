@@ -668,9 +668,9 @@ class ZatcaController extends Controller
         //     $b2b->getInvoiceHash()
         // );
 
-        // return redirect()
-        //     ->action([\App\Http\Controllers\SellController::class, 'index'])
-        //     ->with('status', $output);
+        return redirect()
+            ->action([\App\Http\Controllers\SellController::class, 'index'])
+            ->with('status', $output);
         // } catch (\Exception $e) {
         //     \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
         //     error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
