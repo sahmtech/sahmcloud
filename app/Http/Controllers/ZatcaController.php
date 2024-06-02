@@ -481,7 +481,8 @@ class ZatcaController extends Controller
             $taxPercent = $product['tax_percent'];
             // $discount = $product['discount'] ?? 0;
             $discount = 0;
-
+            $price = round($price * $quantity, 2);
+            $tax = round($taxPercent *  $price / 100, 2);
             $invoiceItems[] = new InvoiceItem(
                 $index,
                 $product['name'],
@@ -490,8 +491,9 @@ class ZatcaController extends Controller
                 $discount, // Assuming no discount
                 $tax,
                 $taxPercent,
-                $price + $tax
+                $price + $tax,
             );
+
 
             $totalWithoutVAT += $price;
             $totalVAT += $tax;
@@ -499,14 +501,6 @@ class ZatcaController extends Controller
         }
 
         $totalWithVAT =  $totalWithoutVAT + $totalVAT;
-        // dump(
-        //     $totalWithoutVAT,
-        //     $totalDiscount,
-        //     $totalVAT,
-        //     $totalWithVAT
-
-        // );
-
 
 
         $invoiceTime = $validatedData['invoice_time'] . ':00';
@@ -558,7 +552,7 @@ class ZatcaController extends Controller
         $products_arr = [];
         $discount = 0;
         foreach ($products as $key => $product) {
-            $item_tax = 0;
+            $item_tax = $product->tax ?? 0;
             // $line_discount_amount = $request->selected_products[$product->product_id]['discount'] ?? 0;
             $line_discount_amount = 0;
             $discount += $line_discount_amount;
@@ -860,6 +854,104 @@ class ZatcaController extends Controller
      */
     public function printZatcaInvoice(Request $request, $transaction_id)
     {
+
+        $business_id = $request->session()->get('user.business_id');
+        $business = Business::where('id',   $business_id)->first();
+        $transaction = Transaction::where('id', $transaction_id)->first();
+        $output['print_title'] = $transaction->invoice_no;
+
+        $transaction_sell_lines = TransactionSellLine::where('transaction_id', $transaction->id)
+            ->leftjoin('products', 'products.id', '=', 'product_id')
+            ->leftjoin('tax_rates', 'tax_rates.id', '=', 'tax_id')
+            ->select(
+
+                'transaction_sell_lines.*',
+                'products.*',
+                'tax_rates.amount as tax_percent',
+                'tax_rates.*',
+            )
+            ->get();
+
+        $invoiceItems = [];
+        foreach ($transaction_sell_lines as $index => $transaction_sell_line) {
+
+            $invoiceItems[] = new InvoiceItem(
+                $transaction_sell_line->product_id,
+                $transaction_sell_line->name,
+                $transaction_sell_line->quantity,
+                $transaction_sell_line->unit_price,
+                $transaction_sell_line->line_discount_amount ?? 0,
+                $transaction_sell_line->unit_price_inc_tax - $transaction_sell_line->unit_price - ($transaction_sell_line->line_discount_amount ?? 0),
+                $transaction_sell_line->tax_percent,
+                $transaction_sell_line->unit_price_inc_tax,
+            );
+        }
+
+
+        $transaction_date = explode(' ', $transaction->transaction_date);
+
+        $invoice = new Invoice(
+            $transaction->id, // Replace with appropriate ID
+            $transaction->invoice_no,
+            $transaction->uuid, // Replace with actual UUID or generate dynamically
+            $transaction_date[0],
+            $transaction_date[1],
+            $transaction->invoice_type,
+            $transaction->payment_type,
+            $transaction->total_before_tax, // Total before discount
+            $transaction->discount_amount, // Total discount if applicable
+            $transaction->tax_amount, // Total tax
+            $transaction->final_total, // Total after tax
+            $invoiceItems,
+            null, // Reference to previous invoice if applicable
+            1, // Adjust as needed
+            null, // Additional notes or details if any
+            $transaction->payment_note, // Adjust payment note as needed
+            'SAR',
+            15, // Average VAT percentage if needed
+            $transaction->delivery_date, // Assuming due date is the same as invoice date
+        );
+
+        $contact = Contact::where('id', $transaction->contact_id)->first();
+        $client = new Client(
+            $contact->registration_name,
+            $contact->tax_number,
+            $contact->zip_code,
+            $contact->street_name,
+            $contact->building_number,
+            $contact->plot_identification,
+            $contact->city_subdivision_name,
+            $contact->city,
+        );
+
+
+        $seller = new Seller(
+            $business->registration_number,
+            $business->street_name,
+            $business->building_number,
+            $business->plot_identification,
+            $business->city_sub_division,
+            $business->city,
+            $business->postal_number,
+            $business->tax_number_1,
+            $business->organization_name,
+            $business->zatca_private_key,
+            $business->zatca_certificate,
+            $business->zatca_secret,
+        );
+        return view('sell.invoice', [
+            'logo' => $business->logo ?? '',
+            'Qr' =>  \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate($transaction->qr_code) ?? '',
+            'invoice' =>  $invoice,
+            'seller' =>   $seller,
+            'client' => $client,
+            'invoiceTypeCode' =>  $business->invoice_type,
+        ]);
+
+
+
+
+
         if (request()->ajax()) {
             try {
                 $output = [

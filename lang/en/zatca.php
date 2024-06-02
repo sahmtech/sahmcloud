@@ -76,4 +76,6 @@ return [
         'OUT_OF_SCOPE' => 'OUT_OF_SCOPE',
     ],
 
+    'printZatcaInvoice' => 'Print Zatca Invoice',
+
 ];

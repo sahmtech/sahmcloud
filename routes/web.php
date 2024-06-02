@@ -76,7 +76,6 @@ use Bl\FatooraZatca\Classes\TaxCategoryCode;
 */
 
 include_once 'install_r.php';
-
 Route::middleware(['setData'])->group(function () {
     Route::get('/', function () {
         return view('welcome');
@@ -650,4 +649,4 @@ Route::get('/test', function () {
         $b2b->getQr(),
         $b2b->getInvoiceHash()
     );
-});
+})->name('test');
