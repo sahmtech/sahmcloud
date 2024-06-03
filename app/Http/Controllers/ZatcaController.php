@@ -263,6 +263,7 @@ class ZatcaController extends Controller
 
             // dd($settings);
             $result = \Bl\FatooraZatca\Zatca::generateZatcaSetting($settings);
+            dd($result);
             $privateKey = $result->private_key ?? null;
             $certificate = $result->cert_production ?? null;
             $secret = $result->secret_production ?? null;
