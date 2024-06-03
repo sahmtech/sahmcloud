@@ -23,10 +23,11 @@ return [
         'DEBIT_NOTE' => 'DEBIT_NOTE',
         'CREDIT_NOTE' => 'CREDIT_NOTE',
     ],
-    'street_name' => 'Street Number',
+    'street_name' => 'Street Name',
     'building_number' => 'Building Number',
     'city_sub_division' => 'City Sub Division',
     'city' => 'City',
+    'plot_identification' => 'Plot Identification',
     'postal_number' => 'Postal Number',
     'zatca_Invoice' => [
         'id' => 'ID',

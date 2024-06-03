@@ -667,6 +667,8 @@ class ZatcaController extends Controller
         //     $b2b->getQr(),
         //     $b2b->getInvoiceHash()
         // );
+        $warnings = $b2b->getWarningMessages();
+        $errors =  $b2b->getErrorMessages();
 
         return redirect()
             ->action([\App\Http\Controllers\SellController::class, 'index'])
