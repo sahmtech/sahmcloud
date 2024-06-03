@@ -78,5 +78,12 @@ return [
     ],
 
     'printZatcaInvoice' => 'Print Zatca Invoice',
+    'buyer_registration_name' => 'Buyer Registration Name',
+    'buyer_tax_number' => 'Buyer Tax Number',
+    'buyer_street' => 'Street',
+    'buyer_building_number' => 'Building Number',
+    'is_zatca_2nd_enabled' => 'Enable Zatca 2nd Stage',
+
+
 
 ];

@@ -627,7 +627,15 @@ class ContactController extends Controller
 
             $input['credit_limit'] = $request->input('credit_limit') != '' ? $this->commonUtil->num_uf($request->input('credit_limit')) : null;
             $input['opening_balance'] = $this->commonUtil->num_uf($request->input('opening_balance'));
-
+            if ($request->buyer_registration_name) {
+                $input['registration_name'] = $request->buyer_registration_name ?? null;
+            }
+            if ($request->buyer_street) {
+                $input['street_name'] = $request->buyer_street ?? null;
+            }
+            if ($request->buyer_building_number) {
+                $input['building_number'] = $request->buyer_building_number ?? null;
+            }
             DB::beginTransaction();
             $output = $this->contactUtil->createNewContact($input);
 
@@ -821,6 +829,23 @@ class ContactController extends Controller
 
                 $output = $this->contactUtil->updateContact($input, $id, $business_id);
 
+                $contact = Contact::find($id);
+                $updates = [];
+                if ($request->buyer_registration_name && $contact->registration_name != $request->buyer_registration_name) {
+                    $updates['registration_name'] = $request->buyer_registration_name ?? null;
+                }
+                if ($request->buyer_street && $contact->street_name != $request->buyer_street) {
+                    $updates['street_name'] = $request->buyer_street ?? null;
+                }
+                if ($request->buyer_building_number && $contact->building_number != $request->buyer_building_number) {
+                    $updates['building_number'] = $request->buyer_building_number ?? null;
+                }
+                $updates = array_filter($updates, function ($value) {
+                    return !is_null($value);
+                });
+                if (!empty($updates)) {
+                    Contact::where('id', $id)->update($updates);
+                }
                 event(new ContactCreatedOrModified($output['data'], 'updated'));
 
                 $this->contactUtil->activityLog($output['data'], 'edited');
