@@ -262,7 +262,7 @@ class ZatcaController extends Controller
                 $business->invoice_type ?? InvoiceReportType::BOTH,
             );
 
-            dd(ConfigHelper::environment());
+            // dd(ConfigHelper::environment());
             $result = \Bl\FatooraZatca\Zatca::generateZatcaSetting($settings);
             dd($result);
             $privateKey = $result->private_key ?? null;
