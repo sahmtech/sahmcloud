@@ -16,7 +16,7 @@
         }
 
         .invoice-box {
-            max-width: 90vw;
+            max-width: 60vw;
             margin: auto;
             padding: 20px;
 
@@ -116,6 +116,13 @@
             body {
                 font-size: 12pt;
                 color: #000;
+            }
+
+            .invoice-box {
+                max-width: 90vw;
+                margin: auto;
+                padding: 20px;
+
             }
 
             .no-print {

@@ -571,7 +571,7 @@ class ZatcaController extends Controller
             ->leftjoin('products', 'products.id', '=', 'product_id')
             ->leftjoin('tax_rates', 'tax_rates.id', '=', 'tax_id')
             ->select(
-
+                'products.name as product_name',
                 'transaction_sell_lines.*',
                 'products.*',
                 'tax_rates.amount as tax_percent',
@@ -584,7 +584,7 @@ class ZatcaController extends Controller
 
             $invoiceItems[] = new InvoiceItem(
                 $transaction_sell_line->product_id,
-                $transaction_sell_line->name,
+                $transaction_sell_line->product_name,
                 $transaction_sell_line->quantity,
                 $transaction_sell_line->unit_price,
                 $transaction_sell_line->line_discount_amount ?? 0,
@@ -648,7 +648,7 @@ class ZatcaController extends Controller
         );
         return view('sell.invoice', [
             'logo' => $business->logo ?? '',
-            'Qr' =>  \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate($transaction->qr_code) ?? '',
+            'Qr' =>  \SimpleSoftwareIO\QrCode\Facades\QrCode::size(250)->generate($transaction->qr_code) ?? '',
             'invoice' =>  $invoice,
             'seller' =>   $seller,
             'client' => $client,
