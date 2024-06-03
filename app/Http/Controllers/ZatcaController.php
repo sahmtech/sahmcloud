@@ -27,6 +27,7 @@ use Bl\FatooraZatca\Classes\InvoiceReportType;
 use Bl\FatooraZatca\Classes\InvoiceType;
 use Bl\FatooraZatca\Classes\PaymentType;
 use Bl\FatooraZatca\Classes\TaxCategoryCode;
+use Bl\FatooraZatca\Helpers\ConfigHelper;
 use Bl\FatooraZatca\Invoices\B2B;
 use Bl\FatooraZatca\Objects\Client;
 use Bl\FatooraZatca\Objects\Invoice;
@@ -261,7 +262,7 @@ class ZatcaController extends Controller
                 $business->invoice_type ?? InvoiceReportType::BOTH,
             );
 
-            // dd($settings);
+            dd(ConfigHelper::environment());
             $result = \Bl\FatooraZatca\Zatca::generateZatcaSetting($settings);
             dd($result);
             $privateKey = $result->private_key ?? null;
