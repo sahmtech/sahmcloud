@@ -256,7 +256,7 @@ class ZatcaController extends Controller
                 $business->tax_number_1,
                 $business->registered_address,
                 $business->business_category,
-                $business->egs_serial_number,
+                null,
                 $business->registration_number,
                 $business->invoice_type ?? InvoiceReportType::BOTH,
             );
@@ -654,5 +654,10 @@ class ZatcaController extends Controller
             'client' => $client,
             'invoiceTypeCode' =>  $business->invoice_type,
         ]);
+    }
+
+
+    public function verifySettings(Request $request)
+    {
     }
 }

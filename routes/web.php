@@ -212,6 +212,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('sells/store_zatca', [ZatcaController::class, 'store_zatca'])->name('store_zatca');
     Route::get('/dummy-invoice/pdf', [ZatcaController::class, 'generateDummyInvoicePdf'])->name('dummy.invoice.pdf');
     Route::get('/sells_zetca_invoice/{transaction_id}', [ZatcaController::class, 'printZatcaInvoice'])->name('sell.printZatcaInvoice');
+    Route::post('/verify_zatca_settings', [ZatcaController::class, 'verifySettings'])->name('zatca.verifySettings');
 
 
 

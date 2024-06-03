@@ -6,5 +6,6 @@ return [
     'otp' => 'رمز الOTP من منصة فاتورة',
     'zatca_information_section' => 'قسم متعلق بمعلومات لهيئة الضريبة والذكاة',
     'is_zatca_2nd_enabled' => 'تفعيل زاتكا المرحلة الثانية',
+    'verify_settings' => 'التحقق من صحة الربط',
 
 ];

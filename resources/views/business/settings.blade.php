@@ -227,4 +227,118 @@
             })
         });
     </script>
+    <script>
+        document.getElementById('captureDataButton').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            let zatcaSettings = {
+                otp: document.getElementById('zatca.otp').value,
+                emailAddress: document.getElementById('zatca.emailAddress').value,
+                commonName: document.getElementById('zatca.commonName').value,
+                organizationalUnitName: document.getElementById('zatca.organizationalUnitName').value,
+                organizationName: document.getElementById('zatca.organizationName').value,
+                taxNumber: document.getElementById('zatca.taxNumber').value,
+                registeredAddress: document.getElementById('zatca.registeredAddress').value,
+                businessCategory: document.getElementById('zatca.businessCategory').value,
+                egsSerialNumber: document.getElementById('zatca.egsSerialNumber').value,
+                registrationNumber: document.getElementById('zatca.registrationNumber').value,
+                invoiceType: document.getElementById('zatca.invoiceType').value
+            };
+
+            let zatcaSeller = {
+                street_name: document.getElementById('zatca.street_name').value,
+                building_number: document.getElementById('zatca.building_number').value,
+                plot_identification: document.getElementById('zatca.plot_identification').value,
+                city_sub_division: document.getElementById('zatca.city_sub_division').value,
+                city: document.getElementById('zatca.city').value,
+                postal_number: document.getElementById('zatca.postal_number').value
+            };
+
+            // Send the data via AJAX
+            sendAjaxRequest(zatcaSettings, zatcaSeller);
+        });
+
+        function sendAjaxRequest(zatcaSettings, zatcaSeller) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ route('zatca.verifySettings') }}", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}");
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        showPopup("Success", "Data sent successfully!");
+                    } else {
+                        showPopup("Error", "Failed to send data. Please try again.");
+                    }
+                }
+            };
+
+            let data = JSON.stringify({
+                zatca_settings: zatcaSettings,
+                zatca_seller: zatcaSeller
+            });
+            xhr.send(data);
+        }
+
+        function showPopup(title, message) {
+            let popup = document.createElement("div");
+            popup.classList.add("popup");
+
+            let popupContent = `
+                <div class="popup-content">
+                    <h2>${title}</h2>
+                    <p>${message}</p>
+                    <button onclick="closePopup()">Close</button>
+                </div>
+            `;
+            popup.innerHTML = popupContent;
+            document.body.appendChild(popup);
+
+            // Add CSS for the popup
+            let style = document.createElement("style");
+            style.innerHTML = `
+                .popup {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000;
+                }
+                .popup-content {
+                    background: white;
+                    padding: 20px;
+                    border-radius: 5px;
+                    text-align: center;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                }
+                .popup-content h2 {
+                    margin-top: 0;
+                }
+                .popup-content button {
+                    margin-top: 20px;
+                    padding: 10px 20px;
+                    background: #007bff;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function closePopup() {
+            let popup = document.querySelector(".popup");
+            if (popup) {
+                popup.remove();
+            }
+        }
+    </script>
+
 @endsection

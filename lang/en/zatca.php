@@ -83,7 +83,7 @@ return [
     'buyer_street' => 'Street',
     'buyer_building_number' => 'Building Number',
     'is_zatca_2nd_enabled' => 'Enable Zatca 2nd Stage',
-
+    'verify_settings' => 'Verify Settings',
 
 
 ];
