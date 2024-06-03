@@ -368,6 +368,7 @@ class BusinessController extends Controller
             'city_sub_division' => $business->city_sub_division ?? null,
             'city' => $business->city ?? null,
             'postal_number' => $business->postal_number ?? null,
+            'plot_identification' => $business->plot_identification ?? null,
         ];
 
         // $zatca_Invoice = [
@@ -553,7 +554,7 @@ class BusinessController extends Controller
                 'egs_serial_number' =>   $settingsData['egsSerialNumber'] ?? null,
                 'common_name' =>  $settingsData['commonName'] ?? null,
                 'tax_number_1' =>  $settingsData['taxNumber'] ?? null,
-                'postal_number' =>  $sellerData['postal_number'] >> null,
+                'postal_number' =>  $sellerData['postal_number'] ?? null,
                 'city' =>  $sellerData['city'] ?? null,
                 'street_name' =>  $sellerData['street_name'] ?? null,
                 'building_number' =>  $sellerData['building_number'] ?? null,

@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
+
             margin: 0;
             padding: 20px;
             font-size: 12px;
@@ -16,12 +16,10 @@
         }
 
         .invoice-box {
-            max-width: 900px;
+            max-width: 90vw;
             margin: auto;
             padding: 20px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+
         }
 
         .header,
