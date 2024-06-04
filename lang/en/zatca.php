@@ -84,6 +84,8 @@ return [
     'buyer_building_number' => 'Building Number',
     'is_zatca_2nd_enabled' => 'Enable Zatca 2nd Stage',
     'verify_settings' => 'Verify Settings',
+    'settings_are_good' => 'Verified and Saved Successfully',
+    'settings_are_bad' => 'Settings are invalid',
 
 
 ];

@@ -696,7 +696,7 @@ class ZatcaController extends Controller
 
         $business_id = $request->session()->get('user.business_id');
         $business = Business::where('id',   $business_id)->first();
-        $business->update($zatca_settings);
+
 
         $settings = new Setting(
             $business->fatoora_otp,
@@ -719,13 +719,14 @@ class ZatcaController extends Controller
         $certificate = $result->cert_production ?? null;
         $secret = $result->secret_production ?? null;
         if ($privateKey && $certificate && $secret) {
+            $business->update($zatca_settings);
             Business::where('id', $business_id)->update([
                 'zatca_secret' => $secret,
                 'zatca_certificate' => $certificate,
                 'zatca_private_key' => $privateKey,
             ]);
-            return response()->json(['success' => 1, 'msg' => 'Updated successfully']);
+            return response()->json(['success' => 1, 'msg' => __('zatca.settings_are_good')]);
         }
-        return response()->json(['success' => 0, 'msg' => 'Something went wrong during update']);
+        return response()->json(['success' => 0, 'msg' => __('zatca.settings_are_bad')]);
     }
 }

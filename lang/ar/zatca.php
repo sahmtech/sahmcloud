@@ -7,5 +7,7 @@ return [
     'zatca_information_section' => 'قسم متعلق بمعلومات لهيئة الضريبة والذكاة',
     'is_zatca_2nd_enabled' => 'تفعيل زاتكا المرحلة الثانية',
     'verify_settings' => 'التحقق من صحة الربط',
+    'settings_are_good' => 'تم التحقق وحفظ المعلومات بنجاح',
+    'settings_are_bad' => 'المعلومات المدخلة غير صالحة',
 
 ];
