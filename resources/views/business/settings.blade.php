@@ -259,27 +259,31 @@
         });
 
         function sendAjaxRequest(zatcaSettings, zatcaSeller) {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", "{{ route('zatca.verifySettings') }}", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}");
-
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        showPopup("Success", "Data sent successfully!");
+            fetch("{{ route('zatca.verifySettings') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({
+                        zatca_settings: zatcaSettings,
+                        zatca_seller: zatcaSeller
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success === 1) {
+                        showPopup("Success", data.msg);
                     } else {
-                        showPopup("Error", "Failed to send data. Please try again.");
+                        showPopup("Error", data.msg);
                     }
-                }
-            };
-
-            let data = JSON.stringify({
-                zatca_settings: zatcaSettings,
-                zatca_seller: zatcaSeller
-            });
-            xhr.send(data);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    showPopup("Error", "Failed to send data. Please try again.");
+                });
         }
+
 
         function showPopup(title, message) {
             let popup = document.createElement("div");
