@@ -270,19 +270,39 @@
                         zatca_seller: zatcaSeller
                     })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error.errors && error.errors.length > 0 ? error.errors[0].message :
+                                'Failed to send data');
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success === 1) {
                         showPopup("Success", data.msg);
                     } else {
-                        showPopup("Error", data.msg);
+                        console.log(data.msg);
+                        let errorMsg = data.msg;
+                        try {
+                            const parsedMsg = JSON.parse(data.msg);
+                            if (parsedMsg.errors && Array.isArray(parsedMsg.errors) && parsedMsg.errors.length > 0) {
+                                errorMsg = parsedMsg.errors[0].message;
+                                errorTitle = parsedMsg.errors[0].code;
+                            }
+                        } catch (e) {
+                            console.error("Failed to parse error message:", e);
+                        }
+                        showPopup("Error", `${errorTitle}: ${errorMsg}`);
                     }
                 })
                 .catch(error => {
                     console.error("Error:", error);
-                    showPopup("Error", ` ${error.message}`);
+                    showPopup("Error", `Failed to send data: ${error.message}`);
                 });
         }
+
 
 
         function showPopup(title, message) {

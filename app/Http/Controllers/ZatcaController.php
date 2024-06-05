@@ -664,69 +664,73 @@ class ZatcaController extends Controller
     public function verifySettings(Request $request)
     {
 
-
-        $settingsData = $request->input('zatca_settings');
-        $sellerData = $request->input('zatca_seller');
-
-
-
-        $zatca_settings = [
-            'fatoora_otp' =>  $settingsData['otp'] ?? null,
-            'email' =>  $settingsData['emailAddress'] ?? null,
-            'organizational_unit_name' =>  $settingsData['organizationalUnitName'] ?? null,
-            'organization_name' =>  $settingsData['organizationName'] ?? null,
-            'registered_address' =>  $settingsData['registeredAddress'] ?? null,
-            'business_category' =>   $settingsData['businessCategory'] ?? null,
-            'registration_number' =>   $settingsData['registrationNumber'] ?? null,
-            'egs_serial_number' =>   $settingsData['egsSerialNumber'] ?? null,
-            'common_name' =>  $settingsData['commonName'] ?? null,
-            'tax_number_1' =>  $settingsData['taxNumber'] ?? null,
-            'postal_number' =>  $sellerData['postal_number'] ?? null,
-            'city' =>  $sellerData['city'] ?? null,
-            'street_name' =>  $sellerData['street_name'] ?? null,
-            'building_number' =>  $sellerData['building_number'] ?? null,
-            'plot_identification' =>  $sellerData['plot_identification'] ?? null,
-            'city_sub_division' =>  $sellerData['city_sub_division'] ?? null,
-            'invoice_type' =>   $settingsData['invoiceType'] ?? null,
-        ];
-
-        $zatca_settings = array_filter($zatca_settings, function ($value) {
-            return !is_null($value);
-        });
-
-        $business_id = $request->session()->get('user.business_id');
-        $business = Business::where('id',   $business_id)->first();
+        try {
+            $settingsData = $request->input('zatca_settings');
+            $sellerData = $request->input('zatca_seller');
 
 
-        $settings = new Setting(
-            $business->fatoora_otp,
-            $business->email,
-            $business->common_name,
-            $business->organizational_unit_name,
-            $business->organization_name,
-            $business->tax_number_1,
-            $business->registered_address,
-            $business->business_category,
-            null,
-            $business->registration_number,
-            $business->invoice_type ?? InvoiceReportType::BOTH,
-        );
 
-        // dd(ConfigHelper::environment());
-        $result = \Bl\FatooraZatca\Zatca::generateZatcaSetting($settings);
-        // dd($result);
-        $privateKey = $result->private_key ?? null;
-        $certificate = $result->cert_production ?? null;
-        $secret = $result->secret_production ?? null;
-        if ($privateKey && $certificate && $secret) {
-            $business->update($zatca_settings);
-            Business::where('id', $business_id)->update([
-                'zatca_secret' => $secret,
-                'zatca_certificate' => $certificate,
-                'zatca_private_key' => $privateKey,
-            ]);
-            return response()->json(['success' => 1, 'msg' => __('zatca.settings_are_good')]);
+            $zatca_settings = [
+                'fatoora_otp' =>  $settingsData['otp'] ?? null,
+                'email' =>  $settingsData['emailAddress'] ?? null,
+                'organizational_unit_name' =>  $settingsData['organizationalUnitName'] ?? null,
+                'organization_name' =>  $settingsData['organizationName'] ?? null,
+                'registered_address' =>  $settingsData['registeredAddress'] ?? null,
+                'business_category' =>   $settingsData['businessCategory'] ?? null,
+                'registration_number' =>   $settingsData['registrationNumber'] ?? null,
+                'egs_serial_number' =>   $settingsData['egsSerialNumber'] ?? null,
+                'common_name' =>  $settingsData['commonName'] ?? null,
+                'tax_number_1' =>  $settingsData['taxNumber'] ?? null,
+                'postal_number' =>  $sellerData['postal_number'] ?? null,
+                'city' =>  $sellerData['city'] ?? null,
+                'street_name' =>  $sellerData['street_name'] ?? null,
+                'building_number' =>  $sellerData['building_number'] ?? null,
+                'plot_identification' =>  $sellerData['plot_identification'] ?? null,
+                'city_sub_division' =>  $sellerData['city_sub_division'] ?? null,
+                'invoice_type' =>   $settingsData['invoiceType'] ?? null,
+            ];
+
+            $zatca_settings = array_filter($zatca_settings, function ($value) {
+                return !is_null($value);
+            });
+
+            $business_id = $request->session()->get('user.business_id');
+            $business = Business::where('id',   $business_id)->first();
+
+
+            $settings = new Setting(
+                $business->fatoora_otp,
+                $business->email,
+                $business->common_name,
+                $business->organizational_unit_name,
+                $business->organization_name,
+                $business->tax_number_1,
+                $business->registered_address,
+                $business->business_category,
+                null,
+                $business->registration_number,
+                $business->invoice_type ?? InvoiceReportType::BOTH,
+            );
+
+            // dd(ConfigHelper::environment());
+            $result = \Bl\FatooraZatca\Zatca::generateZatcaSetting($settings);
+            // dd($result);
+            $privateKey = $result->private_key ?? null;
+            $certificate = $result->cert_production ?? null;
+            $secret = $result->secret_production ?? null;
+            if ($privateKey && $certificate && $secret) {
+                $business->update($zatca_settings);
+                Business::where('id', $business_id)->update([
+                    'zatca_secret' => $secret,
+                    'zatca_certificate' => $certificate,
+                    'zatca_private_key' => $privateKey,
+                ]);
+                return response()->json(['success' => 1, 'msg' => __('zatca.settings_are_good')]);
+            }
+            return response()->json(['success' => 0, 'msg' => __('zatca.settings_are_bad')]);
+        } catch (\Exception $e) {
+
+            return response()->json(['success' => 0, 'msg' => $e->getMessage()]);
         }
-        return response()->json(['success' => 0, 'msg' => __('zatca.settings_are_bad')]);
     }
 }
