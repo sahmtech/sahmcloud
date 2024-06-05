@@ -280,7 +280,7 @@
                 })
                 .catch(error => {
                     console.error("Error:", error);
-                    showPopup("Error", error);
+                    showPopup("Error", JSON.stringify(error));
                 });
         }
 
