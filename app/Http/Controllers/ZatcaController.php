@@ -652,7 +652,7 @@ class ZatcaController extends Controller
         );
         return view('sell.invoice', [
             'logo' => $business->logo ?? '',
-            'Qr' =>  \SimpleSoftwareIO\QrCode\Facades\QrCode::size(250)->generate($transaction->qr_code) ?? '',
+            'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(250)->generate($transaction->qr_code) :  '',
             'invoice' =>  $invoice,
             'seller' =>   $seller,
             'client' => $client,
