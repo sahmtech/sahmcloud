@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::table('transactions', function (Blueprint $table) {
             $table->text('qr_code')->nullable()->after('invoice_no');
+            $table->string('uuid')->nullable()->after('invoice_no');
         });
     }
 
