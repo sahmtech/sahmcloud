@@ -280,7 +280,7 @@
                 })
                 .catch(error => {
                     console.error("Error:", error);
-                    showPopup("Error", "Failed to send data. Please try again.");
+                    showPopup("Error", error);
                 });
         }
 
