@@ -1,0 +1,1483 @@
+name: CRM
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: connector/api/crm/follow-ups
+    metadata:
+      groupName: CRM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List Follow ups'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      start_date:
+        name: start_date
+        description: 'format: Y-m-d (Ex: 2020-12-16)'
+        required: false
+        example: '2020-12-16'
+        type: string
+        enumValues: []
+        custom: []
+      end_date:
+        name: end_date
+        description: 'format: Y-m-d (Ex: 2020-12-16)'
+        required: false
+        example: '2020-12-16'
+        type: string
+        enumValues: []
+        custom: []
+      status:
+        name: status
+        description: 'filter the result through status, get status from getFollowUpResources->statuses'
+        required: false
+        example: nihil
+        type: string
+        enumValues: []
+        custom: []
+      follow_up_type:
+        name: follow_up_type
+        description: 'filter the result through follow_up_type, get follow_up_type from getFollowUpResources->follow_up_types'
+        required: false
+        example: repellat
+        type: string
+        enumValues: []
+        custom: []
+      followup_category_id:
+        name: followup_category_id
+        description: 'filter the result through followup_category_id'
+        required: false
+        example: quam
+        type: string
+        enumValues: []
+        custom: []
+      order_by:
+        name: order_by
+        description: 'Column name to sort the result, Column: start_datetime'
+        required: false
+        example: start_datetime
+        type: string
+        enumValues: []
+        custom: []
+      direction:
+        name: direction
+        description: "Direction to sort the result, Required if using 'order_by', direction: desc, asc"
+        required: false
+        example: desc
+        type: string
+        enumValues: []
+        custom: []
+      per_page:
+        name: per_page
+        description: 'Total records per page. default: 10, Set -1 for no pagination'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        custom: []
+    cleanQueryParameters:
+      start_date: '2020-12-16'
+      end_date: '2020-12-16'
+      status: nihil
+      follow_up_type: repellat
+      followup_category_id: quam
+      order_by: start_datetime
+      direction: desc
+      per_page: 10
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "id": 1,
+          "business_id": 1,
+          "contact_id": 50,
+          "title": "Test Follow up",
+          "status": "scheduled",
+          "start_datetime": "2020-12-16 15:15:00",
+          "end_datetime": "2020-12-16 15:15:00",
+          "description": "<p>tst</p>",
+          "schedule_type": "call",
+          "allow_notification": 0,
+          "notify_via": {
+          "sms": 0,
+          "mail": 1
+          },
+          "notify_before": null,
+          "notify_type": "minute",
+          "created_by": 1,
+          "followup_additional_info": null,
+          "created_at": "2020-12-16 03:15:23",
+          "updated_at": "2020-12-16 15:46:34",
+          "customer": {
+          "id": 50,
+          "business_id": 1,
+          "type": "lead",
+          "supplier_business_name": null,
+          "name": " Lead 4  ",
+          "prefix": null,
+          "first_name": "Lead 4",
+          "middle_name": null,
+          "last_name": null,
+          "email": null,
+          "contact_id": "CO0011",
+          "contact_status": "active",
+          "tax_number": null,
+          "city": null,
+          "state": null,
+          "country": null,
+          "address_line_1": null,
+          "address_line_2": null,
+          "zip_code": null,
+          "dob": null,
+          "mobile": "234567",
+          "landline": null,
+          "alternate_number": null,
+          "pay_term_number": null,
+          "pay_term_type": null,
+          "credit_limit": null,
+          "created_by": 1,
+          "balance": "0.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "is_default": 0,
+          "shipping_address": null,
+          "position": null,
+          "customer_group_id": null,
+          "crm_source": "55",
+          "crm_life_stage": "62",
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "deleted_at": null,
+          "created_at": "2020-12-15 23:14:48",
+          "updated_at": "2021-01-07 15:32:52",
+          "remember_token": null,
+          "password": null
+          }
+          },
+          {
+          "id": 2,
+          "business_id": 1,
+          "contact_id": 50,
+          "title": "Test Follow up 1",
+          "status": "completed",
+          "start_datetime": "2020-12-16 15:46:00",
+          "end_datetime": "2020-12-16 15:46:00",
+          "description": "<p>Test Follow up</p>",
+          "schedule_type": "call",
+          "allow_notification": 0,
+          "notify_via": {
+          "sms": 0,
+          "mail": 1
+          },
+          "notify_before": null,
+          "notify_type": "minute",
+          "created_by": 1,
+          "followup_additional_info": null,
+          "created_at": "2020-12-16 15:46:57",
+          "updated_at": "2020-12-17 10:24:11",
+          "customer": {
+          "id": 50,
+          "business_id": 1,
+          "type": "lead",
+          "supplier_business_name": null,
+          "name": " Lead 4  ",
+          "prefix": null,
+          "first_name": "Lead 4",
+          "middle_name": null,
+          "last_name": null,
+          "email": null,
+          "contact_id": "CO0011",
+          "contact_status": "active",
+          "tax_number": null,
+          "city": null,
+          "state": null,
+          "country": null,
+          "address_line_1": null,
+          "address_line_2": null,
+          "zip_code": null,
+          "dob": null,
+          "mobile": "234567",
+          "landline": null,
+          "alternate_number": null,
+          "pay_term_number": null,
+          "pay_term_type": null,
+          "credit_limit": null,
+          "created_by": 1,
+          "balance": "0.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "is_default": 0,
+          "shipping_address": null,
+          "position": null,
+          "customer_group_id": null,
+          "crm_source": "55",
+          "crm_life_stage": "62",
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "deleted_at": null,
+          "created_at": "2020-12-15 23:14:48",
+          "updated_at": "2021-01-07 15:32:52",
+          "remember_token": null,
+          "password": null
+          }
+          }
+          ],
+          "links": {
+          "first": "http://local.pos.com/connector/api/crm/follow-ups?page=1",
+          "last": "http://local.pos.com/connector/api/crm/follow-ups?page=21",
+          "prev": null,
+          "next": "http://local.pos.com/connector/api/crm/follow-ups?page=2"
+          },
+          "meta": {
+          "current_page": 1,
+          "from": 1,
+          "last_page": 21,
+          "path": "http://local.pos.com/connector/api/crm/follow-ups",
+          "per_page": "2",
+          "to": 2,
+          "total": 42
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6D435evbgPVcZh8a1dkEfa6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: connector/api/crm/follow-ups
+    metadata:
+      groupName: CRM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Add follow up'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'Follow up title'
+        required: true
+        example: 'Meeting with client'
+        type: string
+        enumValues: []
+        custom: []
+      contact_id:
+        name: contact_id
+        description: 'Contact to be followed up'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        custom: []
+      description:
+        name: description
+        description: 'Follow up description'
+        required: false
+        example: 'Eum assumenda dignissimos distinctio reprehenderit dolores nisi non.'
+        type: text
+        enumValues: []
+        custom: []
+      schedule_type:
+        name: schedule_type
+        description: 'Follow up type default get from getFollowUpResources->follow_up_types'
+        required: true
+        example: repellat
+        type: string
+        enumValues: []
+        custom: []
+      user_id:
+        name: user_id
+        description: 'Integer ID; Follow up to be assigned Ex: [2,3,8]'
+        required: true
+        example:
+          - 2
+          - 3
+          - 5
+        type: 'string[]'
+        enumValues: []
+        custom: []
+      notify_before:
+        name: notify_before
+        description: 'Integer value will be used to send auto notification before follow up starts.'
+        required: false
+        example: 5
+        type: integer
+        enumValues: []
+        custom: []
+      notify_type:
+        name: notify_type
+        description: "Notify type Ex: 'minute', 'hour', 'day'. default is hour"
+        required: false
+        example: minute
+        type: string
+        enumValues: []
+        custom: []
+      status:
+        name: status
+        description: 'Follow up status'
+        required: false
+        example: open
+        type: string
+        enumValues: []
+        custom: []
+      notify_via:
+        name: notify_via
+        description: "Will be used to send notification Ex: ['sms' => 0 ,'mail' => 1]"
+        required: false
+        example:
+          - et
+        type: 'string[]'
+        enumValues: []
+        custom: []
+      start_datetime:
+        name: start_datetime
+        description: 'Follow up start datetime format: Y-m-d H:i:s Ex: 2020-12-16 03:15:23'
+        required: true
+        example: '2021-01-06 13:05:00'
+        type: datetime
+        enumValues: []
+        custom: []
+      end_datetime:
+        name: end_datetime
+        description: 'Follow up end datetime format: Y-m-d H:i:s Ex: 2020-12-16 03:15:23'
+        required: true
+        example: '2021-01-06 13:05:00'
+        type: datetime
+        enumValues: []
+        custom: []
+      followup_additional_info:
+        name: followup_additional_info
+        description: "Follow up additional info Ex: ['call duration' => '1 hour']"
+        required: false
+        example:
+          - sequi
+        type: 'string[]'
+        enumValues: []
+        custom: []
+      allow_notification:
+        name: allow_notification
+        description: '0/1 : If notification will be send before follow up starts. default is 1(true)'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      title: 'Meeting with client'
+      contact_id: 2
+      description: 'Eum assumenda dignissimos distinctio reprehenderit dolores nisi non.'
+      schedule_type: repellat
+      user_id:
+        - 2
+        - 3
+        - 5
+      notify_before: 5
+      notify_type: minute
+      status: open
+      notify_via:
+        - et
+      start_datetime: '2021-01-06 13:05:00'
+      end_datetime: '2021-01-06 13:05:00'
+      followup_additional_info:
+        - sequi
+      allow_notification: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          "title": "test",
+          "contact_id": "1",
+          "description": null,
+          "schedule_type": "call",
+          "followup_category_id": "1",
+          "notify_before": null,
+          "status": null,
+          "start_datetime": "2021-01-06 15:27:00",
+          "end_datetime": "2021-01-06 15:27:00",
+          "allow_notification": 0,
+          "notify_via": {
+          "sms": 1,
+          "mail": 1
+          },
+          "notify_type": "hour",
+          "business_id": 1,
+          "created_by": 1,
+          "updated_at": "2021-01-06 17:04:54",
+          "created_at": "2021-01-06 17:04:54",
+          "id": 20
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ca6agh541VDf3Zk8dvb6EPe'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'connector/api/crm/follow-ups/{id}'
+    metadata:
+      groupName: CRM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the specified followup'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the follow up.'
+        required: true
+        example: quia
+        type: string
+        enumValues: []
+        custom: []
+      follow_up:
+        name: follow_up
+        description: 'comma separated ids of the follow_ups'
+        required: true
+        example: '1,2'
+        type: string
+        enumValues: []
+        custom: []
+    cleanUrlParameters:
+      id: quia
+      follow_up: '1,2'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "id": 20,
+          "business_id": 1,
+          "contact_id": 1,
+          "title": "Meeting with client",
+          "status": null,
+          "start_datetime": "2021-01-06 15:27:00",
+          "end_datetime": "2021-01-06 15:27:00",
+          "description": null,
+          "schedule_type": "call",
+          "allow_notification": 0,
+          "notify_via": {
+          "sms": 1,
+          "mail": 1
+          },
+          "notify_before": null,
+          "notify_type": "hour",
+          "created_by": 1,
+          "created_at": "2021-01-06 17:04:54",
+          "updated_at": "2021-01-06 17:04:54",
+          "customer": {
+          "id": 1,
+          "business_id": 1,
+          "type": "customer",
+          "supplier_business_name": null,
+          "name": "Walk-In Customer",
+          "prefix": null,
+          "first_name": "Walk-In Customer",
+          "middle_name": null,
+          "last_name": null,
+          "email": null,
+          "contact_id": "CO0005",
+          "contact_status": "active",
+          "tax_number": null,
+          "city": "Phoenix",
+          "state": "Arizona",
+          "country": "USA",
+          "address_line_1": "Linking Street",
+          "address_line_2": null,
+          "zip_code": null,
+          "dob": null,
+          "mobile": "(378) 400-1234",
+          "landline": null,
+          "alternate_number": null,
+          "pay_term_number": null,
+          "pay_term_type": null,
+          "credit_limit": null,
+          "created_by": 1,
+          "balance": "0.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "is_default": 1,
+          "shipping_address": null,
+          "position": null,
+          "customer_group_id": null,
+          "crm_source": null,
+          "crm_life_stage": null,
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "deleted_at": null,
+          "created_at": "2018-01-03 20:45:20",
+          "updated_at": "2018-06-11 22:22:05",
+          "remember_token": null,
+          "password": null
+          },
+          "users": [
+          {
+          "id": 2,
+          "user_type": "user",
+          "surname": "Mr",
+          "first_name": "Demo",
+          "last_name": "Cashier",
+          "username": "cashier",
+          "email": "cashier@example.com",
+          "language": "en",
+          "contact_no": null,
+          "address": null,
+          "business_id": 1,
+          "max_sales_discount_percent": null,
+          "allow_login": 1,
+          "essentials_department_id": null,
+          "essentials_designation_id": null,
+          "status": "active",
+          "crm_contact_id": null,
+          "is_cmmsn_agnt": 0,
+          "cmmsn_percent": "0.00",
+          "selected_contacts": 0,
+          "dob": null,
+          "gender": null,
+          "marital_status": null,
+          "blood_group": null,
+          "contact_number": null,
+          "fb_link": null,
+          "twitter_link": null,
+          "social_media_1": null,
+          "social_media_2": null,
+          "permanent_address": null,
+          "current_address": null,
+          "guardian_name": null,
+          "custom_field_1": null,
+          "custom_field_2": null,
+          "custom_field_3": null,
+          "custom_field_4": null,
+          "bank_details": null,
+          "id_proof_name": null,
+          "id_proof_number": null,
+          "deleted_at": null,
+          "created_at": "2018-01-04 02:20:58",
+          "updated_at": "2018-01-04 02:20:58",
+          "pivot": {
+          "schedule_id": 20,
+          "user_id": 2
+          }
+          }
+          ]
+          }
+          ]
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer g4ba1D568EkVfec6vZaP3dh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'connector/api/crm/follow-ups/{id}'
+    metadata:
+      groupName: CRM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update follow up'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the follow up.'
+        required: true
+        example: minima
+        type: string
+        enumValues: []
+        custom: []
+      follow_up:
+        name: follow_up
+        description: 'id of the follow up to be updated'
+        required: true
+        example: '20'
+        type: string
+        enumValues: []
+        custom: []
+    cleanUrlParameters:
+      id: minima
+      follow_up: '20'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'Follow up title'
+        required: true
+        example: 'Meeting with client'
+        type: string
+        enumValues: []
+        custom: []
+      contact_id:
+        name: contact_id
+        description: 'Contact to be followed up'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        custom: []
+      description:
+        name: description
+        description: 'Follow up description'
+        required: false
+        example: 'Ullam ad eius aut cupiditate similique.'
+        type: text
+        enumValues: []
+        custom: []
+      schedule_type:
+        name: schedule_type
+        description: 'Follow up type default get from getFollowUpResources->follow_up_types'
+        required: true
+        example: aut
+        type: string
+        enumValues: []
+        custom: []
+      user_id:
+        name: user_id
+        description: 'Integer ID; Follow up to be assigned Ex: [2,3,8]'
+        required: true
+        example:
+          - 2
+          - 3
+          - 5
+        type: 'string[]'
+        enumValues: []
+        custom: []
+      notify_before:
+        name: notify_before
+        description: 'Integer value will be used to send auto notification before follow up starts.'
+        required: false
+        example: 5
+        type: integer
+        enumValues: []
+        custom: []
+      notify_type:
+        name: notify_type
+        description: "Notify type Ex: 'minute', 'hour', 'day'. default is hour"
+        required: false
+        example: minute
+        type: string
+        enumValues: []
+        custom: []
+      status:
+        name: status
+        description: 'Follow up status'
+        required: false
+        example: open
+        type: string
+        enumValues: []
+        custom: []
+      notify_via:
+        name: notify_via
+        description: "Will be used to send notification Ex: ['sms' => 0 ,'mail' => 1]"
+        required: false
+        example:
+          - deleniti
+        type: 'string[]'
+        enumValues: []
+        custom: []
+      followup_additional_info:
+        name: followup_additional_info
+        description: "Follow up additional info Ex: ['call duration' => '1 hour']"
+        required: false
+        example:
+          - est
+        type: 'string[]'
+        enumValues: []
+        custom: []
+      start_datetime:
+        name: start_datetime
+        description: 'Follow up start datetime format: Y-m-d H:i:s Ex: 2020-12-16 03:15:23'
+        required: true
+        example: '2021-01-06 13:05:00'
+        type: datetime
+        enumValues: []
+        custom: []
+      end_datetime:
+        name: end_datetime
+        description: 'Follow up end datetime format: Y-m-d H:i:s Ex: 2020-12-16 03:15:23'
+        required: true
+        example: '2021-01-06 13:05:00'
+        type: datetime
+        enumValues: []
+        custom: []
+      allow_notification:
+        name: allow_notification
+        description: '0/1 : If notification will be send before follow up starts. default is 1(true)'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      title: 'Meeting with client'
+      contact_id: 2
+      description: 'Ullam ad eius aut cupiditate similique.'
+      schedule_type: aut
+      user_id:
+        - 2
+        - 3
+        - 5
+      notify_before: 5
+      notify_type: minute
+      status: open
+      notify_via:
+        - deleniti
+      followup_additional_info:
+        - est
+      start_datetime: '2021-01-06 13:05:00'
+      end_datetime: '2021-01-06 13:05:00'
+      allow_notification: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          "id": 20,
+          "business_id": 1,
+          "contact_id": "1",
+          "title": "Meeting with client",
+          "status": null,
+          "start_datetime": "2021-01-06 15:27:00",
+          "end_datetime": "2021-01-06 15:27:00",
+          "description": null,
+          "schedule_type": "call",
+          "allow_notification": 0,
+          "notify_via": {
+          "sms": 1,
+          "mail": 0
+          },
+          "notify_before": null,
+          "notify_type": "hour",
+          "created_by": 1,
+          "created_at": "2021-01-06 17:04:54",
+          "updated_at": "2021-01-06 18:22:21"
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer dgc6Va41P5b8fkZEveah36D'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: connector/api/crm/follow-up-resources
+    metadata:
+      groupName: CRM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get follow up resources'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          "statuses": {
+          "scheduled": "Scheduled",
+          "open": "Open",
+          "canceled": "Cancelled",
+          "completed": "Completed"
+          },
+          "follow_up_types": {
+          "call": "Call",
+          "sms": "Sms",
+          "meeting": "Meeting",
+          "email": "Email"
+          },
+          "notify_type": {
+          "minute": "Minute",
+          "hour": "Hour",
+          "day": "Day"
+          },
+          "notify_via": {
+          "sms": "Sms",
+          "mail": "Email"
+          }
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer cfEV6dag8Z1P5h46Dv3bkea'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: connector/api/crm/leads
+    metadata:
+      groupName: CRM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List lead'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      assigned_to:
+        name: assigned_to
+        description: 'comma separated ids of users to whom lead is assigned (Ex: 1,2,3)'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        custom: []
+      name:
+        name: name
+        description: 'Search term for lead name'
+        required: false
+        example: nisi
+        type: string
+        enumValues: []
+        custom: []
+      biz_name:
+        name: biz_name
+        description: "Search term for lead's business name"
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        custom: []
+      mobile_num:
+        name: mobile_num
+        description: "Search term for lead's mobile number"
+        required: false
+        example: 18
+        type: integer
+        enumValues: []
+        custom: []
+      contact_id:
+        name: contact_id
+        description: "Search term for lead's contact_id. Ex(CO0005)"
+        required: false
+        example: culpa
+        type: string
+        enumValues: []
+        custom: []
+      order_by:
+        name: order_by
+        description: 'Column name to sort the result, Column: name, supplier_business_name'
+        required: false
+        example: voluptas
+        type: string
+        enumValues: []
+        custom: []
+      direction:
+        name: direction
+        description: "Direction to sort the result, Required if using 'order_by', direction: desc, asc"
+        required: false
+        example: desc
+        type: string
+        enumValues: []
+        custom: []
+      per_page:
+        name: per_page
+        description: 'Total records per page. default: 10, Set -1 for no pagination'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        custom: []
+    cleanQueryParameters:
+      assigned_to: '1,2,3'
+      name: nisi
+      biz_name: consequatur
+      mobile_num: 18
+      contact_id: culpa
+      order_by: voluptas
+      direction: desc
+      per_page: 10
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "contact_id": "CO0010",
+          "name": "mr Lead 3 kr kr 2",
+          "supplier_business_name": "POS",
+          "email": null,
+          "mobile": "9437638555",
+          "tax_number": null,
+          "created_at": "2020-12-15 23:14:30",
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "alternate_number": null,
+          "landline": null,
+          "dob": null,
+          "contact_status": "active",
+          "type": "lead",
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "id": 49,
+          "business_id": 1,
+          "crm_source": "55",
+          "crm_life_stage": "60",
+          "address_line_1": null,
+          "address_line_2": null,
+          "city": null,
+          "state": null,
+          "country": null,
+          "zip_code": null,
+          "last_follow_up_id": 18,
+          "upcoming_follow_up_id": null,
+          "last_follow_up": "2021-01-07 10:26:00",
+          "upcoming_follow_up": null,
+          "last_follow_up_additional_info": "{\"test\":\"test done\",\"call_duration\":\"1.5 Hour\",\"rand\":1}",
+          "upcoming_follow_up_additional_info": null,
+          "source": {
+          "id": 55,
+          "name": "Facebook",
+          "business_id": 1,
+          "short_code": null,
+          "parent_id": 0,
+          "created_by": 1,
+          "category_type": "source",
+          "description": "Facebook",
+          "slug": null,
+          "woocommerce_cat_id": null,
+          "deleted_at": null,
+          "created_at": "2020-12-15 23:07:53",
+          "updated_at": "2020-12-15 23:07:53"
+          },
+          "life_stage": {
+          "id": 60,
+          "name": "Open Deal",
+          "business_id": 1,
+          "short_code": null,
+          "parent_id": 0,
+          "created_by": 1,
+          "category_type": "life_stage",
+          "description": "Open Deal",
+          "slug": null,
+          "woocommerce_cat_id": null,
+          "deleted_at": null,
+          "created_at": "2020-12-15 23:11:05",
+          "updated_at": "2020-12-15 23:11:05"
+          },
+          "lead_users": [
+          {
+          "id": 10,
+          "user_type": "user",
+          "surname": "Mr.",
+          "first_name": "WooCommerce",
+          "last_name": "User",
+          "username": "woocommerce_user",
+          "email": "woo@example.com",
+          "language": "en",
+          "contact_no": null,
+          "address": null,
+          "business_id": 1,
+          "max_sales_discount_percent": null,
+          "allow_login": 1,
+          "essentials_department_id": null,
+          "essentials_designation_id": null,
+          "status": "active",
+          "crm_contact_id": null,
+          "is_cmmsn_agnt": 0,
+          "cmmsn_percent": "0.00",
+          "selected_contacts": 0,
+          "dob": null,
+          "gender": null,
+          "marital_status": null,
+          "blood_group": null,
+          "contact_number": null,
+          "fb_link": null,
+          "twitter_link": null,
+          "social_media_1": null,
+          "social_media_2": null,
+          "permanent_address": null,
+          "current_address": null,
+          "guardian_name": null,
+          "custom_field_1": null,
+          "custom_field_2": null,
+          "custom_field_3": null,
+          "custom_field_4": null,
+          "bank_details": null,
+          "id_proof_name": null,
+          "id_proof_number": null,
+          "deleted_at": null,
+          "created_at": "2018-08-02 04:05:55",
+          "updated_at": "2018-08-02 04:05:55",
+          "pivot": {
+          "contact_id": 49,
+          "user_id": 10
+          }
+          }
+          ]
+          },
+          {
+          "contact_id": "CO0011",
+          "name": " Lead 4  ",
+          "supplier_business_name": null,
+          "email": null,
+          "mobile": "234567",
+          "tax_number": null,
+          "created_at": "2020-12-15 23:14:48",
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "alternate_number": null,
+          "landline": null,
+          "dob": null,
+          "contact_status": "active",
+          "type": "lead",
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "id": 50,
+          "business_id": 1,
+          "crm_source": "55",
+          "crm_life_stage": "62",
+          "address_line_1": null,
+          "address_line_2": null,
+          "city": null,
+          "state": null,
+          "country": null,
+          "zip_code": null,
+          "last_follow_up_id": 32,
+          "upcoming_follow_up_id": null,
+          "last_follow_up": "2021-01-08 16:06:00",
+          "upcoming_follow_up": null,
+          "last_follow_up_additional_info": "{\"call_durartion\":\"5 hour\"}",
+          "upcoming_follow_up_additional_info": null,
+          "source": {
+          "id": 55,
+          "name": "Facebook",
+          "business_id": 1,
+          "short_code": null,
+          "parent_id": 0,
+          "created_by": 1,
+          "category_type": "source",
+          "description": "Facebook",
+          "slug": null,
+          "woocommerce_cat_id": null,
+          "deleted_at": null,
+          "created_at": "2020-12-15 23:07:53",
+          "updated_at": "2020-12-15 23:07:53"
+          },
+          "life_stage": {
+          "id": 62,
+          "name": "New",
+          "business_id": 1,
+          "short_code": null,
+          "parent_id": 0,
+          "created_by": 1,
+          "category_type": "life_stage",
+          "description": "New",
+          "slug": null,
+          "woocommerce_cat_id": null,
+          "deleted_at": null,
+          "created_at": "2020-12-15 23:11:26",
+          "updated_at": "2020-12-15 23:11:26"
+          },
+          "lead_users": [
+          {
+          "id": 11,
+          "user_type": "user",
+          "surname": "Mr",
+          "first_name": "Admin Essential",
+          "last_name": null,
+          "username": "admin-essentials",
+          "email": "admin_essentials@example.com",
+          "language": "en",
+          "contact_no": null,
+          "address": null,
+          "business_id": 1,
+          "max_sales_discount_percent": null,
+          "allow_login": 1,
+          "essentials_department_id": null,
+          "essentials_designation_id": null,
+          "status": "active",
+          "crm_contact_id": null,
+          "is_cmmsn_agnt": 0,
+          "cmmsn_percent": "0.00",
+          "selected_contacts": 0,
+          "dob": null,
+          "gender": null,
+          "marital_status": null,
+          "blood_group": null,
+          "contact_number": null,
+          "fb_link": null,
+          "twitter_link": null,
+          "social_media_1": null,
+          "social_media_2": null,
+          "permanent_address": null,
+          "current_address": null,
+          "guardian_name": null,
+          "custom_field_1": null,
+          "custom_field_2": null,
+          "custom_field_3": null,
+          "custom_field_4": null,
+          "bank_details": null,
+          "id_proof_name": null,
+          "id_proof_number": null,
+          "deleted_at": null,
+          "created_at": "2018-01-04 02:15:19",
+          "updated_at": "2018-01-04 02:15:19",
+          "pivot": {
+          "contact_id": 50,
+          "user_id": 11
+          }
+          }
+          ]
+          },
+          {
+          "contact_id": "CO0015",
+          "name": " Lead kr  ",
+          "supplier_business_name": null,
+          "email": null,
+          "mobile": "9437638555",
+          "tax_number": null,
+          "created_at": "2021-01-07 18:31:08",
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "alternate_number": null,
+          "landline": null,
+          "dob": "2021-01-07",
+          "contact_status": "active",
+          "type": "lead",
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "id": 82,
+          "business_id": 1,
+          "crm_source": null,
+          "crm_life_stage": null,
+          "address_line_1": null,
+          "address_line_2": null,
+          "city": null,
+          "state": null,
+          "country": null,
+          "zip_code": null,
+          "last_follow_up_id": 36,
+          "upcoming_follow_up_id": null,
+          "last_follow_up": "2021-01-07 18:31:08",
+          "upcoming_follow_up": null,
+          "last_follow_up_additional_info": "{\"call duration\":\"1 hour\",\"call descr\":\"talked to him and all okay\"}",
+          "upcoming_follow_up_additional_info": null,
+          "source": null,
+          "life_stage": null,
+          "lead_users": [
+          {
+          "id": 11,
+          "user_type": "user",
+          "surname": "Mr",
+          "first_name": "Admin Essential",
+          "last_name": null,
+          "username": "admin-essentials",
+          "email": "admin_essentials@example.com",
+          "language": "en",
+          "contact_no": null,
+          "address": null,
+          "business_id": 1,
+          "max_sales_discount_percent": null,
+          "allow_login": 1,
+          "essentials_department_id": null,
+          "essentials_designation_id": null,
+          "status": "active",
+          "crm_contact_id": null,
+          "is_cmmsn_agnt": 0,
+          "cmmsn_percent": "0.00",
+          "selected_contacts": 0,
+          "dob": null,
+          "gender": null,
+          "marital_status": null,
+          "blood_group": null,
+          "contact_number": null,
+          "fb_link": null,
+          "twitter_link": null,
+          "social_media_1": null,
+          "social_media_2": null,
+          "permanent_address": null,
+          "current_address": null,
+          "guardian_name": null,
+          "custom_field_1": null,
+          "custom_field_2": null,
+          "custom_field_3": null,
+          "custom_field_4": null,
+          "bank_details": null,
+          "id_proof_name": null,
+          "id_proof_number": null,
+          "deleted_at": null,
+          "created_at": "2018-01-04 02:15:19",
+          "updated_at": "2018-01-04 02:15:19",
+          "pivot": {
+          "contact_id": 82,
+          "user_id": 11
+          }
+          }
+          ]
+          }
+          ],
+          "links": {
+          "first": "http://local.pos.com/connector/api/crm/leads?page=1",
+          "last": "http://local.pos.com/connector/api/crm/leads?page=1",
+          "prev": null,
+          "next": null
+          },
+          "meta": {
+          "current_page": 1,
+          "from": 1,
+          "last_page": 1,
+          "path": "http://local.pos.com/connector/api/crm/leads",
+          "per_page": "10",
+          "to": 3,
+          "total": 3
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 16hPfVecE5gva8Za4Dd6k3b'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: connector/api/crm/call-logs
+    metadata:
+      groupName: CRM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Save Call Logs'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      'call_logs.*.mobile_number':
+        name: 'call_logs.*.mobile_number'
+        description: 'Mobile number of the customer or user'
+        required: true
+        example: mollitia
+        type: string
+        enumValues: []
+        custom: []
+      'call_logs.*.mobile_name':
+        name: 'call_logs.*.mobile_name'
+        description: 'Name of the contact saved in the mobile'
+        required: false
+        example: amet
+        type: string
+        enumValues: []
+        custom: []
+      'call_logs.*.call_type':
+        name: 'call_logs.*.call_type'
+        description: 'Call type (call, sms)'
+        required: false
+        example: call
+        type: string
+        enumValues: []
+        custom: []
+      'call_logs.*.start_time':
+        name: 'call_logs.*.start_time'
+        description: 'Start datetime of the call in "Y-m-d H:i:s" format'
+        required: false
+        example: voluptate
+        type: string
+        enumValues: []
+        custom: []
+      'call_logs.*.end_time':
+        name: 'call_logs.*.end_time'
+        description: 'End datetime of the call in "Y-m-d H:i:s" format'
+        required: false
+        example: quasi
+        type: string
+        enumValues: []
+        custom: []
+      'call_logs.*.duration':
+        name: 'call_logs.*.duration'
+        description: 'Duration of the call in seconds'
+        required: false
+        example: ad
+        type: string
+        enumValues: []
+        custom: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5khVZ8De6v1aPEcg6b4a3fd'
+    controller: null
+    method: null
+    route: null
+    custom: []

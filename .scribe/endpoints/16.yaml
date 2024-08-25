@@ -1,0 +1,1007 @@
+name: 'New end points'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: connector/api/new_product
+    metadata:
+      groupName: 'New end points'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'New List products'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      order_by:
+        name: order_by
+        description: 'Values: product_name or newest'
+        required: false
+        example: est
+        type: string
+        enumValues: []
+        custom: []
+      order_direction:
+        name: order_direction
+        description: 'Values: asc or desc'
+        required: false
+        example: nihil
+        type: string
+        enumValues: []
+        custom: []
+      location_custom_field_1:
+        name: location_custom_field_1
+        description: 'Custom field 1 of the location'
+        required: false
+        example: velit
+        type: string
+        enumValues: []
+        custom: []
+      category_id:
+        name: category_id
+        description: 'comma separated ids of one or multiple category'
+        required: false
+        example: itaque
+        type: string
+        enumValues: []
+        custom: []
+      sub_category_id:
+        name: sub_category_id
+        description: 'comma separated ids of one or multiple sub-category'
+        required: false
+        example: dolores
+        type: string
+        enumValues: []
+        custom: []
+      location_id:
+        name: location_id
+        description: ''
+        required: false
+        example: '1'
+        type: string
+        enumValues: []
+        custom: []
+      not_for_sell:
+        name: not_for_sell
+        description: '(1, 0)'
+        required: false
+        example: hic
+        type: string
+        enumValues: []
+        custom: []
+      send_lot_detail:
+        name: send_lot_detail
+        description: 'Send lot details in each variation location details(1, 0)'
+        required: false
+        example: reprehenderit
+        type: string
+        enumValues: []
+        custom: []
+      name:
+        name: name
+        description: 'Search term for product name'
+        required: false
+        example: et
+        type: string
+        enumValues: []
+        custom: []
+      sku:
+        name: sku
+        description: 'Search term for product sku'
+        required: false
+        example: dignissimos
+        type: string
+        enumValues: []
+        custom: []
+      product_ids:
+        name: product_ids
+        description: 'comma separated ids of products'
+        required: false
+        example: '1,2'
+        type: string
+        enumValues: []
+        custom: []
+      per_page:
+        name: per_page
+        description: 'Total records per page. default: 10, Set -1 for no pagination'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        custom: []
+    cleanQueryParameters:
+      order_by: est
+      order_direction: nihil
+      location_custom_field_1: velit
+      category_id: itaque
+      sub_category_id: dolores
+      location_id: '1'
+      not_for_sell: hic
+      send_lot_detail: reprehenderit
+      name: et
+      sku: dignissimos
+      product_ids: '1,2'
+      per_page: 10
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "id": 2,
+          "name": "Levis Men's Slimmy Fit Jeans",
+          "business_id": 1,
+          "type": "variable",
+          "exemption_type_id": null,
+          "enable_stock": 1,
+          "sku": "AS0002",
+          "product_custom_field1": null,
+          "product_custom_field2": null,
+          "product_custom_field3": null,
+          "product_custom_field4": null,
+          "woocommerce_media_id": null,
+          "product_description": null,
+          "is_inactive": 0,
+          "repair_model_id": null,
+          "not_for_selling": 0,
+          "ecom_shipping_class_id": null,
+          "ecom_active_in_store": 1,
+          "woocommerce_product_id": 627,
+          "woocommerce_disable_sync": 0,
+          "image_url": "http://local.pos.com/uploads/img/1528727964_levis_jeans.jpg",
+          "product_variations": [
+          {
+          "id": 2,
+          "variation_template_id": 5,
+          "name": "Waist Size",
+          "product_id": 2,
+          "is_dummy": 0,
+          "variations": [
+          {
+          "id": 2,
+          "name": "28",
+          "product_id": 2,
+          "sub_sku": "AS0002-1",
+          "product_variation_id": 2,
+          "woocommerce_variation_id": 658,
+          "default_purchase_price": "70.0000",
+          "dpp_inc_tax": "77.0000",
+          "default_sell_price": "70.0000",
+          "sell_price_inc_tax": "77.0000",
+          "combo_variations": null,
+          "variation_location_details": [
+          {
+          "id": 1,
+          "product_id": 2,
+          "product_variation_id": 2,
+          "variation_id": 2,
+          "location_id": 1,
+          "qty_available": "71.0000"
+          }
+          ],
+          "media": [],
+          "discounts": []
+          },
+          {
+          "id": 3,
+          "name": "30",
+          "product_id": 2,
+          "sub_sku": "AS0002-2",
+          "product_variation_id": 2,
+          "woocommerce_variation_id": 659,
+          "default_purchase_price": "70.0000",
+          "dpp_inc_tax": "77.0000",
+          "default_sell_price": "70.0000",
+          "sell_price_inc_tax": "77.0000",
+          "combo_variations": null,
+          "variation_location_details": [
+          {
+          "id": 2,
+          "product_id": 2,
+          "product_variation_id": 2,
+          "variation_id": 3,
+          "location_id": 1,
+          "qty_available": "89.0000"
+          }
+          ],
+          "media": [],
+          "discounts": []
+          },
+          {
+          "id": 4,
+          "name": "32",
+          "product_id": 2,
+          "sub_sku": "AS0002-3",
+          "product_variation_id": 2,
+          "woocommerce_variation_id": 660,
+          "default_purchase_price": "70.0000",
+          "dpp_inc_tax": "77.0000",
+          "default_sell_price": "70.0000",
+          "sell_price_inc_tax": "77.0000",
+          "combo_variations": null,
+          "variation_location_details": [
+          {
+          "id": 3,
+          "product_id": 2,
+          "product_variation_id": 2,
+          "variation_id": 4,
+          "location_id": 1,
+          "qty_available": "127.0000"
+          },
+          {
+          "id": 1371,
+          "product_id": 2,
+          "product_variation_id": 2,
+          "variation_id": 4,
+          "location_id": 7,
+          "qty_available": "-1.0000"
+          }
+          ],
+          "media": [],
+          "discounts": []
+          },
+          {
+          "id": 5,
+          "name": "34",
+          "product_id": 2,
+          "sub_sku": "AS0002-4",
+          "product_variation_id": 2,
+          "woocommerce_variation_id": 661,
+          "default_purchase_price": "72.0000",
+          "dpp_inc_tax": "79.2000",
+          "default_sell_price": "72.0000",
+          "sell_price_inc_tax": "79.2000",
+          "combo_variations": null,
+          "variation_location_details": [
+          {
+          "id": 4,
+          "product_id": 2,
+          "product_variation_id": 2,
+          "variation_id": 5,
+          "location_id": 1,
+          "qty_available": "128.0000"
+          }
+          ],
+          "media": [],
+          "discounts": []
+          },
+          {
+          "id": 6,
+          "name": "36",
+          "product_id": 2,
+          "sub_sku": "AS0002-5",
+          "product_variation_id": 2,
+          "woocommerce_variation_id": 662,
+          "default_purchase_price": "72.0000",
+          "dpp_inc_tax": "79.2000",
+          "default_sell_price": "72.0000",
+          "sell_price_inc_tax": "79.2000",
+          "combo_variations": null,
+          "variation_location_details": [
+          {
+          "id": 5,
+          "product_id": 2,
+          "product_variation_id": 2,
+          "variation_id": 6,
+          "location_id": 1,
+          "qty_available": "99.0000"
+          }
+          ],
+          "media": [],
+          "discounts": []
+          }
+          ]
+          }
+          ],
+          "brand": {
+          "id": 1,
+          "business_id": 1,
+          "name": "Levis",
+          "description": null,
+          "created_by": 1,
+          "use_for_repair": 1,
+          "deleted_at": null,
+          "created_at": "2018-01-03 21:19:47",
+          "updated_at": "2018-01-03 21:19:47"
+          },
+          "unit": {
+          "id": 1,
+          "business_id": 1,
+          "actual_name": "Pieces",
+          "short_name": "Pc(s)",
+          "allow_decimal": 0,
+          "base_unit_id": null,
+          "base_unit_multiplier": null
+          },
+          "category": {
+          "id": 1,
+          "name": "Men's",
+          "business_id": 1,
+          "short_code": "sfefef",
+          "parent_id": 0,
+          "category_type": "product",
+          "description": null,
+          "slug": null,
+          "woocommerce_cat_id": null
+          },
+          "sub_category": {
+          "id": 4,
+          "name": "Jeans",
+          "business_id": 1,
+          "short_code": null,
+          "parent_id": 1,
+          "category_type": "product",
+          "description": null,
+          "slug": null,
+          "woocommerce_cat_id": null
+          },
+          "product_tax": {
+          "id": 1,
+          "business_id": 1,
+          "name": "VAT@10%",
+          "amount": 10,
+          "is_tax_group": 0,
+          "for_tax_group": 0,
+          "created_by": 1,
+          "woocommerce_tax_rate_id": null,
+          "deleted_at": null,
+          "created_at": "2018-01-04 02:40:07",
+          "updated_at": "2018-01-04 02:40:07"
+          },
+          "product_locations": [
+          {
+          "id": 1,
+          "business_id": 1,
+          "name": "Location 1",
+          "custom_field1": "gdgdgd88",
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null
+          }
+          ]
+          }
+          ],
+          "links": {
+          "first": "http://local.pos.com/connector/api/new_product?per_page=1&page=1",
+          "last": "http://local.pos.com/connector/api/new_product?per_page=1&page=1088",
+          "prev": null,
+          "next": "http://local.pos.com/connector/api/new_product?per_page=1&page=2"
+          },
+          "meta": {
+          "current_page": 1,
+          "from": 1,
+          "last_page": 1088,
+          "path": "http://local.pos.com/connector/api/new_product",
+          "per_page": "1",
+          "to": 1,
+          "total": 1088
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1faD463ZEbc5P68vkadghVe'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: connector/api/new_sell
+    metadata:
+      groupName: 'New end points'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'New List sells'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      location_id:
+        name: location_id
+        description: 'id of the location'
+        required: false
+        example: '1'
+        type: string
+        enumValues: []
+        custom: []
+      contact_id:
+        name: contact_id
+        description: 'id of the customer'
+        required: false
+        example: aut
+        type: string
+        enumValues: []
+        custom: []
+      payment_status:
+        name: payment_status
+        description: 'Comma separated values of payment statuses. Available values due, partial, paid, overdue'
+        required: false
+        example: 'due,partial'
+        type: string
+        enumValues: []
+        custom: []
+      start_date:
+        name: start_date
+        description: 'format:Y-m-d'
+        required: false
+        example: '2018-06-25'
+        type: string
+        enumValues: []
+        custom: []
+      end_date:
+        name: end_date
+        description: 'format:Y-m-d'
+        required: false
+        example: '2018-06-25'
+        type: string
+        enumValues: []
+        custom: []
+      user_id:
+        name: user_id
+        description: 'id of the user who created the sale'
+        required: false
+        example: accusamus
+        type: string
+        enumValues: []
+        custom: []
+      service_staff_id:
+        name: service_staff_id
+        description: 'id of the service staff assigned with the sale'
+        required: false
+        example: similique
+        type: string
+        enumValues: []
+        custom: []
+      shipping_status:
+        name: shipping_status
+        description: "Shipping Status of the sale ('ordered', 'packed', 'shipped', 'delivered', 'cancelled')"
+        required: false
+        example: ordered
+        type: string
+        enumValues: []
+        custom: []
+      source:
+        name: source
+        description: 'Source of the sale'
+        required: false
+        example: voluptatibus
+        type: string
+        enumValues: []
+        custom: []
+      customer_group_id:
+        name: customer_group_id
+        description: 'id of the customer group'
+        required: false
+        example: nostrum
+        type: string
+        enumValues: []
+        custom: []
+      product_name:
+        name: product_name
+        description: 'name of the product'
+        required: false
+        example: error
+        type: string
+        enumValues: []
+        custom: []
+      product_sku:
+        name: product_sku
+        description: 'sku of the product or variation'
+        required: false
+        example: consequuntur
+        type: string
+        enumValues: []
+        custom: []
+      product_custom_field_1:
+        name: product_custom_field_1
+        description: 'custome field 1 of the product'
+        required: false
+        example: et
+        type: string
+        enumValues: []
+        custom: []
+      location_custom_field_1:
+        name: location_custom_field_1
+        description: 'custome field 1 of the location'
+        required: false
+        example: et
+        type: string
+        enumValues: []
+        custom: []
+      location_invoice_scheme_prefix:
+        name: location_invoice_scheme_prefix
+        description: 'Invoice scheme prefix of the location'
+        required: false
+        example: reiciendis
+        type: string
+        enumValues: []
+        custom: []
+      product_category_id:
+        name: product_category_id
+        description: 'category id of the product'
+        required: false
+        example: sit
+        type: string
+        enumValues: []
+        custom: []
+      product_sub_category_id:
+        name: product_sub_category_id
+        description: 'Sub category id of the product'
+        required: false
+        example: maxime
+        type: string
+        enumValues: []
+        custom: []
+      sell_ids:
+        name: sell_ids
+        description: 'comma separated ids of the sells'
+        required: false
+        example: '55,64'
+        type: string
+        enumValues: []
+        custom: []
+      only_subscriptions:
+        name: only_subscriptions
+        description: 'Filter only subcription invoices (1, 0)'
+        required: false
+        example: qui
+        type: string
+        enumValues: []
+        custom: []
+      send_purchase_details:
+        name: send_purchase_details
+        description: 'Get purchase details of each sell line (1, 0)'
+        required: false
+        example: distinctio
+        type: string
+        enumValues: []
+        custom: []
+      order_by_date:
+        name: order_by_date
+        description: "Sort sell list by date ('asc', 'desc')"
+        required: false
+        example: desc
+        type: string
+        enumValues: []
+        custom: []
+      per_page:
+        name: per_page
+        description: 'Total records per page. default: 10, Set -1 for no pagination'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        custom: []
+    cleanQueryParameters:
+      location_id: '1'
+      contact_id: aut
+      payment_status: 'due,partial'
+      start_date: '2018-06-25'
+      end_date: '2018-06-25'
+      user_id: accusamus
+      service_staff_id: similique
+      shipping_status: ordered
+      source: voluptatibus
+      customer_group_id: nostrum
+      product_name: error
+      product_sku: consequuntur
+      product_custom_field_1: et
+      location_custom_field_1: et
+      location_invoice_scheme_prefix: reiciendis
+      product_category_id: sit
+      product_sub_category_id: maxime
+      sell_ids: '55,64'
+      only_subscriptions: qui
+      send_purchase_details: distinctio
+      order_by_date: desc
+      per_page: 10
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "id": 6,
+          "business_id": 1,
+          "location_id": 1,
+          "res_table_id": null,
+          "type": "sell",
+          "status": "final",
+          "is_quotation": 0,
+          "payment_status": "paid",
+          "contact_id": 4,
+          "customer_group_id": null,
+          "invoice_no": "AS0001",
+          "ref_no": "",
+          "source": null,
+          "unique_hash": null,
+          "hash_control": null,
+          "subscription_no": null,
+          "subscription_repeat_on": null,
+          "transaction_date": "2018-04-10 13:23:21",
+          "total_before_tax": "770.0000",
+          "tax_id": null,
+          "tax_amount": "0.0000",
+          "discount_type": "percentage",
+          "discount_amount": "0.0000",
+          "rp_redeemed": 0,
+          "rp_redeemed_amount": "0.0000",
+          "shipping_details": null,
+          "shipping_address": null,
+          "shipping_status": null,
+          "delivered_to": null,
+          "additional_notes": null,
+          "staff_note": null,
+          "round_off_amount": "0.0000",
+          "final_total": "770.0000",
+          "expense_sub_category_id": null,
+          "is_direct_sale": 0,
+          "is_suspend": 0,
+          "total_amount_recovered": null,
+          "crm_is_order_request": 0,
+          "mfg_production_cost": "0.0000",
+          "mfg_production_cost_type": "percentage",
+          "mfg_is_final": 0,
+          "is_created_from_api": 0,
+          "essentials_duration": "0.00",
+          "essentials_duration_unit": null,
+          "essentials_amount_per_unit_duration": "0.0000",
+          "essentials_allowances": null,
+          "essentials_deductions": null,
+          "repair_completed_on": null,
+          "repair_warranty_id": null,
+          "repair_brand_id": null,
+          "repair_status_id": null,
+          "repair_model_id": null,
+          "repair_job_sheet_id": null,
+          "repair_defects": null,
+          "repair_serial_no": null,
+          "repair_checklist": null,
+          "repair_security_pwd": null,
+          "repair_security_pattern": null,
+          "repair_due_date": null,
+          "repair_device_id": null,
+          "repair_updates_notif": 0,
+          "invoice_token": "00f79f7fd292225e8c303a6bf8626d06",
+          "pjt_project_id": null,
+          "pjt_title": null,
+          "woocommerce_order_id": null,
+          "selling_price_group_id": null,
+          "created_at": "2018-01-06 07:06:11",
+          "updated_at": "2021-10-23 11:42:13",
+          "location_name": "Location 1",
+          "location_custom_field1": "gdgdgd88",
+          "location_invoice_scheme_prefix": "AS",
+          "table_name": null,
+          "table_description": null,
+          "contact": "Harry",
+          "customer_group_name": "grp 2",
+          "sell_lines": [
+          {
+          "id": 1,
+          "transaction_id": 6,
+          "product_id": 2,
+          "quantity": 10,
+          "quantity_returned": "0.0000",
+          "unit_price_before_discount": "70.0000",
+          "unit_price": "70.0000",
+          "line_discount_type": null,
+          "line_discount_amount": "0.0000",
+          "unit_price_inc_tax": "77.0000",
+          "item_tax": "7.0000",
+          "tax_id": 1,
+          "discount_id": null,
+          "lot_no_line_id": null,
+          "sell_line_note": null,
+          "woocommerce_line_items_id": null,
+          "children_type": "",
+          "created_at": "2018-01-06 07:06:11",
+          "updated_at": "2018-01-06 07:06:11",
+          "product_name": "Levis Men's Slimmy Fit Jeans",
+          "product_custom_field_1": null,
+          "product_type": "variable",
+          "product_sku": "AS0002",
+          "category": {
+          "id": 1,
+          "name": "Men's",
+          "business_id": 1,
+          "short_code": "sfefef",
+          "parent_id": 0,
+          "created_by": 1,
+          "category_type": "product",
+          "description": null,
+          "slug": null,
+          "woocommerce_cat_id": null
+          },
+          "sub_category": {
+          "id": 4,
+          "name": "Jeans",
+          "business_id": 1,
+          "short_code": null,
+          "parent_id": 1,
+          "created_by": 1,
+          "category_type": "product",
+          "description": null,
+          "slug": null,
+          "woocommerce_cat_id": null
+          },
+          "product_variations": {
+          "id": 3,
+          "name": "30",
+          "product_id": 2,
+          "sub_sku": "AS0002-2",
+          "product_variation_id": 2,
+          "default_purchase_price": "70.0000",
+          "dpp_inc_tax": "77.0000",
+          "default_sell_price": "70.0000",
+          "sell_price_inc_tax": "77.0000"
+          }
+          }
+          ],
+          "payment_lines": [
+          {
+          "id": 1,
+          "transaction_id": 6,
+          "business_id": null,
+          "is_return": 0,
+          "amount": "770.0000",
+          "method": "cash",
+          "card_type": "visa",
+          "paid_on": "2018-01-09 17:30:35",
+          "payment_ref_no": null
+          }
+          ],
+          "invoice_url": "http://local.pos.com/invoice/00f79f7fd292225e8c303a6bf8626d06",
+          "payment_link": ""
+          }
+          ],
+          "links": {
+          "first": "http://local.pos.com/connector/api/new_sell?per_page=1&page=1",
+          "last": "http://local.pos.com/connector/api/new_sell?per_page=1&page=213",
+          "prev": null,
+          "next": "http://local.pos.com/connector/api/new_sell?per_page=1&page=2"
+          },
+          "meta": {
+          "current_page": 1,
+          "from": 1,
+          "last_page": 213,
+          "path": "http://local.pos.com/connector/api/new_sell",
+          "per_page": "1",
+          "to": 1,
+          "total": 213
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Za845d6f1kh3DebavPE6gcV'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: connector/api/new_contactapi
+    metadata:
+      groupName: 'New end points'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'New List contact'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      type:
+        name: type
+        description: 'Type of contact (supplier, customer)'
+        required: true
+        example: quia
+        type: string
+        enumValues: []
+        custom: []
+      customer_group_id:
+        name: customer_group_id
+        description: 'id of the customer group'
+        required: false
+        example: dolores
+        type: string
+        enumValues: []
+        custom: []
+      custom_field_1:
+        name: custom_field_1
+        description: 'Custom field 1 of the contact'
+        required: false
+        example: quisquam
+        type: string
+        enumValues: []
+        custom: []
+      contact_ids:
+        name: contact_ids
+        description: 'comma separated ids of contacts'
+        required: false
+        example: '2,3'
+        type: string
+        enumValues: []
+        custom: []
+      name:
+        name: name
+        description: 'Search term for contact name'
+        required: false
+        example: repellendus
+        type: string
+        enumValues: []
+        custom: []
+      biz_name:
+        name: biz_name
+        description: "Search term for contact's business name"
+        required: false
+        example: veritatis
+        type: string
+        enumValues: []
+        custom: []
+      mobile_num:
+        name: mobile_num
+        description: "Search term for contact's mobile number"
+        required: false
+        example: 18
+        type: integer
+        enumValues: []
+        custom: []
+      contact_id:
+        name: contact_id
+        description: "Search term for contact's contact_id. Ex(CO0005)"
+        required: false
+        example: debitis
+        type: string
+        enumValues: []
+        custom: []
+      order_by:
+        name: order_by
+        description: 'Column name to sort the result, Column: name, supplier_business_name'
+        required: false
+        example: debitis
+        type: string
+        enumValues: []
+        custom: []
+      direction:
+        name: direction
+        description: 'Direction to sort the result, Direction: desc, asc'
+        required: false
+        example: beatae
+        type: string
+        enumValues: []
+        custom: []
+      per_page:
+        name: per_page
+        description: 'Total records per page. default: 10, Set -1 for no pagination'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        custom: []
+    cleanQueryParameters:
+      type: quia
+      customer_group_id: dolores
+      custom_field_1: quisquam
+      contact_ids: '2,3'
+      name: repellendus
+      biz_name: veritatis
+      mobile_num: 18
+      contact_id: debitis
+      order_by: debitis
+      direction: beatae
+      per_page: 10
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "id": 18,
+          "business_id": 1,
+          "type": "customer",
+          "name": "Mr. Rohit Kumar Agrawalla",
+          "prefix": "Mr.",
+          "first_name": "Rohit",
+          "middle_name": "Kumar",
+          "last_name": "Agrawalla",
+          "email": null,
+          "contact_status": "active",
+          "mobile": "8596859647",
+          "credit_limit": null,
+          "converted_by": null,
+          "converted_on": null,
+          "balance": "40.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "customer_group_id": 1,
+          "crm_source": null,
+          "crm_life_stage": null,
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "remember_token": null,
+          "password": null
+          }
+          ],
+          "links": {
+          "first": "http://local.pos.com/connector/api/new_contactapi?customer_group_id=1&page=1",
+          "last": "http://local.pos.com/connector/api/new_contactapi?customer_group_id=1&page=1",
+          "prev": null,
+          "next": null
+          },
+          "meta": {
+          "current_page": 1,
+          "from": 1,
+          "last_page": 1,
+          "path": "http://local.pos.com/connector/api/new_contactapi",
+          "per_page": 10,
+          "to": 1,
+          "total": 1
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer PEgca43hk6fv6aZd5bD18eV'
+    controller: null
+    method: null
+    route: null
+    custom: []

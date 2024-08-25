@@ -1,0 +1,431 @@
+name: 'Cash register management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: connector/api/cash-register
+    metadata:
+      groupName: 'Cash register management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List Cash Registers'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      status:
+        name: status
+        description: 'status of the register (open, close)'
+        required: false
+        example: open
+        type: string
+        enumValues: []
+        custom: []
+      user_id:
+        name: user_id
+        description: 'id of the user'
+        required: false
+        example: '10'
+        type: string
+        enumValues: []
+        custom: []
+      start_date:
+        name: start_date
+        description: 'format:Y-m-d'
+        required: false
+        example: '2018-06-25'
+        type: string
+        enumValues: []
+        custom: []
+      end_date:
+        name: end_date
+        description: 'format:Y-m-d'
+        required: false
+        example: '2018-06-25'
+        type: string
+        enumValues: []
+        custom: []
+      location_id:
+        name: location_id
+        description: 'id of the location'
+        required: false
+        example: '1'
+        type: string
+        enumValues: []
+        custom: []
+      per_page:
+        name: per_page
+        description: 'Total records per page. default: 10, Set -1 for no pagination'
+        required: false
+        example: 15
+        type: integer
+        enumValues: []
+        custom: []
+    cleanQueryParameters:
+      status: open
+      user_id: '10'
+      start_date: '2018-06-25'
+      end_date: '2018-06-25'
+      location_id: '1'
+      per_page: 15
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "id": 1,
+          "business_id": 1,
+          "location_id": 1,
+          "user_id": 9,
+          "status": "open",
+          "closed_at": null,
+          "closing_amount": "0.0000",
+          "total_card_slips": 0,
+          "total_cheques": 0,
+          "closing_note": null,
+          "created_at": "2020-07-02 12:03:00",
+          "updated_at": "2020-07-02 12:03:19",
+          "cash_register_transactions": [
+          {
+          "id": 1,
+          "cash_register_id": 1,
+          "amount": "0.0000",
+          "pay_method": "cash",
+          "type": "credit",
+          "transaction_type": "initial",
+          "transaction_id": null,
+          "created_at": "2018-07-13 07:39:34",
+          "updated_at": "2018-07-13 07:39:34"
+          },
+          {
+          "id": 2,
+          "cash_register_id": 1,
+          "amount": "42.5000",
+          "pay_method": "cash",
+          "type": "credit",
+          "transaction_type": "sell",
+          "transaction_id": 41,
+          "created_at": "2018-07-13 07:44:40",
+          "updated_at": "2018-07-13 07:44:40"
+          }
+          ]
+          },
+          {
+          "id": 2,
+          "business_id": 1,
+          "location_id": 1,
+          "user_id": 1,
+          "status": "",
+          "closed_at": "2020-07-02 12:03:00",
+          "closing_amount": "0.0000",
+          "total_card_slips": 0,
+          "total_cheques": 0,
+          "closing_note": null,
+          "created_at": "2020-07-06 15:38:23",
+          "updated_at": "2020-07-06 15:38:23",
+          "cash_register_transactions": [
+          {
+          "id": 19,
+          "cash_register_id": 2,
+          "amount": "10.0000",
+          "pay_method": "cash",
+          "type": "credit",
+          "transaction_type": "initial",
+          "transaction_id": null,
+          "created_at": "2020-07-06 15:38:23",
+          "updated_at": "2020-07-06 15:38:23"
+          }
+          ]
+          }
+          ],
+          "links": {
+          "first": "http://local.pos.com/connector/api/cash-register?page=1",
+          "last": null,
+          "prev": null,
+          "next": null
+          },
+          "meta": {
+          "current_page": 1,
+          "from": 1,
+          "path": "http://local.pos.com/connector/api/cash-register",
+          "per_page": 10,
+          "to": 2
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aE1gVPcaDhf6k46e8Z5vd3b'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: connector/api/cash-register
+    metadata:
+      groupName: 'Cash register management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create Cash Register'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      location_id:
+        name: location_id
+        description: 'id of the business location'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        custom: []
+      initial_amount:
+        name: initial_amount
+        description: 'Initial amount'
+        required: false
+        example: 31368.6427598
+        type: number
+        enumValues: []
+        custom: []
+      created_at:
+        name: created_at
+        description: 'Register open datetime format:Y-m-d H:i:s,'
+        required: false
+        example: '2020-5-7 15:20:22'
+        type: string
+        enumValues: []
+        custom: []
+      closed_at:
+        name: closed_at
+        description: 'Register closed datetime format:Y-m-d H:i:s,'
+        required: false
+        example: '2020-5-7 15:20:22'
+        type: string
+        enumValues: []
+        custom: []
+      status:
+        name: status
+        description: 'status (open, close)'
+        required: false
+        example: close
+        type: register
+        enumValues: []
+        custom: []
+      closing_amount:
+        name: closing_amount
+        description: 'Closing amount'
+        required: false
+        example: 35136239.3
+        type: number
+        enumValues: []
+        custom: []
+      total_card_slips:
+        name: total_card_slips
+        description: 'total number of card slips'
+        required: false
+        example: 20
+        type: integer
+        enumValues: []
+        custom: []
+      total_cheques:
+        name: total_cheques
+        description: 'total number of checks'
+        required: false
+        example: 18
+        type: integer
+        enumValues: []
+        custom: []
+      closing_note:
+        name: closing_note
+        description: 'Closing note'
+        required: false
+        example: provident
+        type: string
+        enumValues: []
+        custom: []
+      transaction_ids:
+        name: transaction_ids
+        description: 'Comma separated ids of sells associated with the register'
+        required: false
+        example: |-
+          1,2,3
+
+          response {
+          "data": {
+          "status": "closed",
+          "location_id": "1",
+          "closed_at": "2020-07-02 12:03:00",
+          "business_id": 1,
+          "user_id": 1,
+          "updated_at": "2020-07-06 16:28:42",
+          "created_at": "2020-07-06 16:28:42",
+          "id": 3
+          }
+          }
+        type: string
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      location_id: 1
+      initial_amount: 31368.6427598
+      created_at: '2020-5-7 15:20:22'
+      closed_at: '2020-5-7 15:20:22'
+      status: close
+      closing_amount: 35136239.3
+      total_card_slips: 20
+      total_cheques: 18
+      closing_note: provident
+      transaction_ids: |-
+        1,2,3
+
+        response {
+        "data": {
+        "status": "closed",
+        "location_id": "1",
+        "closed_at": "2020-07-02 12:03:00",
+        "business_id": 1,
+        "user_id": 1,
+        "updated_at": "2020-07-06 16:28:42",
+        "created_at": "2020-07-06 16:28:42",
+        "id": 3
+        }
+        }
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer E3kZhD6c1vPged4baf8aV65'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'connector/api/cash-register/{id}'
+    metadata:
+      groupName: 'Cash register management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the specified Register'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the cash register.'
+        required: true
+        example: quas
+        type: string
+        enumValues: []
+        custom: []
+      cash_register:
+        name: cash_register
+        description: 'comma separated ids of the cash registers'
+        required: true
+        example: '59'
+        type: string
+        enumValues: []
+        custom: []
+    cleanUrlParameters:
+      id: quas
+      cash_register: '59'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "id": 1,
+          "business_id": 1,
+          "location_id": 1,
+          "user_id": 9,
+          "status": "open",
+          "closed_at": null,
+          "closing_amount": "0.0000",
+          "total_card_slips": 0,
+          "total_cheques": 0,
+          "closing_note": null,
+          "created_at": "2020-07-02 12:03:00",
+          "updated_at": "2020-07-02 12:03:19",
+          "cash_register_transactions": [
+          {
+          "id": 1,
+          "cash_register_id": 1,
+          "amount": "0.0000",
+          "pay_method": "cash",
+          "type": "credit",
+          "transaction_type": "initial",
+          "transaction_id": null,
+          "created_at": "2018-07-13 07:39:34",
+          "updated_at": "2018-07-13 07:39:34"
+          },
+          {
+          "id": 2,
+          "cash_register_id": 1,
+          "amount": "42.5000",
+          "pay_method": "cash",
+          "type": "credit",
+          "transaction_type": "sell",
+          "transaction_id": 41,
+          "created_at": "2018-07-13 07:44:40",
+          "updated_at": "2018-07-13 07:44:40"
+          }
+          ]
+          }
+          ]
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5dEhVfcD3681Pv4ag6beZak'
+    controller: null
+    method: null
+    route: null
+    custom: []

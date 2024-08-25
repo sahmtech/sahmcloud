@@ -1,0 +1,1437 @@
+name: 'Contact management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: connector/api/contactapi
+    metadata:
+      groupName: 'Contact management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List contact'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      type:
+        name: type
+        description: 'Type of contact (supplier, customer)'
+        required: true
+        example: quaerat
+        type: string
+        enumValues: []
+        custom: []
+      name:
+        name: name
+        description: 'Search term for contact name'
+        required: false
+        example: sint
+        type: string
+        enumValues: []
+        custom: []
+      biz_name:
+        name: biz_name
+        description: "Search term for contact's business name"
+        required: false
+        example: rerum
+        type: string
+        enumValues: []
+        custom: []
+      mobile_num:
+        name: mobile_num
+        description: "Search term for contact's mobile number"
+        required: false
+        example: 9
+        type: integer
+        enumValues: []
+        custom: []
+      contact_id:
+        name: contact_id
+        description: "Search term for contact's contact_id. Ex(CO0005)"
+        required: false
+        example: iure
+        type: string
+        enumValues: []
+        custom: []
+      order_by:
+        name: order_by
+        description: 'Column name to sort the result, Column: name, supplier_business_name'
+        required: false
+        example: minima
+        type: string
+        enumValues: []
+        custom: []
+      direction:
+        name: direction
+        description: 'Direction to sort the result, Direction: desc, asc'
+        required: false
+        example: ut
+        type: string
+        enumValues: []
+        custom: []
+      per_page:
+        name: per_page
+        description: 'Total records per page. default: 10, Set -1 for no pagination'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        custom: []
+    cleanQueryParameters:
+      type: quaerat
+      name: sint
+      biz_name: rerum
+      mobile_num: 9
+      contact_id: iure
+      order_by: minima
+      direction: ut
+      per_page: 10
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "id": 2,
+          "business_id": 1,
+          "type": "supplier",
+          "supplier_business_name": "Alpha Clothings",
+          "name": "Michael",
+          "prefix": null,
+          "first_name": "Michael",
+          "middle_name": null,
+          "last_name": null,
+          "email": null,
+          "contact_id": "CO0001",
+          "contact_status": "active",
+          "tax_number": "4590091535",
+          "city": "Phoenix",
+          "state": "Arizona",
+          "country": "USA",
+          "address_line_1": "Linking Street",
+          "address_line_2": null,
+          "zip_code": null,
+          "dob": null,
+          "mobile": "(378) 400-1234",
+          "landline": null,
+          "alternate_number": null,
+          "pay_term_number": 15,
+          "pay_term_type": "days",
+          "credit_limit": null,
+          "created_by": 1,
+          "balance": "0.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "is_default": 0,
+          "shipping_address": null,
+          "position": null,
+          "customer_group_id": null,
+          "crm_source": null,
+          "crm_life_stage": null,
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "deleted_at": null,
+          "created_at": "2018-01-03 20:59:38",
+          "updated_at": "2018-06-11 22:21:03",
+          "remember_token": null,
+          "password": null
+          },
+          {
+          "id": 3,
+          "business_id": 1,
+          "type": "supplier",
+          "supplier_business_name": "Manhattan Clothing Ltd.",
+          "name": "Philip",
+          "prefix": null,
+          "first_name": "Philip",
+          "middle_name": null,
+          "last_name": null,
+          "email": null,
+          "contact_id": "CO0003",
+          "contact_status": "active",
+          "tax_number": "54869310093",
+          "city": "Phoenix",
+          "state": "Arizona",
+          "country": "USA",
+          "address_line_1": "Linking Street",
+          "address_line_2": null,
+          "zip_code": null,
+          "dob": null,
+          "mobile": "(378) 400-1234",
+          "landline": null,
+          "alternate_number": null,
+          "pay_term_number": 15,
+          "pay_term_type": "days",
+          "credit_limit": null,
+          "created_by": 1,
+          "balance": "0.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "is_default": 0,
+          "shipping_address": null,
+          "position": null,
+          "customer_group_id": null,
+          "crm_source": null,
+          "crm_life_stage": null,
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "deleted_at": null,
+          "created_at": "2018-01-03 21:00:55",
+          "updated_at": "2018-06-11 22:21:36",
+          "remember_token": null,
+          "password": null
+          },
+          {
+          "id": 5,
+          "business_id": 1,
+          "type": "supplier",
+          "supplier_business_name": "Digital Ocean",
+          "name": "Mike McCubbin",
+          "prefix": null,
+          "first_name": "Mike McCubbin",
+          "middle_name": null,
+          "last_name": null,
+          "email": null,
+          "contact_id": "CN0004",
+          "contact_status": "active",
+          "tax_number": "52965489001",
+          "city": "Phoenix",
+          "state": "Arizona",
+          "country": "USA",
+          "address_line_1": "Linking Street",
+          "address_line_2": null,
+          "zip_code": null,
+          "dob": null,
+          "mobile": "(378) 400-1234",
+          "landline": null,
+          "alternate_number": null,
+          "pay_term_number": 30,
+          "pay_term_type": "days",
+          "credit_limit": null,
+          "created_by": 1,
+          "balance": "0.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "is_default": 0,
+          "shipping_address": null,
+          "position": null,
+          "customer_group_id": null,
+          "crm_source": null,
+          "crm_life_stage": null,
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "deleted_at": null,
+          "created_at": "2018-01-06 06:53:22",
+          "updated_at": "2018-06-11 22:21:47",
+          "remember_token": null,
+          "password": null
+          },
+          {
+          "id": 6,
+          "business_id": 1,
+          "type": "supplier",
+          "supplier_business_name": "Univer Suppliers",
+          "name": "Jackson Hill",
+          "prefix": null,
+          "first_name": "Jackson Hill",
+          "middle_name": null,
+          "last_name": null,
+          "email": null,
+          "contact_id": "CO0002",
+          "contact_status": "active",
+          "tax_number": "5459000655",
+          "city": "Phoenix",
+          "state": "Arizona",
+          "country": "USA",
+          "address_line_1": "Linking Street",
+          "address_line_2": null,
+          "zip_code": null,
+          "dob": null,
+          "mobile": "(378) 400-1234",
+          "landline": null,
+          "alternate_number": null,
+          "pay_term_number": 45,
+          "pay_term_type": "days",
+          "credit_limit": null,
+          "created_by": 1,
+          "balance": "0.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "is_default": 0,
+          "shipping_address": null,
+          "position": null,
+          "customer_group_id": null,
+          "crm_source": null,
+          "crm_life_stage": null,
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "custom_field5": null,
+          "custom_field6": null,
+          "custom_field7": null,
+          "custom_field8": null,
+          "custom_field9": null,
+          "custom_field10": null,
+          "deleted_at": null,
+          "created_at": "2018-01-06 06:55:09",
+          "updated_at": "2018-06-11 22:21:18",
+          "remember_token": null,
+          "password": null
+          }
+          ],
+          "links": {
+          "first": "http://local.pos.com/connector/api/contactapi?page=1",
+          "last": "http://local.pos.com/connector/api/contactapi?page=1",
+          "prev": null,
+          "next": null
+          },
+          "meta": {
+          "current_page": 1,
+          "from": 1,
+          "last_page": 1,
+          "path": "http://local.pos.com/connector/api/contactapi",
+          "per_page": "10",
+          "to": 4,
+          "total": 4
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hkcga1E5Vfad6bP8ZD3ev46'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: connector/api/contactapi
+    metadata:
+      groupName: 'Contact management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create contact'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      type:
+        name: type
+        description: 'Type of contact (supplier, customer, both, lead)'
+        required: true
+        example: customer
+        type: string
+        enumValues: []
+        custom: []
+      supplier_business_name:
+        name: supplier_business_name
+        description: 'Required if type is supplier'
+        required: true
+        example: voluptatem
+        type: string
+        enumValues: []
+        custom: []
+      prefix:
+        name: prefix
+        description: 'Prefix for the name of the contact'
+        required: false
+        example: expedita
+        type: string
+        enumValues: []
+        custom: []
+      first_name:
+        name: first_name
+        description: 'Name of the contact'
+        required: true
+        example: vero
+        type: string
+        enumValues: []
+        custom: []
+      middle_name:
+        name: middle_name
+        description: ''
+        required: false
+        example: aut
+        type: string
+        enumValues: []
+        custom: []
+      last_name:
+        name: last_name
+        description: ''
+        required: false
+        example: nam
+        type: string
+        enumValues: []
+        custom: []
+      tax_number:
+        name: tax_number
+        description: ''
+        required: false
+        example: 8787fefef
+        type: string
+        enumValues: []
+        custom: []
+      pay_term_number:
+        name: pay_term_number
+        description: ''
+        required: false
+        example: 3.0
+        type: number
+        enumValues: []
+        custom: []
+      pay_term_type:
+        name: pay_term_type
+        description: '(months ,days)'
+        required: false
+        example: months
+        type: string
+        enumValues: []
+        custom: []
+      mobile:
+        name: mobile
+        description: ''
+        required: true
+        example: '4578691009'
+        type: string
+        enumValues: []
+        custom: []
+      landline:
+        name: landline
+        description: ''
+        required: false
+        example: 5487-8454-4145
+        type: string
+        enumValues: []
+        custom: []
+      alternate_number:
+        name: alternate_number
+        description: ''
+        required: false
+        example: '841847541222'
+        type: string
+        enumValues: []
+        custom: []
+      address_line_1:
+        name: address_line_1
+        description: ''
+        required: false
+        example: ut
+        type: string
+        enumValues: []
+        custom: []
+      address_line_2:
+        name: address_line_2
+        description: ''
+        required: false
+        example: aut
+        type: string
+        enumValues: []
+        custom: []
+      city:
+        name: city
+        description: ''
+        required: false
+        example: quas
+        type: string
+        enumValues: []
+        custom: []
+      state:
+        name: state
+        description: ''
+        required: false
+        example: officiis
+        type: string
+        enumValues: []
+        custom: []
+      country:
+        name: country
+        description: ''
+        required: false
+        example: cupiditate
+        type: string
+        enumValues: []
+        custom: []
+      zip_code:
+        name: zip_code
+        description: ''
+        required: false
+        example: non
+        type: string
+        enumValues: []
+        custom: []
+      customer_group_id:
+        name: customer_group_id
+        description: ''
+        required: false
+        example: est
+        type: string
+        enumValues: []
+        custom: []
+      contact_id:
+        name: contact_id
+        description: ''
+        required: false
+        example: recusandae
+        type: string
+        enumValues: []
+        custom: []
+      dob:
+        name: dob
+        description: 'Fromat: Y-m-d'
+        required: false
+        example: '2000-06-13'
+        type: string
+        enumValues: []
+        custom: []
+      custom_field1:
+        name: custom_field1
+        description: ''
+        required: false
+        example: error
+        type: string
+        enumValues: []
+        custom: []
+      custom_field2:
+        name: custom_field2
+        description: ''
+        required: false
+        example: dolores
+        type: string
+        enumValues: []
+        custom: []
+      custom_field3:
+        name: custom_field3
+        description: ''
+        required: false
+        example: cupiditate
+        type: string
+        enumValues: []
+        custom: []
+      custom_field4:
+        name: custom_field4
+        description: ''
+        required: false
+        example: accusamus
+        type: string
+        enumValues: []
+        custom: []
+      email:
+        name: email
+        description: ''
+        required: false
+        example: aglae09@example.org
+        type: string
+        enumValues: []
+        custom: []
+      shipping_address:
+        name: shipping_address
+        description: ''
+        required: false
+        example: quasi
+        type: string
+        enumValues: []
+        custom: []
+      position:
+        name: position
+        description: ''
+        required: false
+        example: ratione
+        type: string
+        enumValues: []
+        custom: []
+      opening_balance:
+        name: opening_balance
+        description: ''
+        required: false
+        example: 0.0
+        type: number
+        enumValues: []
+        custom: []
+      source_id:
+        name: source_id
+        description: 'Id of the source. Applicable only if the type is lead'
+        required: false
+        example: 5
+        type: integer
+        enumValues: []
+        custom: []
+      life_stage_id:
+        name: life_stage_id
+        description: 'Id of the Life stage. Applicable only if the type is lead'
+        required: false
+        example: 7
+        type: integer
+        enumValues: []
+        custom: []
+      assigned_to:
+        name: assigned_to
+        description: 'Ids of the users the lead is assigned to. Applicable only if the type is lead'
+        required: false
+        example:
+          - amet
+        type: 'string[]'
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      type: customer
+      supplier_business_name: voluptatem
+      prefix: expedita
+      first_name: vero
+      middle_name: aut
+      last_name: nam
+      tax_number: 8787fefef
+      pay_term_number: 3.0
+      pay_term_type: months
+      mobile: '4578691009'
+      landline: 5487-8454-4145
+      alternate_number: '841847541222'
+      address_line_1: ut
+      address_line_2: aut
+      city: quas
+      state: officiis
+      country: cupiditate
+      zip_code: non
+      customer_group_id: est
+      contact_id: recusandae
+      dob: '2000-06-13'
+      custom_field1: error
+      custom_field2: dolores
+      custom_field3: cupiditate
+      custom_field4: accusamus
+      email: aglae09@example.org
+      shipping_address: quasi
+      position: ratione
+      opening_balance: 0.0
+      source_id: 5
+      life_stage_id: 7
+      assigned_to:
+        - amet
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          "type": "customer",
+          "name": "test customer",
+          "tax_number": "75879BHF",
+          "mobile": "7878825008",
+          "business_id": 1,
+          "created_by": 9,
+          "credit_limit": null,
+          "contact_id": "CO0007",
+          "updated_at": "2020-06-04 21:59:21",
+          "created_at": "2020-06-04 21:59:21",
+          "id": 17
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1bPhaVgfvced636ZD5Ek84a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'connector/api/contactapi/{id}'
+    metadata:
+      groupName: 'Contact management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the specified contact'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the contactapi.'
+        required: true
+        example: aut
+        type: string
+        enumValues: []
+        custom: []
+      contact:
+        name: contact
+        description: 'comma separated ids of contacts'
+        required: true
+        example: '2'
+        type: string
+        enumValues: []
+        custom: []
+    cleanUrlParameters:
+      id: aut
+      contact: '2'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+          "id": 1,
+          "business_id": 1,
+          "type": "customer",
+          "supplier_business_name": null,
+          "name": " Walk-In Customer  ",
+          "prefix": null,
+          "first_name": "Walk-In Customer",
+          "middle_name": null,
+          "last_name": null,
+          "email": "walkin@test.com",
+          "contact_id": "CO0005",
+          "contact_status": "active",
+          "tax_number": null,
+          "city": "Phoenix",
+          "state": "Arizona",
+          "country": "USA",
+          "address_line_1": "Linking Street",
+          "address_line_2": null,
+          "zip_code": "85001",
+          "dob": null,
+          "mobile": "(378) 400-1234",
+          "landline": null,
+          "alternate_number": null,
+          "pay_term_number": null,
+          "pay_term_type": null,
+          "credit_limit": "0.0000",
+          "created_by": 1,
+          "balance": "0.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "is_default": 1,
+          "shipping_address": null,
+          "position": null,
+          "customer_group_id": null,
+          "crm_source": null,
+          "crm_life_stage": null,
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "deleted_at": null,
+          "created_at": "2018-01-03 20:45:20",
+          "updated_at": "2020-08-10 10:26:45",
+          "remember_token": null,
+          "password": null,
+          "customer_group": null,
+          "opening_balance": "0.0000",
+          "opening_balance_paid": "0.0000",
+          "total_purchase": "0.0000",
+          "purchase_paid": "0.0000",
+          "total_purchase_return": "0.0000",
+          "purchase_return_paid": "0.0000",
+          "total_invoice": "2050.0000",
+          "invoice_received": "1987.5000",
+          "total_sell_return": "0.0000",
+          "sell_return_paid": "0.0000",
+          "purchase_due": 0,
+          "sell_due": 62.5,
+          "purchase_return_due": 0,
+          "sell_return_due": 0
+          }
+          ]
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a4VDea8h3k5bfv6d1P6gZEc'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'connector/api/contactapi/{id}'
+    metadata:
+      groupName: 'Contact management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update contact'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the contactapi.'
+        required: true
+        example: voluptate
+        type: string
+        enumValues: []
+        custom: []
+      contact:
+        name: contact
+        description: 'id of the contact to be updated'
+        required: true
+        example: '17'
+        type: string
+        enumValues: []
+        custom: []
+    cleanUrlParameters:
+      id: voluptate
+      contact: '17'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      type:
+        name: type
+        description: 'Type of contact (supplier, customer, both)'
+        required: false
+        example: customer
+        type: string
+        enumValues: []
+        custom: []
+      supplier_business_name:
+        name: supplier_business_name
+        description: 'required* Required if type is supplier'
+        required: false
+        example: amet
+        type: string
+        enumValues: []
+        custom: []
+      prefix:
+        name: prefix
+        description: 'Prefix for the name of the contact'
+        required: false
+        example: alias
+        type: string
+        enumValues: []
+        custom: []
+      first_name:
+        name: first_name
+        description: 'Name of the contact'
+        required: true
+        example: saepe
+        type: string
+        enumValues: []
+        custom: []
+      middle_name:
+        name: middle_name
+        description: ''
+        required: false
+        example: provident
+        type: string
+        enumValues: []
+        custom: []
+      last_name:
+        name: last_name
+        description: ''
+        required: false
+        example: quas
+        type: string
+        enumValues: []
+        custom: []
+      tax_number:
+        name: tax_number
+        description: ''
+        required: false
+        example: 488744dwd
+        type: string
+        enumValues: []
+        custom: []
+      pay_term_number:
+        name: pay_term_number
+        description: ''
+        required: false
+        example: 3.0
+        type: number
+        enumValues: []
+        custom: []
+      pay_term_type:
+        name: pay_term_type
+        description: '(months ,days)'
+        required: false
+        example: months
+        type: string
+        enumValues: []
+        custom: []
+      mobile:
+        name: mobile
+        description: ''
+        required: true
+        example: '8795461009'
+        type: string
+        enumValues: []
+        custom: []
+      landline:
+        name: landline
+        description: ''
+        required: false
+        example: 65484-848-848
+        type: string
+        enumValues: []
+        custom: []
+      alternate_number:
+        name: alternate_number
+        description: ''
+        required: false
+        example: '9898795220'
+        type: string
+        enumValues: []
+        custom: []
+      address_line_1:
+        name: address_line_1
+        description: ''
+        required: false
+        example: ut
+        type: string
+        enumValues: []
+        custom: []
+      address_line_2:
+        name: address_line_2
+        description: ''
+        required: false
+        example: et
+        type: string
+        enumValues: []
+        custom: []
+      city:
+        name: city
+        description: ''
+        required: false
+        example: nisi
+        type: string
+        enumValues: []
+        custom: []
+      state:
+        name: state
+        description: ''
+        required: false
+        example: ipsam
+        type: string
+        enumValues: []
+        custom: []
+      country:
+        name: country
+        description: ''
+        required: false
+        example: ut
+        type: string
+        enumValues: []
+        custom: []
+      zip_code:
+        name: zip_code
+        description: ''
+        required: false
+        example: ut
+        type: string
+        enumValues: []
+        custom: []
+      customer_group_id:
+        name: customer_group_id
+        description: ''
+        required: false
+        example: fuga
+        type: string
+        enumValues: []
+        custom: []
+      contact_id:
+        name: contact_id
+        description: ''
+        required: false
+        example: est
+        type: string
+        enumValues: []
+        custom: []
+      dob:
+        name: dob
+        description: 'Fromat: Y-m-d'
+        required: false
+        example: '2000-06-13'
+        type: string
+        enumValues: []
+        custom: []
+      custom_field1:
+        name: custom_field1
+        description: ''
+        required: false
+        example: aut
+        type: string
+        enumValues: []
+        custom: []
+      custom_field2:
+        name: custom_field2
+        description: ''
+        required: false
+        example: est
+        type: string
+        enumValues: []
+        custom: []
+      custom_field3:
+        name: custom_field3
+        description: ''
+        required: false
+        example: culpa
+        type: string
+        enumValues: []
+        custom: []
+      custom_field4:
+        name: custom_field4
+        description: ''
+        required: false
+        example: dolor
+        type: string
+        enumValues: []
+        custom: []
+      email:
+        name: email
+        description: ''
+        required: false
+        example: kendra.marks@example.net
+        type: string
+        enumValues: []
+        custom: []
+      shipping_address:
+        name: shipping_address
+        description: ''
+        required: false
+        example: tempora
+        type: string
+        enumValues: []
+        custom: []
+      position:
+        name: position
+        description: ''
+        required: false
+        example: est
+        type: string
+        enumValues: []
+        custom: []
+      opening_balance:
+        name: opening_balance
+        description: ''
+        required: false
+        example: 10.3
+        type: number
+        enumValues: []
+        custom: []
+      source_id:
+        name: source_id
+        description: 'Id of the source. Applicable only if the type is lead'
+        required: false
+        example: 9
+        type: integer
+        enumValues: []
+        custom: []
+      life_stage_id:
+        name: life_stage_id
+        description: 'Id of the Life stage. Applicable only if the type is lead'
+        required: false
+        example: 11
+        type: integer
+        enumValues: []
+        custom: []
+      assigned_to:
+        name: assigned_to
+        description: 'Ids of the users the lead is assigned to. Applicable only if the type is lead'
+        required: false
+        example:
+          - pariatur
+        type: 'string[]'
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      type: customer
+      supplier_business_name: amet
+      prefix: alias
+      first_name: saepe
+      middle_name: provident
+      last_name: quas
+      tax_number: 488744dwd
+      pay_term_number: 3.0
+      pay_term_type: months
+      mobile: '8795461009'
+      landline: 65484-848-848
+      alternate_number: '9898795220'
+      address_line_1: ut
+      address_line_2: et
+      city: nisi
+      state: ipsam
+      country: ut
+      zip_code: ut
+      customer_group_id: fuga
+      contact_id: est
+      dob: '2000-06-13'
+      custom_field1: aut
+      custom_field2: est
+      custom_field3: culpa
+      custom_field4: dolor
+      email: kendra.marks@example.net
+      shipping_address: tempora
+      position: est
+      opening_balance: 10.3
+      source_id: 9
+      life_stage_id: 11
+      assigned_to:
+        - pariatur
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          "id": 21,
+          "business_id": 1,
+          "type": "customer",
+          "supplier_business_name": null,
+          "name": "created from api",
+          "prefix": null,
+          "first_name": "created from api",
+          "middle_name": null,
+          "last_name": null,
+          "email": null,
+          "contact_id": "CO0009",
+          "contact_status": "active",
+          "tax_number": null,
+          "city": null,
+          "state": null,
+          "country": null,
+          "address_line_1": "test address",
+          "address_line_2": null,
+          "zip_code": "54878787",
+          "dob": "2000-06-13",
+          "mobile": "8754154872154",
+          "landline": null,
+          "alternate_number": null,
+          "pay_term_number": null,
+          "pay_term_type": null,
+          "credit_limit": null,
+          "created_by": 1,
+          "balance": "0.0000",
+          "total_rp": 0,
+          "total_rp_used": 0,
+          "total_rp_expired": 0,
+          "is_default": 0,
+          "shipping_address": null,
+          "position": null,
+          "customer_group_id": null,
+          "crm_source": null,
+          "crm_life_stage": null,
+          "custom_field1": null,
+          "custom_field2": null,
+          "custom_field3": null,
+          "custom_field4": null,
+          "deleted_at": null,
+          "created_at": "2020-08-10 10:41:42",
+          "updated_at": "2020-08-10 10:41:42",
+          "remember_token": null,
+          "password": null
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6caagEkv6e31b5VD4Zdh8Pf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: connector/api/contactapi-payment
+    metadata:
+      groupName: 'Contact management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Contact payment'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {access_token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      contact_id:
+        name: contact_id
+        description: 'id of the contact'
+        required: true
+        example: 17
+        type: integer
+        enumValues: []
+        custom: []
+      amount:
+        name: amount
+        description: 'amount of the payment'
+        required: true
+        example: 453.13
+        type: number
+        enumValues: []
+        custom: []
+      method:
+        name: method
+        description: "payment methods ('cash', 'card', 'cheque', 'bank_transfer', 'other', 'custom_pay_1', 'custom_pay_2', 'custom_pay_3')"
+        required: false
+        example: cash
+        type: string
+        enumValues: []
+        custom: []
+      paid_on:
+        name: paid_on
+        description: 'transaction date format:Y-m-d H:i:s,'
+        required: false
+        example: '2020-07-22 15:48:29'
+        type: string
+        enumValues: []
+        custom: []
+      account_id:
+        name: account_id
+        description: 'account id'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        custom: []
+      card_number:
+        name: card_number
+        description: ''
+        required: false
+        example: illum
+        type: string
+        enumValues: []
+        custom: []
+      card_holder_name:
+        name: card_holder_name
+        description: ''
+        required: false
+        example: fugit
+        type: string
+        enumValues: []
+        custom: []
+      card_transaction_number:
+        name: card_transaction_number
+        description: ''
+        required: false
+        example: qui
+        type: string
+        enumValues: []
+        custom: []
+      card_type:
+        name: card_type
+        description: ''
+        required: false
+        example: asperiores
+        type: string
+        enumValues: []
+        custom: []
+      card_month:
+        name: card_month
+        description: ''
+        required: false
+        example: mollitia
+        type: string
+        enumValues: []
+        custom: []
+      card_year:
+        name: card_year
+        description: ''
+        required: false
+        example: nulla
+        type: string
+        enumValues: []
+        custom: []
+      card_security:
+        name: card_security
+        description: ''
+        required: false
+        example: minima
+        type: string
+        enumValues: []
+        custom: []
+      transaction_no_1:
+        name: transaction_no_1
+        description: ''
+        required: false
+        example: saepe
+        type: string
+        enumValues: []
+        custom: []
+      transaction_no_2:
+        name: transaction_no_2
+        description: ''
+        required: false
+        example: dicta
+        type: string
+        enumValues: []
+        custom: []
+      transaction_no_3:
+        name: transaction_no_3
+        description: ''
+        required: false
+        example: neque
+        type: string
+        enumValues: []
+        custom: []
+      cheque_number:
+        name: cheque_number
+        description: ''
+        required: false
+        example: aut
+        type: string
+        enumValues: []
+        custom: []
+      bank_account_number:
+        name: bank_account_number
+        description: ''
+        required: false
+        example: et
+        type: string
+        enumValues: []
+        custom: []
+      note:
+        name: note
+        description: 'payment note'
+        required: false
+        example: labore
+        type: string
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      contact_id: 17
+      amount: 453.13
+      method: cash
+      paid_on: '2020-07-22 15:48:29'
+      account_id: 2
+      card_number: illum
+      card_holder_name: fugit
+      card_transaction_number: qui
+      card_type: asperiores
+      card_month: mollitia
+      card_year: nulla
+      card_security: minima
+      transaction_no_1: saepe
+      transaction_no_2: dicta
+      transaction_no_3: neque
+      cheque_number: aut
+      bank_account_number: et
+      note: labore
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          "amount": "20",
+          "method": "cash",
+          "paid_on": "2020-07-22 15:48:29",
+          "created_by": 1,
+          "payment_for": "19",
+          "business_id": 1,
+          "is_advance": 1,
+          "payment_ref_no": "SP2020/0127",
+          "document": null,
+          "updated_at": "2020-07-22 15:48:29",
+          "created_at": "2020-07-22 15:48:29",
+          "id": 215
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer dfc3V86evE1Pg65akha4bDZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
