@@ -31,7 +31,10 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
     Route::post('save-importe-accounts',  [\Modules\Accounting\Http\Controllers\CoaController::class, 'importe_accounts'])->name('accounting.saveImporte_accounts');
    
     Route::resource('journal-entry', \Modules\Accounting\Http\Controllers\JournalEntryController::class);
-
+    Route::get('journal-entry/history/{id}', [ \Modules\Accounting\Http\Controllers\JournalEntryController::class,'history_index']);
+    Route::get('journal-entry/history-view/{id}',[ \Modules\Accounting\Http\Controllers\JournalEntryController::class,'history_view']);
+    Route::get('journal-entry/print/{id}',[ \Modules\Accounting\Http\Controllers\JournalEntryController::class,'print'] );
+    
 
     Route::resource('automated-migration', \Modules\Accounting\Http\Controllers\AutomatedMigrationController::class);
     Route::get('automated-migration-delete-dialog/{id}', [\Modules\Accounting\Http\Controllers\AutomatedMigrationController::class, 'delete_dialog']);

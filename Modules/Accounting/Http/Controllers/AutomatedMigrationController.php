@@ -14,6 +14,7 @@ use Modules\Accounting\Entities\AccountingAccount;
 use Modules\Accounting\Entities\AccountingAccountType;
 use Modules\Accounting\Entities\AccountingAccTransMappingSettingAutoMigration;
 use Modules\Accounting\Entities\AccountingMappingSettingAutoMigration;
+use Modules\Accounting\Entities\CostCenter;
 use Modules\Accounting\Utils\AccountingUtil;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -362,8 +363,9 @@ class AutomatedMigrationController extends Controller
 
 
         $business_locations = BusinessLocation::where('business_id', $business_id)->get();
+        $allCenters = CostCenter::query()->get();
 
-        return view('accounting::AutomatedMigration.edit', compact('mappingSetting', 'business_locations', 'journal_entry_1', 'journal_entry_2'));
+        return view('accounting::AutomatedMigration.edit', compact('mappingSetting','allCenters', 'business_locations', 'journal_entry_1', 'journal_entry_2'));
     }
 
     /**
@@ -396,6 +398,8 @@ class AutomatedMigrationController extends Controller
         $amount_type_1 = $request->get('amount_type1');
         $amount_type_2 = $request->get('amount_type2');
         $journal_date = $request->get('journal_date');
+        $cost_center1 = $request->get('cost_center1');
+        $cost_center2 = $request->get('cost_center2');
 
         $accounting_settings = $this->accountingUtil->getAccountingSettings($business_id);
 
@@ -416,6 +420,8 @@ class AutomatedMigrationController extends Controller
             if (!empty($account_id)) {
 
                 $transaction_row = [];
+                $transaction_row['cost_center_id'] =  $cost_center1[$index];
+             
                 $transaction_row['accounting_account_id'] = $account_id;
                 $transaction_row['type'] =  $type_1[$index];
                 $transaction_row['created_by'] = $user_id;
@@ -439,6 +445,8 @@ class AutomatedMigrationController extends Controller
             if (!empty($account_id_)) {
 
                 $transaction_row_ = [];
+                $transaction_row_['cost_center_id'] =  $cost_center2[$index];
+
                 $transaction_row_['accounting_account_id'] = $account_id_;
                 $transaction_row_['type'] =  $type_2[$index];
                 $transaction_row_['created_by'] = $user_id;

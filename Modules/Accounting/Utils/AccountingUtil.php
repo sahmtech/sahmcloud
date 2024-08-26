@@ -1397,7 +1397,7 @@ class AccountingUtil extends Util
             'sell_transfer',
             'purchase_transfer',
             'payroll',
-            
+
         ];
         $types = [
             'sell',
@@ -1409,7 +1409,7 @@ class AccountingUtil extends Util
             'sell_transfer',
             'purchase_transfer',
             'payroll',
-           
+
         ];
         $payment_status = [
             'paid',
@@ -1426,18 +1426,33 @@ class AccountingUtil extends Util
 
         foreach ($types as $key => $value) {
             foreach ($payment_status as $paymentStatus) {
-                foreach ($methods as $method) {
+
+                if ($paymentStatus == 'due') {
                     AccountingMappingSettingAutoMigration::create([
                         'name' => $names[$key],
                         'type' => $value,
                         'location_id' => $request->input('business_location_id'),
                         'status' => 'final',
                         'payment_status' => $paymentStatus,
-                        'method' => $method,
+                        'method' => 'other',
                         'created_by' => $user_id,
                         'business_id' => $business_id,
                         'active' => false,
                     ]);
+                } else {
+                    foreach ($methods as $method) {
+                        AccountingMappingSettingAutoMigration::create([
+                            'name' => $names[$key],
+                            'type' => $value,
+                            'location_id' => $request->input('business_location_id'),
+                            'status' => 'final',
+                            'payment_status' => $paymentStatus,
+                            'method' => $method,
+                            'created_by' => $user_id,
+                            'business_id' => $business_id,
+                            'active' => false,
+                        ]);
+                    }
                 }
             }
         }

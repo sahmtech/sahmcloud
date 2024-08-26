@@ -8,63 +8,11 @@
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1>@lang('accounting::lang.journal_entry') - {{ $journal->ref_no }}</h1>
+        <h1>@lang('accounting::lang.journal_entry') - {{ $journal->ref_no }} - @lang('accounting::lang.history_edit')</h1>
     </section>
     <section class="content">
 
-        {!! Form::open([
-            'url' => action('\Modules\Accounting\Http\Controllers\JournalEntryController@update', $journal->id),
-            'method' => 'PUT',
-            'id' => 'journal_add_form',
-            'files' => true,
-        ]) !!}
-
         @component('components.widget', ['class' => 'box-primary'])
-            <div class="row">
-
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        {!! Form::label('journal_date', __('accounting::lang.journal_date') . ':*') !!}
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </span>
-                            {!! Form::text('journal_date', @format_datetime($journal->operation_date), [
-                                'class' => 'form-control datetimepicker',
-                                'readonly',
-                                'required',
-                            ]) !!}
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        {!! Form::label('upload_document', __('accounting::lang.attach_document') . ':') !!}
-                        <div class="custom-file">
-                            {!! Form::file('attachment', [
-                                'class' => 'custom-file-input',
-                                'id' => 'attachment',
-                                'accept' => '.doc,.docx,.xls,.xlsx,.pdf',
-                            ]) !!}
-                            <label class="custom-file-label" for="attachment">
-                                <i class="fas fa-upload"></i> {{ __('Choose file') }}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        {!! Form::label('note', __('accounting::lang.additional_notes')) !!}
-                        {!! Form::textarea('note', $journal->note, ['class' => 'form-control', 'rows' => 3]) !!}
-                    </div>
-                </div>
-            </div>
-           
             <div class="row">
                 <div class="col-sm-12">
 
@@ -72,12 +20,12 @@
                         <thead>
                             <tr>
                                 <th class="col-md-1">#</th>
-                                <th class="col-md-3">@lang('accounting::lang.account')</th>
+                                <th class="col-md-4">@lang('accounting::lang.account')</th>
                                 <th class="col-md-2">@lang('accounting::lang.cost_center')</th>
 
                                 <th class="col-md-1">@lang('accounting::lang.debit')</th>
                                 <th class="col-md-1">@lang('accounting::lang.credit')</th>
-                                <th class="col-md-3">@lang('accounting::lang.additional_notes')</th>
+                                <th class="col-md-5">@lang('accounting::lang.additional_notes')</th>
 
                             </tr>
                         </thead>
@@ -93,16 +41,18 @@
                                         $default_array = [];
                                         $selected_partner_id = null;
                                         $selected_partner_type = '';
-                                        $partner = '';
-                                        $partner_type = '';
-                                        $cost_center_id = null;
+                                        $partner = '-';
+                                        $partner_type = '-';
+                                        $cost_center_id =null;
+
                                     @endphp
 
                                     @if (isset($accounts_transactions[$i - 1]))
                                         @php
-
+ 
                                             $account_id = $accounts_transactions[$i - 1]['accounting_account_id'];
                                             $cost_center_id = $accounts_transactions[$i - 1]['cost_center_id'];
+                                          
                                             $debit =
                                                 $accounts_transactions[$i - 1]['type'] == 'debit'
                                                     ? $accounts_transactions[$i - 1]['amount']
@@ -116,7 +66,6 @@
                                             ];
                                             $additional_notes =
                                                 $accounts_transactions[$i - 1]['additional_notes'] ?? '';
-
                                             
 
                                         @endphp
@@ -128,13 +77,14 @@
                                     <td>
                                         {!! Form::select('account_id[' . $i . ']', $default_array, $account_id, [
                                             'class' => 'form-control accounts-dropdown account_id',
+                                            'readonly' => 'readonly',
                                             'placeholder' => __('messages.please_select'),
-                                            'style' => 'width: 100%;',
+                                            'style' => 'width: 100%;disabled:true;',
                                         ]) !!}
                                     </td>
                                    
                                     <td>
-                                        <select class="form-control cost_center" style="width: 100%;" name="cost_center[{{ $i }}]">
+                                        <select readonly class="form-control cost_center" style="width: 100%;disabled:true;" name="cost_center[{{ $i }}]">
                                             <option  value="">يرجى الاختيار</option>
                                             @foreach ($allCenters as $allCenter)
                                                 <option @if ($cost_center_id == $allCenter->id)
@@ -145,15 +95,24 @@
                                     </td>
 
                                     <td>
-                                        {!! Form::text('debit[' . $i . ']', $debit, ['class' => 'form-control input_number debit']) !!}
+                                        {!! Form::text('debit[' . $i . ']', $debit, [
+                                            'class' => 'form-control input_number debit',
+                                            'readonly' => 'readonly',
+                                        ]) !!}
                                     </td>
 
                                     <td>
-                                        {!! Form::text('credit[' . $i . ']', $credit, ['class' => 'form-control input_number credit']) !!}
+                                        {!! Form::text('credit[' . $i . ']', $credit, [
+                                            'class' => 'form-control input_number credit',
+                                            'readonly' => 'readonly',
+                                        ]) !!}
                                     </td>
 
                                     <td>
-                                        {!! Form::text('additional_notes[' . $i . ']', $additional_notes, ['class' => 'form-control additional_notes']) !!}
+                                        {!! Form::text('additional_notes[' . $i . ']', $additional_notes, [
+                                            'class' => 'form-control additional_notes',
+                                            'readonly' => 'readonly',
+                                        ]) !!}
                                     </td>
                                 </tr>
                             @endfor
@@ -173,14 +132,6 @@
 
                 </div>
             </div>
-            <input type="hidden" class="row-number" id="row-number">
-
-            <div class="row">
-                <div class="col-sm-12">
-                    <button type="button"
-                        class="btn btn-primary pull-right btn-flat journal_add_btn">@lang('messages.save')</button>
-                </div>
-            </div>
         @endcomponent
 
         {!! Form::close() !!}
@@ -192,21 +143,10 @@
     @include('accounting::accounting.common_js')
     <script type="text/javascript">
         $(document).ready(function() {
-           
-
-          
-           
-
-
-
-            $(document).on('click', '.open-dialog-btn', function() {
-                currentRow = $(this).closest('tr');
-                const id = this.id;
-                console.log(id);
-                $('.row-number').val(id);
-                $('#myModal').modal('show');
+            $(document).ready(function() {
+                $('.account_id').prop('disabled', true);
+                $('.cost_center').prop('disabled', true);
             });
-
             calculate_total();
 
             $('.journal_add_btn').click(function(e) {
