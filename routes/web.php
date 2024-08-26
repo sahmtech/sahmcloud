@@ -803,7 +803,7 @@ Route::get('fix_invoices_5', function () {
                     'item_tax' => $tax,
                     'unit_price_inc_tax' => $unit_price + 25,
                 ]);
-                $total_before_tax += (($unit_price * 2) * $sellLine->quantity);
+                $total_before_tax += (($unit_price + 25) * $sellLine->quantity);
             }
         }
 
