@@ -13,6 +13,10 @@ class AccountingAccountsTransaction extends Model
         return $this->belongsTo('Modules\Accounting\Entities\AccountingAccount', 'accounting_account_id');
     }
 
+    public function costCenter(){
+        return $this->belongsTo(CostCenter::class,'cost_center_id');
+    }
+
     /**
      * Creates new account transaction
      *

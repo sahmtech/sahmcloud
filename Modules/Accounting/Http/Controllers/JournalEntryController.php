@@ -2,6 +2,8 @@
 
 namespace Modules\Accounting\Http\Controllers;
 
+use App\Contact;
+use App\User;
 use App\Utils\ModuleUtil;
 use App\Utils\Util;
 use Illuminate\Http\Request;
@@ -9,9 +11,13 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Accounting\Entities\AccountingAccountsTransaction;
+use Modules\Accounting\Entities\AccountingAccountsTransactionHistory;
 use Modules\Accounting\Entities\AccountingAccTransMapping;
+use Modules\Accounting\Entities\AccountingAccTransMappingHistory;
+use Modules\Accounting\Entities\CostCenter;
 use Modules\Accounting\Utils\AccountingUtil;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class JournalEntryController extends Controller
 {
@@ -46,8 +52,8 @@ class JournalEntryController extends Controller
         if (
             !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
                 $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
-            auth()->user()->can('accounting.journals')))
-         {
+                auth()->user()->can('accounting.journals'))
+        ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -60,7 +66,11 @@ class JournalEntryController extends Controller
                 ->join('users as u', 'accounting_acc_trans_mappings.created_by', 'u.id')
                 ->where('type', 'journal_entry')
                 ->select([
-                    'accounting_acc_trans_mappings.id', 'ref_no', 'operation_date', 'note',
+                    'accounting_acc_trans_mappings.id',
+                    'ref_no',
+                    'operation_date',
+                    'note',
+                    'path_file',
                     DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
                 ]);
 
@@ -91,7 +101,20 @@ class JournalEntryController extends Controller
                                     </a>
                                 </li>';
                         }
-
+                      
+                            $html .= '<li>
+                                    <a href="' . action('\Modules\Accounting\Http\Controllers\JournalEntryController@history_index', [$row->id]) . '">
+                                        <i class="fas fa-history" aria-hidden="true"></i>' . __("accounting::lang.history_edit") . '
+                                    </a>
+                                </li><li>
+                                    <a class=" btn-modal" 
+                                  data-container="#printJournalEntry"
+                                     data-href="' . action('\Modules\Accounting\Http\Controllers\JournalEntryController@print', [$row->id]) . '">
+                                        <i class="fa fa-print" aria-hidden="true"></i>' . __("messages.print") . '
+                                    </a>
+                                </li>';
+                     
+                        
                         if ($is_admin || $can_delete_journals || $is_superadmin) {
                             $html .= '<li>
                                     <a href="#" data-href="' . action([\Modules\Accounting\Http\Controllers\JournalEntryController::class, 'destroy'], [$row->id]) . '" class="delete_journal_button">
@@ -105,7 +128,17 @@ class JournalEntryController extends Controller
                         return $html;
                     }
                 )
-                ->rawColumns(['action'])
+                ->addColumn('path_file', function ($row) {
+                    $html = '';
+                    if (!empty($row->path_file)) {
+                        $html .= '<button class="btn btn-xs btn-info "  onclick="window.location.href = \'/uploads/' . $row->path_file . '\'"><i class="fa fa-eye"></i> ' . __('accounting::lang.attachment_view') . '</button>';
+                        '&nbsp;';
+                    } else {
+                        $html .= '<span class="text-warning">' . __('accounting::lang.no_attachment_to_show') . '</span>';
+                    }
+                    return $html;
+                })
+                ->rawColumns(['action', 'path_file'])
                 ->make(true);
         }
 
@@ -124,12 +157,14 @@ class JournalEntryController extends Controller
         if (
             !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
                 $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
-            auth()->user()->can('accounting.add_journal'))
+                auth()->user()->can('accounting.add_journal'))
         ) {
             abort(403, 'Unauthorized action.');
         }
 
-        return view('accounting::journal_entry.create');
+        $allCenters = CostCenter::query()->get();
+
+        return view('accounting::journal_entry.create', compact('allCenters'));
     }
 
     /**
@@ -153,6 +188,8 @@ class JournalEntryController extends Controller
             $credits = $request->get('credit');
             $debits = $request->get('debit');
             $journal_date = $request->get('journal_date');
+            $additional_notes = $request->get('additional_notes');
+            $cost_centers =  $request->get('cost_center');
 
             $accounting_settings = $this->accountingUtil->getAccountingSettings($business_id);
 
@@ -167,6 +204,11 @@ class JournalEntryController extends Controller
             }
 
             $acc_trans_mapping = new AccountingAccTransMapping();
+            if ($request->hasFile('attachment')) {
+                $attachment = $request->file('attachment');
+                $attachment_name = $attachment->store('/journal_entry');
+                $acc_trans_mapping->path_file = $attachment_name;
+            }
             $acc_trans_mapping->business_id = $business_id;
             $acc_trans_mapping->ref_no = $ref_no;
             $acc_trans_mapping->note = $request->get('note');
@@ -190,7 +232,8 @@ class JournalEntryController extends Controller
                         $transaction_row['amount'] = $debits[$index];
                         $transaction_row['type'] = 'debit';
                     }
-
+                    $transaction_row['cost_center_id'] = $cost_centers[$index];
+                    $transaction_row['additional_notes'] = $additional_notes[$index];
                     $transaction_row['created_by'] = $user_id;
                     $transaction_row['operation_date'] = $this->util->uf_date($journal_date, true);
                     $transaction_row['sub_type'] = 'journal_entry';
@@ -262,9 +305,10 @@ class JournalEntryController extends Controller
         $accounts_transactions = AccountingAccountsTransaction::with('account')
             ->where('acc_trans_mapping_id', $id)
             ->get()->toArray();
+        $allCenters = CostCenter::query()->get();
 
         return view('accounting::journal_entry.edit')
-            ->with(compact('journal', 'accounts_transactions'));
+            ->with(compact('journal', 'accounts_transactions', 'allCenters'));
     }
 
     /**
@@ -287,11 +331,29 @@ class JournalEntryController extends Controller
             $credits = $request->get('credit');
             $debits = $request->get('debit');
             $journal_date = $request->get('journal_date');
+            $additional_notes = $request->get('additional_notes');
+            $cost_centers =  $request->get('cost_center');
 
             $acc_trans_mapping = AccountingAccTransMapping::where('business_id', $business_id)
                 ->where('type', 'journal_entry')
                 ->where('id', $id)
                 ->firstOrFail();
+
+            $accountingAccTransMappingHistory = AccountingAccTransMappingHistory::create([
+                'accounting_accounts_transactions_history_id' => $id,
+                "business_id" => $acc_trans_mapping->business_id,
+                "ref_no" => $acc_trans_mapping->ref_no,
+                "type" => $acc_trans_mapping->type,
+                "created_by" => Auth::user()->id,
+                "operation_date" => $acc_trans_mapping->operation_date,
+                "note" => $acc_trans_mapping->note,
+                'path_file' => $acc_trans_mapping->path_file,
+            ]);
+            if ($request->hasFile('attachment')) {
+                $attachment = $request->file('attachment');
+                $attachment_name = $attachment->store('/journal_entry');
+                $acc_trans_mapping->path_file = $attachment_name;
+            }
             $acc_trans_mapping->note = $request->get('note');
             $acc_trans_mapping->operation_date = $this->util->uf_date($journal_date, true);
             $acc_trans_mapping->update();
@@ -311,7 +373,10 @@ class JournalEntryController extends Controller
                         $transaction_row['amount'] = $debits[$index];
                         $transaction_row['type'] = 'debit';
                     }
+                    $transaction_row['cost_center_id'] = $cost_centers[$index];
 
+                    $transaction_row['additional_notes'] = $additional_notes[$index] ?? '';
+                  
                     $transaction_row['created_by'] = $user_id;
                     $transaction_row['operation_date'] = $this->util->uf_date($journal_date, true);
                     $transaction_row['sub_type'] = 'journal_entry';
@@ -319,6 +384,24 @@ class JournalEntryController extends Controller
 
                     if (!empty($accounts_transactions_id[$index])) {
                         $accounts_transactions = AccountingAccountsTransaction::find($accounts_transactions_id[$index]);
+                        AccountingAccountsTransactionHistory::create([
+                            'acc_trans_mapping_history_id' => $accountingAccTransMappingHistory->id,
+                            "accounting_account_id" => $accounts_transactions->accounting_account_id,
+                            "acc_trans_mapping_id" => $accounts_transactions->acc_trans_mapping_id,
+                            "transaction_id" => $accounts_transactions->transaction_id,
+                            "transaction_payment_id" => $accounts_transactions->transaction_payment_id,
+                            "amount" => $accounts_transactions->amount,
+                            "type" => $accounts_transactions->type,
+                            "sub_type" => $accounts_transactions->sub_type,
+                            "map_type" => $accounts_transactions->map_type,
+                            "created_by" => Auth::user()->id,
+                            "operation_date" => $accounts_transactions->operation_date,
+                            "note" => $accounts_transactions->note,
+                            'additional_notes' => $accounts_transactions->additional_notes,
+                            'cost_center_id' => $accounts_transactions->cost_center_id,
+
+
+                        ]);
                         $accounts_transactions->fill($transaction_row);
                         $accounts_transactions->update();
                     } else {
@@ -352,6 +435,85 @@ class JournalEntryController extends Controller
         return redirect()->route('journal-entry.index')->with('status', $output);
     }
 
+    public function history_index($id)
+    {
+        $business_id = request()->session()->get('user.business_id');
+       
+        if (request()->ajax()) {
+
+            $journal = AccountingAccTransMappingHistory::where('accounting_accounts_transactions_history_id', $id)
+                ->where('accounting_acc_trans_mapping_histories.business_id', $business_id)
+                ->join('users as u', 'accounting_acc_trans_mapping_histories.created_by', 'u.id')
+                ->where('type', 'journal_entry')
+                ->select([
+                    'accounting_acc_trans_mapping_histories.id', 'ref_no', 'operation_date', 'note', 'accounting_acc_trans_mapping_histories.path_file', 'accounting_acc_trans_mapping_histories.created_at',
+                    DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
+                ]);
+
+            return Datatables::of($journal)
+                ->addColumn(
+                    'action',
+                    function ($row) {
+                        $html = '<div class="btn-group">
+                                <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
+                                    data-toggle="dropdown" aria-expanded="false">' .
+                            __("messages.actions") .
+                            '<span class="caret"></span><span class="sr-only">Toggle Dropdown
+                                    </span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">';
+                       
+                            $html .= '<li>
+                                <a href="' . action('\Modules\Accounting\Http\Controllers\JournalEntryController@history_view', [$row->id]) . '"
+                                 data-href="' . action('\Modules\Accounting\Http\Controllers\JournalEntryController@history_view', [$row->id]) . '">
+                                        <i class="fas fa-history" aria-hidden="true"></i>' . __("accounting::lang.history_edit") . '
+                                   </a>
+                                </li>';
+                       
+
+
+
+                        $html .= '</ul></div>';
+
+                        return $html;
+                    }
+                )
+                ->addColumn('path_file', function ($row) {
+                    $html = '';
+                    if (!empty($row->path_file)) {
+                        $html .= '<button class="btn btn-xs btn-info "  onclick="window.location.href = \'/uploads/' . $row->path_file . '\'"><i class="fa fa-eye"></i> ' . __('accounting::lang.attachment_view') . '</button>';
+                        '&nbsp;';
+                    } else {
+                        $html .= '<span class="text-warning">' . __('accounting::lang.no_attachment_to_show') . '</span>';
+                    }
+                    return $html;
+                })
+                ->rawColumns(['action', 'path_file'])
+                ->make(true);
+        }
+
+        return view('accounting::journal_entry.history_index');
+    }
+
+    public function history_view($id)
+    {
+        $business_id = request()->session()->get('user.business_id');
+       
+
+        $journal = AccountingAccTransMappingHistory::where('business_id', $business_id)
+            ->where('type', 'journal_entry')
+            ->where('id', $id)
+            ->firstOrFail();
+        $accounts_transactions = AccountingAccountsTransactionHistory::with('account')
+            ->where('acc_trans_mapping_history_id', $id)
+            ->get()->toArray();
+
+       
+        $allCenters = CostCenter::query()->get();
+
+        return view('accounting::journal_entry.history_view')
+            ->with(compact('journal', 'accounts_transactions', 'allCenters'));
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -364,7 +526,7 @@ class JournalEntryController extends Controller
         if (
             !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
                 $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
-            (auth()->user()->can('accounting.delete_journal')))
+                (auth()->user()->can('accounting.delete_journal')))
         ) {
             abort(403, 'Unauthorized action.');
         }
@@ -383,5 +545,31 @@ class JournalEntryController extends Controller
             'success' => 1,
             'msg' => __('lang_v1.deleted_success'),
         ];
+    }
+
+    public function print($id)
+    {
+        $business_id = request()->session()->get('user.business_id');
+      
+        $journal = AccountingAccTransMapping::where('business_id', $business_id)
+            ->where('type', 'journal_entry')
+            ->where('id', $id)
+            ->firstOrFail();
+
+          $journal_history = AccountingAccTransMappingHistory::where('accounting_accounts_transactions_history_id', $id)
+            ->latest('created_at')
+            ->first();
+        if ($journal_history) {
+            $journal['latest_update'] = $journal_history->creator->first_name . ' ' . $journal_history->creator->last_name;
+            $journal['latest_update_at'] = $journal_history->created_at;
+        } else {
+            $journal['latest_update'] = ' - ';
+            $journal['latest_update_at'] =null;
+        }
+        $accounts_transactions = AccountingAccountsTransaction::with('account')
+            ->where('acc_trans_mapping_id', $journal->id)
+            ->get();
+
+        return view('accounting::journal_entry.print', compact('journal', 'accounts_transactions'));
     }
 }

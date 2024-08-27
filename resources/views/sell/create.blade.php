@@ -830,6 +830,8 @@
 
                                         <div class="col-md-12 col-md-offset-4  @if ($sale_type == 'sales_order') hide @endif"
                                             style="padding-top: 3px;">
+                                            <input type="hidden" name="order_tax" id="order_tax">
+
                                             <b>@lang('sale.order_tax'):</b>(+)
 
                                             <span class="display_currency" id="order_tax">0</span>

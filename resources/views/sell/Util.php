@@ -1740,7 +1740,6 @@ class Util
     {
 
         $transaction = Transaction::with(['sell_lines', 'payment_lines'])->find($transaction->id);
-        // find accounting mapping setting (automated migration)by:{type,status,methode,active}
         if (!isset($request->payment[0])) {
             return false;
         }
@@ -1749,6 +1748,9 @@ class Util
             $method = $request->payment['0']['method'];
         } else {
             $method = '';
+        }
+        if ($transaction->payment_status == 'due') {
+            $method = 'other';
         }
         $accountMappingSetting = AccountingMappingSettingAutoMigration::where('type', $transaction->type)
             ->where('payment_status', $transaction->payment_status)
@@ -1766,7 +1768,7 @@ class Util
                 $ref_count = $this->setAndGetReferenceCount('journal_entry');
                 if (empty($ref_no)) {
                     $prefix = !empty($accounting_settings['journal_entry_prefix']) ?
-                        $accounting_settings['journal_entry_prefix'] : '';
+                        $accTransMappingSetting['journal_entry_prefix'] : '';
 
                     //Generate reference number
                     $ref_no = $this->generateReferenceNumber('journal_entry', $ref_count, $business_id, $prefix);
@@ -1785,6 +1787,7 @@ class Util
                     $transaction_row['accounting_account_id'] = $accTrans->accounting_account_id;
                     $test_type = $accTrans->amount;
                     $transaction_row['amount'] = $transaction->$test_type;
+                    $transaction_row['cost_center_id'] = $accTrans->cost_center_id;
                     $transaction_row['type'] = $accTrans->type;
                     $transaction_row['created_by'] = $user_id;
                     $transaction_row['operation_date'] = $this->uf_date($request->input('transaction_date'), true);
@@ -1805,16 +1808,22 @@ class Util
         if (!$transaction) {
             return false;
         }
-        // dd($transaction);
-        // dd([$transaction,$transaction->payment_lines]);
-        //    $sell_lines =$transaction->sell_lines[0];
+        $method = '';
+        if (count($transaction->payment_lines) > 0) {
+
+
+            $payment_lines = $transaction->payment_lines()->latest('paid_on')->first();
+            $method =  $payment_lines->method;
+        } else {
+            $method = 'other';
+        }
         $user_id = request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
         if (count($transaction->payment_lines) > 0) {
             $payment_lines = $transaction->payment_lines[0];
             $accountMappingSetting = AccountingMappingSettingAutoMigration::where('type', $transaction->type)
                 ->where('payment_status', $transaction->payment_status)
-                ->where('method', $payment_lines->method)
+                ->where('method', $method)
                 ->where('location_id', $transaction->location_id)
                 ->where('active', true)->first();
 
@@ -1828,7 +1837,7 @@ class Util
                     $ref_count = $this->setAndGetReferenceCount('journal_entry');
 
                     $prefix = !empty($accounting_settings['journal_entry_prefix']) ?
-                        $accounting_settings['journal_entry_prefix'] : '';
+                        $accTransMappingSetting['journal_entry_prefix'] : '';
 
                     //Generate reference number
                     $ref_no = $this->generateReferenceNumber('journal_entry', $ref_count, $business_id, $prefix);
@@ -1849,6 +1858,7 @@ class Util
                             $test_type = $accTrans->amount;
                             $transaction_row['amount'] = $transaction->$test_type;
                             $transaction_row['type'] = $accTrans->type;
+                            $transaction_row['cost_center_id'] = $accTrans->cost_center_id;
                             $transaction_row['transaction_id'] = $transaction->id;
                             $transaction_row['created_by'] = $user_id;
                             $transaction_row['operation_date'] = now()->format('Y-m-d H:i:s');

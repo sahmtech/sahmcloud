@@ -108,6 +108,8 @@
                                                 <th class="col-md-1">#
                                                 </th>
                                                 <th class="col-md-3">@lang('accounting::lang.account')</th>
+                                                <th class="col-md-2">@lang('accounting::lang.cost_center')</th>
+
                                                 <th class="col-md-2">@lang('accounting::lang.debit') / @lang('accounting::lang.credit')</th>
                                                 <th class="col-md-3">@lang('accounting::lang.amount')</th>
                                                 {{-- <th class="col-md-3">@lang('accounting::lang.deposetTo_account')</th> --}}
@@ -117,7 +119,8 @@
                                             @foreach ($journal_entry_1 as $index => $journal_entry)
                                                 <tr>
                                                     <td style="display: flex;font-size: smaller;align-items:center">
-                                                        @if (auth()->user()->can('Admin#1') ||auth()->user()->can('superadmin') ||
+                                                        @if (auth()->user()->can('Admin#1') ||
+                                                                auth()->user()->can('superadmin') ||
                                                                 auth()->user()->can('accounting.destroy_acc_trans_mapping_setting'))
                                                             <a type="button" class="fa fa-trash fa-2x cursor-pointer"
                                                                 href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"
@@ -132,6 +135,7 @@
                                                             style="    background: transparent; border: 0px;"></button>
 
                                                     </td>
+
                                                     <td>
 
                                                         <select class="form-control accounts-dropdown account_id"
@@ -148,7 +152,17 @@
                                                             </option>
                                                         </select>
                                                     </td>
-
+                                                    <td>
+                                                        <select class="form-control cost_center" style="width: 100%;"
+                                                            name="cost_center1[{{ $index + 1 }}]">
+                                                            <option selected="selected" value="">يرجى الاختيار</option>
+                                                            @foreach ($allCenters as $allCenter)
+                                                                <option @if ($journal_entry->cost_center_id == $allCenter->id) selected @endif
+                                                                    value="{{ $allCenter->id }}">{{ $allCenter->ar_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
                                                     <td>
 
                                                         <label class="radio-inline">
@@ -232,6 +246,8 @@
                                                 <th class="col-md-1">#
                                                 </th>
                                                 <th class="col-md-3">@lang('accounting::lang.account')</th>
+                                                <th class="col-md-2">@lang('accounting::lang.cost_center')</th>
+
                                                 <th class="col-md-3">@lang('accounting::lang.debit') / @lang('accounting::lang.credit')</th>
                                                 <th class="col-md-3">@lang('accounting::lang.amount')</th>
                                             </tr>
@@ -240,7 +256,8 @@
                                             @foreach ($journal_entry_2 as $index => $journal_entry)
                                                 <tr>
                                                     <td style="display: flex;font-size: smaller;align-items:center">
-                                                        @if (auth()->user()->can('Admin#'.request()->session()->get('user.business_id'))  ||auth()->user()->can('superadmin') ||
+                                                        @if (auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) ||
+                                                                auth()->user()->can('superadmin') ||
                                                                 auth()->user()->can('accounting.destroy_acc_trans_mapping_setting'))
                                                             <a type="button" class="fa fa-trash fa-2x cursor-pointer"
                                                                 href="{{ action('\Modules\Accounting\Http\Controllers\AutomatedMigrationController@destroy_acc_trans_mapping_setting', $journal_entry->id) }}"
@@ -255,6 +272,9 @@
                                                             style="    background: transparent; border: 0px;"></button>
 
                                                     </td>
+
+
+
                                                     <td>
 
                                                         <select class="form-control accounts-dropdown account_id"
@@ -265,7 +285,8 @@
                                                             <option value="{{ $journal_entry->accounting_account_id }}"
                                                                 selected>
 
-                                                                {{ $journal_entry->account_name }} - <small class="text-muted">
+                                                                {{ $journal_entry->account_name }} - <small
+                                                                    class="text-muted">
                                                                     @lang('accounting::lang.' . $journal_entry->account_primary_type)
                                                                     -
                                                                     @lang('accounting::lang.' . $journal_entry->account_sub_type)</small>
@@ -274,7 +295,17 @@
 
                                                         </select>
                                                     </td>
-
+                                                    <td>
+                                                        <select class="form-control cot_center2" style="width: 100%;"
+                                                            name="cost_center2[{{ $index + 1 }}]">
+                                                            <option selected="selected" value="">يرجى الاختيار</option>
+                                                            @foreach ($allCenters as $allCenter)
+                                                                <option @if ($journal_entry->cost_center_id == $allCenter->id) selected @endif
+                                                                    value="{{ $allCenter->id }}">
+                                                                    {{ $allCenter->ar_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
                                                     <td>
 
 
@@ -463,7 +494,10 @@
                     '" style="background: transparent; border: 0px;"></button></td><td><select class="form-control accounts-dropdown account_id" style="width: 100%;" name="account_id' +
                     tbode_number + '[' +
                     counter +
-                    ']"><option selected="selected" value="">يرجى الاختيار</option></select> </td> <td><label class="radio-inline"><input value="debit" type="radio" name="type' +
+                    ']"><option selected="selected" value="">يرجى الاختيار</option></select> </td> <td><select class="form-control cost_center" style="width: 100%;" name="cost_center' +
+                    tbode_number + '[' +
+                    counter +
+                    ']"><option selected="selected" value="">يرجى الاختيار</option> @foreach ($allCenters as $allCenter)<option value="{{ $allCenter->id }}">{{ $allCenter->ar_name }}</option>@endforeach </select> </td><td><label class="radio-inline"><input value="debit" type="radio" name="type' +
                     tbode_number + '[' +
                     counter +
                     ']" checked>@lang('accounting::lang.debtor')</label><label class="radio-inline"><input value="credit" type="radio" name="type' +
@@ -521,7 +555,10 @@
                     '" style="background: transparent; border: 0px;"></button></td><td><select class="form-control accounts-dropdown account_id" style="width: 100%;" name="account_id' +
                     tbode_number + '[' +
                     counter +
-                    ']"><option selected="selected" value="">يرجى الاختيار</option></select> </td> <td><label class="radio-inline"><input value="debit" type="radio" name="type' +
+                    ']"><option selected="selected" value="">يرجى الاختيار</option></select> </td><td><select class="form-control cost_center" style="width: 100%;" name="cost_center' +
+                    tbode_number + '[' +
+                    counter +
+                    ']"><option selected="selected" value="">يرجى الاختيار</option> @foreach ($allCenters as $allCenter)<option value="{{ $allCenter->id }}">{{ $allCenter->ar_name }}</option>@endforeach </select> </td> <td><label class="radio-inline"><input value="debit" type="radio" name="type' +
                     tbode_number + '[' +
                     counter +
                     ']" checked>@lang('accounting::lang.debtor')</label><label class="radio-inline"><input value="credit" type="radio" name="type' +
@@ -578,10 +615,13 @@
                 '" style="background: transparent; border: 0px;color: red;font-size: small;"></button><button type="button" class="fa fa-plus-square fa-2x text-primary cursor-pointer" data-id="' +
                 counter +
                 '" name="' + tbode_number + '" value="' + tbode_number +
-                '" style="background: transparent; border: 0px;"></button></td><td><select class="form-control accounts-dropdown account_id" style="width: 100%;" name="account_id' +
+                '" style="background: transparent; border: 0px;"></button></td><td><select class="form-control accounts-dropdown account_id" required style="width: 100%;" name="account_id' +
                 tbode_number + '[' +
                 counter +
-                ']"><option selected="selected" value="">يرجى الاختيار</option></select> </td> <td><label class="radio-inline"><input value="debit" type="radio" name="type' +
+                ']"><option selected="selected" value="">يرجى الاختيار</option></select> </td> <td><select class="form-control cost_center" style="width: 100%;" name="cost_center' +
+                tbode_number + '[' +
+                counter +
+                ']"><option selected="selected" value="">يرجى الاختيار</option> @foreach ($allCenters as $allCenter)<option value="{{ $allCenter->id }}">{{ $allCenter->ar_name }}</option>@endforeach </select> </td><td><label class="radio-inline"><input value="debit" type="radio" name="type' +
                 tbode_number + '[' +
                 counter +
                 ']" checked>@lang('accounting::lang.debtor')</label><label class="radio-inline"><input value="credit" type="radio" name="type' +

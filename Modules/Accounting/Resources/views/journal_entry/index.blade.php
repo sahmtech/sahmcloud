@@ -44,10 +44,12 @@
                     <th>@lang('purchase.ref_no')</th>
                     <th>@lang('lang_v1.added_by')</th>
                     <th>@lang('lang_v1.additional_notes')</th>
+                    <th>@lang('accounting::lang.attachment')</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
+        <div class="modal fade" id="printJournalEntry" tabindex="-1" role="dialog"></div>
 
         
     @endcomponent
@@ -87,7 +89,11 @@
                 { data: 'operation_date', name: 'operation_date' },
                 { data: 'ref_no', name: 'ref_no' },
                 { data: 'added_by', name: 'added_by' },
-                { data: 'note', name: 'note' }
+                { data: 'note', name: 'note' },
+                {
+                        data: 'path_file',
+                        name: 'path_file'
+                    }
             ]
         });
 
