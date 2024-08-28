@@ -18,6 +18,9 @@ return [
     'upload_logo' => 'Upload Logo',
     'country' => 'Country',
     'state' => 'State',
+    'sale_receipt_vouchers'=>'Rreceipt vouchers',
+    'start_reference_count'=>'Numbering starts from ',
+
     'city' => 'City',
     'zip_code' => 'Zip Code',
     'zip_code_placeholder' => 'Zip/Postal Code',

@@ -30,6 +30,10 @@ class TransactionPayment extends Model
     {
         return $this->belongsTo(\App\Transaction::class, 'transaction_id');
     }
+    public function contact()
+    {
+        return $this->belongsTo(\App\contact::class, 'payment_for');
+    }
 
     /**
      * Get the user.

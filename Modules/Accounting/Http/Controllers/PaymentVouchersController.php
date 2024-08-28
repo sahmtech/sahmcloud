@@ -184,7 +184,7 @@ class PaymentVouchersController extends Controller
                     }
 
                     DB::beginTransaction();
-
+                    
                     $ref_count = $this->transactionUtil->setAndGetReferenceCount($prefix_type);
                     //Generate reference number
                     $inputs['payment_ref_no'] = $this->transactionUtil->generateReferenceNumber($prefix_type, $ref_count);

@@ -96,7 +96,7 @@ class ReceiptVouchersController extends Controller
                     'contact_id',
                     function ($row) {
                         if ($row->contact) {
-                            return $row->contact->first_name ?: '';
+                            return $row->contact->name ?: '';
                         } elseif ($row->transaction) {
                             return $row->transaction->contact ? $row->transaction->contact->first_name ?: '' : '';
                         } else {
@@ -153,8 +153,8 @@ class ReceiptVouchersController extends Controller
                     }
 
                     DB::beginTransaction();
-
-                    $ref_count = $this->transactionUtil->setAndGetReferenceCount($prefix_type);
+                    
+                    $ref_count = $this->transactionUtil->setAndGetReferenceCount_SellPyment($prefix_type);
                     //Generate reference number
                     $inputs['payment_ref_no'] = $this->transactionUtil->generateReferenceNumber($prefix_type, $ref_count);
 

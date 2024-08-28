@@ -336,6 +336,35 @@ class Util
         }
     }
 
+
+    public function setAndGetReferenceCount_SellPyment($type, $business_id = null)
+    {
+        if (empty($business_id)) {
+            $business_id = request()->session()->get('user.business_id');
+        }
+
+        $business = Business::find($business_id);
+        $startReferenceCount = $business->start_reference_count;
+
+        $ref = ReferenceCount::where('ref_type', $type)
+            ->where('business_id', $business_id)
+            ->first();
+        if (!empty($ref)) {
+            $ref->ref_count += 1;
+            $ref->save();
+
+            return $ref->ref_count;
+        } else {
+            $new_ref = ReferenceCount::create([
+                'ref_type' => $type,
+                'business_id' => $business_id,
+                'ref_count' => $startReferenceCount,
+            ]);
+
+            return $new_ref->ref_count;
+        }
+    }
+
     /**
      * Generates reference number
      *

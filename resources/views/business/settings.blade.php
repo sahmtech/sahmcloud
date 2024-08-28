@@ -30,6 +30,7 @@
                                 @show_tooltip(__('tooltip.business_tax'))</a>
                             <a href="#" class="list-group-item text-center">@lang('business.product')</a>
                             <a href="#" class="list-group-item text-center">@lang('contact.contact')</a>
+                            <a href="#" class="list-group-item text-center">@lang('business.sale_receipt_vouchers')</a>
                             <a href="#" class="list-group-item text-center">@lang('business.sale')</a>
                             <a href="#" class="list-group-item text-center">@lang('sale.pos_sale')</a>
                             <a href="#" class="list-group-item text-center">@lang('purchase.purchases')</a>
@@ -62,6 +63,8 @@
                         @include('business.partials.settings_contact')
                         <!-- tab 3 end -->
                         <!-- tab 4 start -->
+                        @include('business.partials.settings_sale_receipt_vouchers')
+
                         @include('business.partials.settings_sales')
                         @include('business.partials.settings_pos')
                         <!-- tab 4 end -->
