@@ -416,6 +416,7 @@ class BusinessController extends Controller
             }
 
             $business_details = $request->only([
+                
                 'name', 'start_date', 'currency_id', 'tax_label_1', 'tax_number_1', 'tax_label_2', 'tax_number_2', 'default_profit_percent', 'default_sales_tax', 'default_sales_discount', 'sell_price_tax', 'sku_prefix', 'time_zone', 'fy_start_month', 'accounting_method', 'transaction_edit_days', 'sales_cmsn_agnt', 'item_addition_method', 'currency_symbol_placement', 'on_product_expiry',
                 'stop_selling_before', 'default_unit', 'expiry_type', 'date_format',
                 'time_format', 'ref_no_prefixes', 'theme_color', 'email_settings',
@@ -423,7 +424,7 @@ class BusinessController extends Controller
                 'min_order_total_for_rp', 'max_rp_per_order',
                 'redeem_amount_per_unit_rp', 'min_order_total_for_redeem',
                 'min_redeem_point', 'max_redeem_point', 'rp_expiry_period',
-                'rp_expiry_type', 'custom_labels', 'weighing_scale_setting',
+                'rp_expiry_type', 'custom_labels', 'weighing_scale_setting','start_reference_count',
                 'code_label_1', 'code_1', 'code_label_2', 'code_2', 'currency_precision', 'quantity_precision',
             ]);
 
