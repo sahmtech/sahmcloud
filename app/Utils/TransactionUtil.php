@@ -67,7 +67,7 @@ class TransactionUtil extends Util
             'ref_no' => '',
             'source' => !empty($input['source']) ? $input['source'] : null,
             // 'total_before_tax' => $invoice_total['total_before_tax'],
-            'total_before_tax' => floatval($invoice_total['total_before_tax']) - floatval($input['order_tax']),
+            'total_before_tax' => floatval($invoice_total['total_before_tax']) - floatval($input['order_tax'] ?? 0),
 
             'transaction_date' => $input['transaction_date'],
             'tax_id' => !empty($input['tax_rate_id']) ? $input['tax_rate_id'] : null,
