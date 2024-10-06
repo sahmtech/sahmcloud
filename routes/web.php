@@ -831,16 +831,12 @@ Route::get('fix_invoices_6', function () {
     $transactions3 = Transaction::where('business_id', 93)
         ->where('type', 'sell')
         ->get();
-
-
     foreach ($transactions3 as $transaction) {
         $sellLines  = TransactionSellLine::with('product')
             ->where('transaction_id', $transaction->id)
             ->get();
         $total_before_tax = 0;
-        // $amount = TransactionSellLine::where('transaction_id', $transaction->id)->count();
         $final_before_tax = $transaction->final_total * 100 / 115;
-
         foreach ($sellLines as  $sellLine) {
             $unit_price_inc_tax =  $final_before_tax / $sellLine->quantity;
             if ($sellLine->product->tax != null && $sellLine->product->tax == 106) {
@@ -862,13 +858,11 @@ Route::get('fix_invoices_6', function () {
                 $total_before_tax += (($unit_price_inc_tax) * $sellLine->quantity);
             }
         }
-
         $transaction->update([
             'tax_id' =>  106,
             'total_before_tax' =>  $total_before_tax,
             'tax_amount' => $transaction->final_total -  $total_before_tax,
         ]);
     }
-
     dd("fixed all");
 });
