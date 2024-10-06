@@ -75,8 +75,20 @@ class ZatcaController extends Controller
         $this->productUtil = $productUtil;
 
         $this->dummyPaymentLine = [
-            'method' => '', 'amount' => 0, 'note' => '', 'card_transaction_number' => '', 'card_number' => '', 'card_type' => '', 'card_holder_name' => '', 'card_month' => '', 'card_year' => '', 'card_security' => '', 'cheque_number' => '', 'bank_account_number' => '',
-            'is_return' => 0, 'transaction_no' => '',
+            'method' => '',
+            'amount' => 0,
+            'note' => '',
+            'card_transaction_number' => '',
+            'card_number' => '',
+            'card_type' => '',
+            'card_holder_name' => '',
+            'card_month' => '',
+            'card_year' => '',
+            'card_security' => '',
+            'cheque_number' => '',
+            'bank_account_number' => '',
+            'is_return' => 0,
+            'transaction_no' => '',
         ];
 
         $this->shipping_status_colors = [
@@ -316,7 +328,7 @@ class ZatcaController extends Controller
                 return $this->moduleUtil->expiredResponse();
             }
             $validatedData = $request->all();
-
+            $seconds = (string) Carbon::now()->format('s');
 
 
 
@@ -402,7 +414,7 @@ class ZatcaController extends Controller
                 'location_id' => $location_id,
                 'contact_id' => $request->buyer_id,
                 'status' => $request->status,
-                'transaction_date' => $request->invoice_date . ' ' . $request->invoice_time . ':00',
+                'transaction_date' => $request->invoice_date . ' ' . $request->invoice_time . ':' . $seconds,
                 'sell_price_tax' => $request->sell_price_tax,
                 'business_enable_inline_tax' => $request->business_enable_inline_tax,
                 'products' => (object)$products_arr,
@@ -475,7 +487,7 @@ class ZatcaController extends Controller
                 // Calculate the total amount with VAT
                 $totalWithVAT = $totalWithoutVAT - $totalDiscount + $totalVAT;
 
-                $invoiceTime = $validatedData['invoice_time'] . ':00';
+                $invoiceTime = $validatedData['invoice_time'] . ':' . $seconds;
 
                 // return $invoiceItems or use them as needed
 
