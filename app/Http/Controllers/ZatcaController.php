@@ -590,6 +590,8 @@ class ZatcaController extends Controller
                 ->with('status', $output);
         } catch (\Exception $e) {
             error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            $output = ['success' => 0, 'msg' => 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage()];
+            return redirect()->back()->with('status', $output);
         }
     }
 
