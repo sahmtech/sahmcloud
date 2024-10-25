@@ -55,8 +55,8 @@ Thumbs.db
 /yarn-error.log
 
 # Ignore public assets
-# /public/
-# /public/css/
+# /public/js/*.js
+# /public/css/*.css
 /public/mix-manifest.json
 /public/hot
 
