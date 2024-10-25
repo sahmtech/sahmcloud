@@ -67,13 +67,13 @@ class TransactionUtil extends Util
             'ref_no' => '',
             'source' => !empty($input['source']) ? $input['source'] : null,
             // 'total_before_tax' => $invoice_total['total_before_tax'],
-            'total_before_tax' => floatval($invoice_total['total_before_tax']) - floatval($input['order_tax']),
-           
+            'total_before_tax' => floatval($invoice_total['total_before_tax']) - floatval($input['order_tax'] ?? 0),
+
             'transaction_date' => $input['transaction_date'],
             'tax_id' => !empty($input['tax_rate_id']) ? $input['tax_rate_id'] : null,
             'discount_type' => !empty($input['discount_type']) ? $input['discount_type'] : null,
             'discount_amount' => $uf_data ? $this->num_uf($input['discount_amount']) : $input['discount_amount'],
-            'tax_amount' => $input['order_tax'],
+            'tax_amount' => $input['order_tax'] ?? 0,
             'final_total' => $final_total,
             'additional_notes' => !empty($input['sale_note']) ? $input['sale_note'] : null,
             'staff_note' => !empty($input['staff_note']) ? $input['staff_note'] : null,
@@ -1601,7 +1601,7 @@ class TransactionUtil extends Util
                 } else {
                     $total_order_tax = $transaction->tax_amount;
                 }
-              
+
                 $qr_code_text = $this->_zatca_qr_text($business_details->name, $business_details->tax_number_1, $transaction->transaction_date, $transaction->final_total, $total_order_tax);
             } else {
                 $is_label_enabled = !empty($il->common_settings['show_qr_code_label']) ? true : false;
@@ -3239,8 +3239,10 @@ class TransactionUtil extends Util
                 ->where('transactions.business_id', $business['id'])
                 ->where('transactions.location_id', $business['location_id'])
                 ->whereIn('transactions.type', [
-                    'purchase', 'purchase_transfer',
-                    'opening_stock', 'production_purchase',
+                    'purchase',
+                    'purchase_transfer',
+                    'opening_stock',
+                    'production_purchase',
                 ])
                 ->where('transactions.status', 'received')
                 ->whereRaw("( $qty_sum_query ) < PL.quantity")
@@ -3696,7 +3698,8 @@ class TransactionUtil extends Util
                     'SAL.variation_id AS adjust_variation_id',
                     'SAL.id AS adjust_line_id',
                     'transaction_sell_lines_purchase_lines.quantity',
-                    'transaction_sell_lines_purchase_lines.purchase_line_id', 'transaction_sell_lines_purchase_lines.id as tslpl_id',
+                    'transaction_sell_lines_purchase_lines.purchase_line_id',
+                    'transaction_sell_lines_purchase_lines.id as tslpl_id',
                 ])
                 ->get();
 
@@ -5171,11 +5174,21 @@ class TransactionUtil extends Util
         $with = ['location'];
         if ($line_details) {
             $with = [
-                'location', 'sell_lines', 'sell_lines.sub_unit', 'sell_lines.product',
-                'sell_lines.variations', 'sell_lines.product.unit', 'sell_lines.variations.product_variation',
-                'sell_lines.line_tax', 'purchase_lines', 'purchase_lines.product', 'purchase_lines.variations',
-                'purchase_lines.variations.product_variation', 'purchase_lines.line_tax',
-                'purchase_lines.product.unit', 'purchase_lines.product.unit.sub_units',
+                'location',
+                'sell_lines',
+                'sell_lines.sub_unit',
+                'sell_lines.product',
+                'sell_lines.variations',
+                'sell_lines.product.unit',
+                'sell_lines.variations.product_variation',
+                'sell_lines.line_tax',
+                'purchase_lines',
+                'purchase_lines.product',
+                'purchase_lines.variations',
+                'purchase_lines.variations.product_variation',
+                'purchase_lines.line_tax',
+                'purchase_lines.product.unit',
+                'purchase_lines.product.unit.sub_units',
             ];
         }
         //Get transaction totals between dates
@@ -5533,7 +5546,13 @@ class TransactionUtil extends Util
         );
 
         $transaction_types = [
-            'purchase_return', 'sell_return', 'expense', 'stock_adjustment', 'sell_transfer', 'purchase', 'sell',
+            'purchase_return',
+            'sell_return',
+            'expense',
+            'stock_adjustment',
+            'sell_transfer',
+            'purchase',
+            'sell',
         ];
 
         $transaction_totals = $this->getTransactionTotals(
@@ -5738,9 +5757,15 @@ class TransactionUtil extends Util
     public function createExpense($request, $business_id, $user_id, $format_data = true)
     {
         $transaction_data = $request->only([
-            'ref_no', 'transaction_date',
-            'location_id', 'final_total', 'expense_for', 'additional_notes',
-            'expense_category_id', 'tax_id', 'contact_id',
+            'ref_no',
+            'transaction_date',
+            'location_id',
+            'final_total',
+            'expense_for',
+            'additional_notes',
+            'expense_category_id',
+            'tax_id',
+            'contact_id',
         ]);
 
         $transaction_data['business_id'] = $business_id;
@@ -5901,9 +5926,18 @@ class TransactionUtil extends Util
         $contact_id = $request->input('contact_id');
         $business_id = auth()->user()->business_id;
         $inputs = $request->only([
-            'amount', 'method', 'note', 'card_number', 'card_holder_name',
-            'card_transaction_number', 'card_type', 'card_month', 'card_year', 'card_security',
-            'cheque_number', 'bank_account_number',
+            'amount',
+            'method',
+            'note',
+            'card_number',
+            'card_holder_name',
+            'card_transaction_number',
+            'card_type',
+            'card_month',
+            'card_year',
+            'card_security',
+            'cheque_number',
+            'bank_account_number',
         ]);
 
         //payment type option is available on pay contact modal

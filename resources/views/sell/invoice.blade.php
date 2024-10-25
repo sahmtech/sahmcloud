@@ -243,22 +243,22 @@
             <table class="invoice-details">
                 <tr>
                     <td class="colored_background">{{ __('zatca_invoice.invoice_number', [], 'en') }}:</td>
-                    <td class="center-align">{{ $invoice->invoice_number }}</td>
+                    <td class="center-align">{{ $invoice->invoice_number ?? '' }}</td>
                     <td class="rtl-text colored_background">{{ __('zatca_invoice.invoice_number', [], 'ar') }}</td>
                 </tr>
                 <tr>
                     <td class="colored_background">{{ __('zatca_invoice.invoice_issue_date', [], 'en') }}:</td>
-                    <td class="center-align">{{ $invoice->invoice_date }}</td>
+                    <td class="center-align">{{ $invoice->invoice_date ?? '' }}</td>
                     <td class="rtl-text colored_background">{{ __('zatca_invoice.invoice_issue_date', [], 'ar') }}</td>
                 </tr>
                 <tr>
                     <td class="colored_background">{{ __('zatca_invoice.from_date', [], 'en') }}:</td>
-                    <td class="center-align">{{ $fromDate }}</td>
+                    <td class="center-align">{{ $fromDate ?? '' }}</td>
                     <td class="rtl-text colored_background">{{ __('zatca_invoice.from_date', [], 'ar') }}</td>
                 </tr>
                 <tr>
                     <td class="colored_background">{{ __('zatca_invoice.to_date', [], 'en') }}:</td>
-                    <td class="center-align">{{ $toDate }}</td>
+                    <td class="center-align">{{ $toDate ?? '' }}</td>
                     <td class="rtl-text colored_background">{{ __('zatca_invoice.to_date', [], 'ar') }}</td>
                 </tr>
             </table>
@@ -275,33 +275,33 @@
                 <table class="seller-buyer">
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.name', [], 'en') }}:</td>
-                        <td class="center-align">{{ $seller->registration_name }}</td>
+                        <td class="center-align">{{ $seller->registration_name ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.name', [], 'ar') }}:</td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.vat_number', [], 'en') }}:</td>
-                        <td class="center-align">{{ $seller->tax_number }}</td>
+                        <td class="center-align">{{ $seller->tax_number ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.vat_number', [], 'ar') }}:</td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.building_number', [], 'en') }}:</td>
-                        <td class="center-align">{{ $seller->building_number }}</td>
+                        <td class="center-align">{{ $seller->building_number ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.building_number', [], 'ar') }}:
                         </td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.street_name', [], 'en') }}:</td>
-                        <td class="center-align">{{ $seller->street_name }}</td>
+                        <td class="center-align">{{ $seller->street_name ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.street_name', [], 'ar') }}:</td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.district', [], 'en') }}:</td>
-                        <td class="center-align">{{ $seller->city_sub_division }}</td>
+                        <td class="center-align">{{ $seller->city_sub_division ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.district', [], 'ar') }}:</td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.city', [], 'en') }}:</td>
-                        <td class="center-align">{{ $seller->city }}</td>
+                        <td class="center-align">{{ $seller->city ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.city', [], 'ar') }}:</td>
                     </tr>
                     <tr>
@@ -311,13 +311,13 @@
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.postal_code', [], 'en') }}:</td>
-                        <td class="center-align">{{ $seller->postal_number }}</td>
+                        <td class="center-align">{{ $seller->postal_number ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.postal_code', [], 'ar') }}:</td>
                     </tr>
                     <tr>
                         <td class="colored_background">
                             {{ __('zatca_invoice.commercial_registration_number', [], 'en') }}:</td>
-                        <td class="center-align">{{ $seller->registration_number }}</td>
+                        <td class="center-align">{{ $seller->registration_number ?? '' }}</td>
                         <td class="rtl-text colored_background">
                             {{ __('zatca_invoice.commercial_registration_number', [], 'ar') }}:</td>
                     </tr>
@@ -331,33 +331,33 @@
                 <table class="seller-buyer">
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.name', [], 'en') }}:</td>
-                        <td class="center-align">{{ $client->registration_name }}</td>
+                        <td class="center-align">{{ $client->registration_name ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.name', [], 'ar') }}:</td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.vat_number', [], 'en') }}:</td>
-                        <td class="center-align">{{ $client->tax_number }}</td>
+                        <td class="center-align">{{ $client->tax_number ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.vat_number', [], 'ar') }}:</td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.building_number', [], 'en') }}:</td>
-                        <td class="center-align">{{ $client->building_number }}</td>
+                        <td class="center-align">{{ $client->building_number ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.building_number', [], 'ar') }}:
                         </td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.street_name', [], 'en') }}:</td>
-                        <td class="center-align">{{ $client->street_name }}</td>
+                        <td class="center-align">{{ $client->street_name ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.street_name', [], 'ar') }}:</td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.district', [], 'en') }}:</td>
-                        <td class="center-align">{{ $client->city_subdivision_name }}</td>
+                        <td class="center-align">{{ $client->city_subdivision_name ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.district', [], 'ar') }}:</td>
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.city', [], 'en') }}:</td>
-                        <td class="center-align">{{ $client->city }}</td>
+                        <td class="center-align">{{ $client->city ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.city', [], 'ar') }}:</td>
                     </tr>
                     <tr>
@@ -367,7 +367,7 @@
                     </tr>
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.postal_code', [], 'en') }}:</td>
-                        <td class="center-align">{{ $client->postal_number }}</td>
+                        <td class="center-align">{{ $client->postal_number ?? '' }}</td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.postal_code', [], 'ar') }}:</td>
                     </tr>
 

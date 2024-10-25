@@ -318,6 +318,7 @@ class CashRegisterController extends ApiController
     {
         try {
             $user = Auth::user();
+            $business_id = $user->business_id;
             DB::beginTransaction();
 
 
@@ -332,6 +333,34 @@ class CashRegisterController extends ApiController
                 ->where('status', 'open')
                 ->update($input);
             $register =  CashRegister::find($id);
+            /*  */
+            $transaction_ids_string = $request->input('transaction_ids');
+            $transaction_ids = explode(',', $transaction_ids_string);
+    
+            $sells = Transaction::where('business_id', $business_id)
+                ->whereIn('id', $transaction_ids)
+                ->where('status', 'final')
+                ->where('type', 'sell')
+                ->where('created_by', $user->id)
+                ->with(['payment_lines'])
+                ->get();
+    
+            foreach ($sells as $sell) {
+                foreach ($sell->payment_lines as $payment) {
+                    $cash_register_payments[] = new CashRegisterTransaction([
+                        'amount' => $payment->amount,
+                        'pay_method' => $payment->method,
+                        'type' => 'credit',
+                        'transaction_type' => 'sell',
+                        'transaction_id' => $sell->id,
+                    ]);
+                }
+            }
+    
+            if (!empty($cash_register_payments)) {
+                $register->cash_register_transactions()->saveMany($cash_register_payments);
+            }
+            /*  */
             DB::commit();
 
             return new CommonResource($register);
