@@ -1150,6 +1150,7 @@ return [
     'recomended_for_80mm' => 'Recommended for thermal line receipt printer, 80mm paper size',
     'recomended_for_58mm' => 'Recommended for thermal line receipt printer, 80mm and 58mm paper size',
     'classic' => 'Classic',
+    "classic_borderd" => "Classic with borders",
     'elegant' => 'Elegant',
     'slim' => 'Slim',
     'detailed' => 'Detailed',

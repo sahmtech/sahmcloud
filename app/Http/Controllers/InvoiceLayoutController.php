@@ -155,7 +155,6 @@ class InvoiceLayoutController extends Controller
         $invoice_layout->table_tax_headings = ! empty($invoice_layout->table_tax_headings) ? json_decode($invoice_layout->table_tax_headings) : ['', '', '', ''];
 
         $designs = $this->getDesigns();
-
         return view('invoice_layout.edit')
                 ->with(compact('invoice_layout', 'designs'));
     }
@@ -250,6 +249,7 @@ class InvoiceLayoutController extends Controller
     private function getDesigns()
     {
         return ['classic' => __('lang_v1.classic').' ('.__('lang_v1.for_normal_printer').')',
+            'classic-borderd' => __('lang_v1.classic_borderd').' ('.__('lang_v1.for_normal_printer').')',
             'elegant' => __('lang_v1.elegant').' ('.__('lang_v1.for_normal_printer').')',
             'detailed' => __('lang_v1.detailed').' ('.__('lang_v1.for_normal_printer').')',
             'columnize-taxes' => __('lang_v1.columnize_taxes').' ('.__('lang_v1.for_normal_printer').')',
