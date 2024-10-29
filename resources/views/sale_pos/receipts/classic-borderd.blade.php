@@ -5,14 +5,15 @@
         -webkit-print-color-adjust: exact;
     }
 
-    .table{
+    .table {
         margin-bottom: 0;
     }
+
     .table-slim,
     .table-slim td,
     .table-slim th {
         border: 0.5px solid #d5d5d5 !important;
-        padding: 3px 4px !important;
+        padding: 2px 4px 2px 4px !important;
     }
 
     .page-footer,
@@ -34,6 +35,8 @@
 
     table {
         font-size: 14px;
+        page-break-inside: avoid;
+        page-break-after: avoid;
     }
 
     .invoice-container {
@@ -374,7 +377,7 @@
                     </div>
 
                     <div class="row" style="color: #000000 !important;">
-                        <div class="col-xs-12">
+                        <div class="col-xs-12" style="margin-top: -10px;">
                             <br />
                             @php
                                 $p_width = 45;
