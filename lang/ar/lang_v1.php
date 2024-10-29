@@ -1420,4 +1420,9 @@ return [
     'enable_fast_store' => 'تفعيل التخزين السريع',
     'technical_erorr' => 'خطأ تقني الرجاء المحاولة مجددا',
     'no_description'=>' .. لا يوجد وصف للمنتج',
+    'show_letter_footer' => 'إظهار الذيل',
+    'show_letter_head' => 'إظهار الرأس',
+    'letter_head' => 'صورة الرأس',
+    'letter_footer' => 'صورة الذيل',
+
 ];

@@ -960,7 +960,6 @@ class TransactionUtil extends Util
     public function getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type)
     {
         $il = $invoice_layout;
-
         $transaction = Transaction::find($transaction_id);
         $transaction_type = $transaction->type;
 
@@ -1003,6 +1002,12 @@ class TransactionUtil extends Util
             $output['letter_head'] = !empty($il->letter_head) &&
                 file_exists(public_path('uploads/invoice_logos/' . $il->letter_head)) ?
                 asset('uploads/invoice_logos/' . $il->letter_head) : null;
+        }
+
+        if ($il->show_letter_footer == 1) {
+            $output['letter_footer'] = !empty($il->letter_footer) &&
+                file_exists(public_path('uploads/invoice_logos/' . $il->letter_footer)) ?
+                asset('uploads/invoice_logos/' . $il->letter_footer) : null;
         }
 
         //Logo

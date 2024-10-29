@@ -2071,6 +2071,18 @@ class SellPosController extends Controller
      */
     public function printInvoice(Request $request, $transaction_id)
     {
+        try {
+        $business_id = $request->session()->get('user.business_id');
+
+        $transaction = Transaction::where('business_id', $business_id)
+            ->where('id', $transaction_id)
+            ->with(['location'])
+            ->first();
+        $url = $this->transactionUtil->getInvoiceUrl($transaction->id, $business_id);
+
+        return redirect()->away($url . '?print_on_load=true');
+        } catch (\Exception $e) {
+        }
         if (request()->ajax()) {
             try {
                 $output = [
@@ -2099,6 +2111,7 @@ class SellPosController extends Controller
 
                 $invoice_layout_id = $transaction->is_direct_sale ? $transaction->location->sale_invoice_layout_id : null;
                 $receipt = $this->receiptContent($business_id, $transaction->location_id, $transaction_id, $printer_type, $is_package_slip, false, $invoice_layout_id, $is_delivery_note);
+
 
                 if (!empty($receipt)) {
                     $output = ['success' => 1, 'receipt' => $receipt];

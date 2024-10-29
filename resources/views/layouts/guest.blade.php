@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-<html>
-<html>
-
+<html lang="{{ app()->getLocale() }}"
+    dir="{{ in_array(session()->get('user.language', config('app.locale')), config('constants.langs_rtl')) ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,7 +21,7 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-   
+    @include('layouts.partials.css')
 </head>
 
 <body>
@@ -38,6 +36,7 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js?v=$asset_v"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js?v=$asset_v"></script>
     <![endif]-->
+    @include('layouts.partials.javascripts')
 
     <!-- jQuery 2.2.3 -->
     <script src="{{ asset('js/vendor.js?v=' . $asset_v) }}"></script>
