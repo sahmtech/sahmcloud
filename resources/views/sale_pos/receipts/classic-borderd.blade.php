@@ -5,6 +5,9 @@
         -webkit-print-color-adjust: exact;
     }
 
+    .table{
+        margin-bottom: 0;
+    }
     .table-slim,
     .table-slim td,
     .table-slim th {
