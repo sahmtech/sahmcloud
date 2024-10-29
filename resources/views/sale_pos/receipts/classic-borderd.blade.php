@@ -413,8 +413,8 @@
                                         <tr>
                                             <td class="text-end">
                                                 @if (!empty($line['image']))
-                                                    {{-- <img src="{{ $line['image'] }}" alt="Image" width="50"
-                                                        style="float: left; margin-right: 8px;"> --}}
+                                                    <img src="{{ $line['image'] }}" alt="Image" width="50"
+                                                        style="float: left; margin-right: 8px;">
                                                 @endif
                                                 {{ $line['name'] }} {{ $line['product_variation'] }}
                                                 {{ $line['variation'] }}
