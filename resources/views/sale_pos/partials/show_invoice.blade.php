@@ -2,6 +2,10 @@
 @section('title', $title)
 @section('content')
     <style>
+        .container{
+            width: 100%;
+            margin: auto;
+        }
         @media print {
             .container {
                 display: none;
