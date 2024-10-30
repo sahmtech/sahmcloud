@@ -19,13 +19,12 @@
     .page-footer,
     .page-footer-space {
         height: 60px !important;
-
     }
 
     .page-footer {
         position: fixed !important;
         bottom: 0px !important;
-        width: 100% !important;
+        width: 50%;
     }
 
 
@@ -34,7 +33,7 @@
     }
 
     table {
-        font-size: 14px;
+        font-size: 13px;
         page-break-inside: avoid;
         page-break-after: avoid;
     }
@@ -45,6 +44,11 @@
         text-align: center;
         line-height: 22px;
         font-size: 14px;
+    }
+
+    body{
+        width: 50%;
+        margin: auto;
     }
 
     @media print {
@@ -58,12 +62,14 @@
 
         body {
             margin: 0 !important;
+            width: 100%;
         }
 
         .page-footer {
             position: fixed;
             bottom: 0;
-            width: 100%;
+            width: 100% !important;
+            background-color: red;
         }
 
         .page-footer-space {
