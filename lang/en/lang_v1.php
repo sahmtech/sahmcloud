@@ -1516,6 +1516,9 @@ return [
     'letter_head_help' => 'Upload a letterhead image containing all details of your business.
          Letterhead will be added at the top of the invoices.',
     'letter_head_help2' => 'Upload only if you want to replace previous letterhead',
+    'letter_footer_help' => 'Upload a letter footer image containing all details of your business.
+         Letter footer will be added at the top of the invoices.',
+    'letter_footer_help2' => 'Upload only if you want to replace previous letter footer',
     'copy_quotation' => 'Copy Quotation',
     'field_type' => 'Field Type',
     'text' => 'Text',
