@@ -1,4 +1,3 @@
-<!-- business information here -->
 <style>
     .table .custom-bg {
         background-color: #f1f1f1 !important;
@@ -13,7 +12,7 @@
     .table-slim td,
     .table-slim th {
         border: 0.5px solid #d5d5d5 !important;
-        padding: 2px 4px 2px 4px !important;
+        padding: 2px 4px !important;
     }
 
     .page-footer,
@@ -23,16 +22,20 @@
 
     .page-footer {
         position: fixed !important;
-        bottom: 0px !important;
+        bottom: 20px !important;
+        margin-top: 10px;
         width: 50%;
     }
 
-
     @page {
-        margin: 65px 0 !important;
+        margin: 10px 0px 0px 0px !important;
     }
 
     table {
+        font-size: 13px;
+    }
+
+    table:not(.main) {
         font-size: 13px;
         page-break-inside: avoid;
         page-break-after: avoid;
@@ -46,7 +49,7 @@
         font-size: 14px;
     }
 
-    body{
+    body {
         width: 50%;
         margin: auto;
     }
@@ -66,10 +69,7 @@
         }
 
         .page-footer {
-            position: fixed;
-            bottom: 0;
             width: 100% !important;
-            background-color: red;
         }
 
         .page-footer-space {
@@ -79,10 +79,6 @@
 </style>
 
 <body>
-    @if (!empty($receipt_details->letter_footer))
-        <img class="page-footer" width="100%" height="75px" src="{{ $receipt_details->letter_footer }}" alt="footer">
-    @endif
-
     <table class="invoice-container">
         <tbody class="invoice-content">
             <tr>
@@ -398,7 +394,7 @@
                                     $p_width -= 10;
                                 @endphp
                             @endif
-                            <table class="table table-responsive table-slim table-bordered">
+                            <table class="table table-responsive table-slim table-bordered main">
                                 <thead>
                                     <tr>
                                         <th class="text-end custom-bg" style="vertical-align: top;"
@@ -835,4 +831,9 @@
             </tr>
         </tfoot>
     </table>
+    @if (!empty($receipt_details->letter_footer))
+        <div class="page-footer">
+            <img id="footer-image" width="100%" height="75px" src="{{ $receipt_details->letter_footer }}" alt="footer">
+        </div>
+    @endif
 </body>
