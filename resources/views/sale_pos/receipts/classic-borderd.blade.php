@@ -22,7 +22,7 @@
 
     .page-footer {
         position: fixed !important;
-        bottom: 20px !important;
+        bottom: 0px !important;
         margin-top: 10px;
         width: 50%;
     }
