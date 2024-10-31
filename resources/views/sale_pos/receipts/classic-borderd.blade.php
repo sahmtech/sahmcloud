@@ -17,7 +17,7 @@
 
     .page-footer,
     .page-footer-space {
-        height: 60px !important;
+        max-height: 60px !important;
     }
 
     .page-footer {
@@ -96,7 +96,7 @@
         }
 
         .page-footer-space {
-            height: 60px;
+            max-height: 60px;
         }
     }
 </style>
@@ -867,7 +867,7 @@
     </table>
     @if (!empty($receipt_details->letter_footer))
         <div class="page-footer">
-            <img id="footer-image" width="100%" height="75px" src="{{ $receipt_details->letter_footer }}"
+            <img id="footer-image" width="100%" src="{{ $receipt_details->letter_footer }}"
                 alt="footer">
         </div>
     @endif
