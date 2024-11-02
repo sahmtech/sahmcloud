@@ -63,6 +63,10 @@
         margin: 5px 0px !important;
     }
 
+    .footer-text {
+        width: 95%;
+    }
+
     .invoice-info-1 {
         display: flex;
         flex-direction: column;
@@ -504,7 +508,7 @@
                                         </div>
                                     </div>
                                     @if (!empty($receipt_details->footer_text))
-                                        <div class="row color-555">
+                                        <div class="row color-555 footer-text">
                                             <div class="col-xs-12">
                                                 {!! $receipt_details->footer_text !!}
                                             </div>
