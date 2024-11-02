@@ -415,12 +415,12 @@
 
                                                 @for ($i = $lines; $i < 7; $i++)
                                                     <tr>
-                                                        <td class="custom-bg">&nbsp;</td>
-                                                        <td class="custom-bg">&nbsp;</td>
-                                                        <td class="custom-bg">&nbsp;</td>
-                                                        <td class="custom-bg">&nbsp;</td>
-                                                        <td class="custom-bg">&nbsp;</td>
-                                                        <td class="custom-bg">&nbsp;</td>
+                                                        <td>&nbsp;</td>
+                                                        <td>&nbsp;</td>
+                                                        <td>&nbsp;</td>
+                                                        <td>&nbsp;</td>
+                                                        <td>&nbsp;</td>
+                                                        <td>&nbsp;</td>
                                                     </tr>
                                                 @endfor
 
