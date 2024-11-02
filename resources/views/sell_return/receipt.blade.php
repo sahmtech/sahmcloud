@@ -64,8 +64,8 @@
     }
 
     .footer-text {
-        width: 100%;
-        margin: auto;
+        width: 95%;
+        margin-right: 5px; 
     }
 
     .invoice-info-1 {
@@ -510,7 +510,7 @@
                                     </div>
                                     @if (!empty($receipt_details->footer_text))
                                         <div class="row color-555 footer-text">
-                                            <div class="col-xs-12" style="width: 100%;">
+                                            <div class="col-xs-12">
                                                 {!! $receipt_details->footer_text !!}
                                             </div>
                                         </div>
