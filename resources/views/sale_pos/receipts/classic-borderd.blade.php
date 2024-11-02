@@ -27,6 +27,12 @@
         width: 50%;
     }
 
+    .footer-text{
+        width: 100%;
+        margin: auto;
+        padding-top: 20px; 
+    }
+
     @page {
         margin: 10px 0px 0px 0px !important;
     }
@@ -843,15 +849,13 @@
                             @endif
 
                         </div>
-                        <div class="row" style="color: #000000 !important;">
+                        <div class="row footer-text" style="color: #000000 !important;">
                             @if (!empty($receipt_details->footer_text))
-                                <div class="@if ($receipt_details->show_barcode || $receipt_details->show_qr_code) col-xs-8 @else col-xs-12 @endif">
+                                <div class="@if ($receipt_details->show_barcode || $receipt_details->show_qr_code) col-xs-8 @else col-xs-12 @endif" style="width: 100%;">
                                     {!! $receipt_details->footer_text !!}
                                 </div>
                             @endif
                         </div>
-                        {{-- <div class="main">
-                        </div> --}}
                     </div>
                 </td>
             </tr>
