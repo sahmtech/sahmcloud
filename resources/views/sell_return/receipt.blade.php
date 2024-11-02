@@ -65,6 +65,7 @@
 
     .footer-text {
         width: 95%;
+        margin-right: 5px; 
     }
 
     .invoice-info-1 {
