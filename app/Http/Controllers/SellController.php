@@ -1512,7 +1512,7 @@ class SellController extends Controller
                         }
 
                         $html .= '<li>
-                                    <a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i>' . __('messages.print') . '</a>
+                                    <a target="_blank" href="' . route('sell.printInvoice', [$row->id]) . '" class="print-invoice-new" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i>' . __('messages.print') . '</a>
                                 </li>';
 
                         if (config('constants.enable_download_pdf')) {
