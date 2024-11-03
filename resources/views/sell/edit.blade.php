@@ -329,6 +329,10 @@
 					<!-- Keeps count of product rows -->
 					<input type="hidden" id="product_row_count" 
 						value="{{count($sell_details)}}">
+
+						<input type="hidden" name="business_enable_inline_tax" id="business_enable_inline_tax"
+						value="{{ session()->get('business.enable_inline_tax') }}">
+
 					@php
 						$hide_tax = '';
 						if( session()->get('business.enable_inline_tax') == 0){
@@ -466,7 +470,9 @@
 			        </div>
 			    </div>
 			    <div class="col-md-4 col-md-offset-4 @if($transaction->type == 'sales_order') hide @endif">
-			    	<b>@lang( 'sale.order_tax' ):</b>(+) 
+					<input type="hidden" name="order_tax" id="order_tax">
+
+					<b>@lang( 'sale.order_tax' ):</b>(+) 
 					<span class="display_currency" id="order_tax">{{$transaction->tax_amount}}</span>
 			    </div>
 			    <div class="col-md-12">
