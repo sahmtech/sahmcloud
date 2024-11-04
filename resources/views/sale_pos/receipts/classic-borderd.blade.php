@@ -608,7 +608,7 @@
                         </div>
 
                         <div class="row" style="color: #000000 !important;">
-                            <div class="col-md-12" style="height: 10px;">
+                            <div class="col-md-12" style="height: 10px;margin: 10px 0px;padding: 20px 0px;">
                                 <hr />
                             </div>
                             <div class="col-xs-6">
