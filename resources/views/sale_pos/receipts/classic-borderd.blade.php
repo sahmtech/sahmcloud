@@ -23,7 +23,7 @@
     .page-footer {
         position: fixed !important;
         bottom: 0px !important;
-        margin-top: 10px;
+        margin-top: 10px !important;
         width: 50%;
     }
 
@@ -606,11 +606,12 @@
                                 </table>
                             </div>
                         </div>
-
-                        <div class="row" style="color: #000000 !important;">
-                            <div class="col-md-12" style="height: 10px;margin: 10px 0px;padding: 20px 0px;">
+                        <div class="row" style="color: #000000 !important; margin: 0px 0px;padding-botto: 10px;">
+                            <div class="col-md-12" style="height: 10px;">
                                 <hr />
                             </div>
+                        </div>
+                        <div class="row" style="color: #000000 !important;">
                             <div class="col-xs-6">
 
                                 <table class="table table-slim table-bordered">
