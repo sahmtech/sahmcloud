@@ -18,7 +18,7 @@
     .page-footer,
     .page-footer-space {
         max-height: 60px !important;
-        margin-top: 20px
+        margin-top: 30px !important;
     }
 
     .page-footer {
@@ -607,7 +607,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="row" style="color: #000000 !important; margin: 0px 0px;padding-bottom: 10px;">
+                        <div class="row" style="color: #000000 !important; margin: 0px 0px;padding: 20px 0px;">
                             <div class="col-md-12" style="height: 10px;">
                                 <hr />
                             </div>
