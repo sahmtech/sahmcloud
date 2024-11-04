@@ -28,10 +28,10 @@
         width: 50%;
     }
 
-    .footer-text{
+    .footer-text {
         width: 100%;
         margin: auto;
-        padding-top: 20px; 
+        padding-top: 20px;
     }
 
     @page {
@@ -290,8 +290,7 @@
                                 </div>
                             @endif
 
-                            <span class="pull-right text-left"
-                                style="width: 100%;display: flex;justify-content: end;">
+                            <span class="pull-right text-left" style="width: 100%;display: flex;justify-content: end;">
                                 <div>
                                     <b>{{ $receipt_details->date_label }}</b> {{ $receipt_details->invoice_date }}
                                     @if (!empty($receipt_details->due_date_label))
@@ -448,11 +447,9 @@
                                             <th class="text-end custom-bg" style="vertical-align: top;"
                                                 width="{{ $p_width }}%">
                                                 {{ $receipt_details->table_product_label }}</th>
-                                            <th class="text-end custom-bg" style="vertical-align: top;"
-                                                width="15%">
+                                            <th class="text-end custom-bg" style="vertical-align: top;" width="15%">
                                                 {{ $receipt_details->table_qty_label }}</th>
-                                            <th class="text-end custom-bg" style="vertical-align: top;"
-                                                width="15%">
+                                            <th class="text-end custom-bg" style="vertical-align: top;" width="15%">
                                                 {{ $receipt_details->table_unit_price_label }}</th>
                                             @if (!empty($receipt_details->discounted_unit_price_label))
                                                 <th class="text-end custom-bg" style="vertical-align: top;"
@@ -464,8 +461,7 @@
                                                     width="10%">
                                                     {{ $receipt_details->item_discount_label }}</th>
                                             @endif
-                                            <th class="text-end custom-bg" style="vertical-align: top;"
-                                                width="15%">
+                                            <th class="text-end custom-bg" style="vertical-align: top;" width="15%">
                                                 {{ $receipt_details->table_subtotal_label }}</th>
                                         </tr>
                                     </thead>
@@ -474,8 +470,8 @@
                                             <tr>
                                                 <td class="text-end">
                                                     @if (!empty($line['image']))
-                                                        <img src="{{ $line['image'] }}" alt="Image"
-                                                            width="50" style="float: left; margin-right: 8px;">
+                                                        <img src="{{ $line['image'] }}" alt="Image" width="50"
+                                                            style="float: left; margin-right: 8px;">
                                                     @endif
                                                     {{ $line['name'] }} {{ $line['product_variation'] }}
                                                     {{ $line['variation'] }}
@@ -607,7 +603,8 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="row" style="color: #000000 !important; margin: 0px 0px;padding: 20px 0px;">
+                        <div class="row"
+                            style="color: #000000 !important; margin: 0px 0px;padding-bottom: 10px; padding-top:5px;">
                             <div class="col-md-12" style="height: 10px;">
                                 <hr />
                             </div>
@@ -853,7 +850,8 @@
                         </div>
                         <div class="row footer-text" style="color: #000000 !important;">
                             @if (!empty($receipt_details->footer_text))
-                                <div class="@if ($receipt_details->show_barcode || $receipt_details->show_qr_code) col-xs-8 @else col-xs-12 @endif" style="width: 100%;">
+                                <div class="@if ($receipt_details->show_barcode || $receipt_details->show_qr_code) col-xs-8 @else col-xs-12 @endif"
+                                    style="width: 100%;">
                                     {!! $receipt_details->footer_text !!}
                                 </div>
                             @endif
@@ -873,8 +871,7 @@
     </table>
     @if (!empty($receipt_details->letter_footer))
         <div class="page-footer">
-            <img id="footer-image" width="100%" src="{{ $receipt_details->letter_footer }}"
-                alt="footer">
+            <img id="footer-image" width="100%" src="{{ $receipt_details->letter_footer }}" alt="footer">
         </div>
     @endif
 </body>
