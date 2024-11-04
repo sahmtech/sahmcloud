@@ -426,7 +426,7 @@
                         </div>
 
                         <div class="row" style="color: #000000 !important;">
-                            <div class="col-xs-12" style="margin-top: -10px;">
+                            <div class="col-xs-12" style="margin-top: 5px;">
                                 <br />
                                 @php
                                     $p_width = 45;
