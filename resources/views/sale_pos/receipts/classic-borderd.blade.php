@@ -603,12 +603,12 @@
                                 </table>
                             </div>
                         </div>
-                        {{-- <div class="row"
-                            style="color: #000000 !important; margin: 0px 0px;padding-bottom: 10px; padding-top:5px;">
+                        <div class="row"
+                            style="color: #000000 !important; margin: 0px 0px;padding-bottom: 20px; padding-top:5px; ">
                             <div class="col-md-12" style="height: 10px;">
                                 <hr />
                             </div>
-                        </div> --}}
+                        </div>
                         <div class="row" style="color: #000000 !important;">
                             <div class="col-xs-6">
 
