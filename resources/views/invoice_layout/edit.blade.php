@@ -89,7 +89,7 @@
             <div class="form-group">
                 {!! Form::label('letter_footer', __('lang_v1.letter_footer') . ':') !!}
                 {!! Form::file('letter_footer', ['accept' => 'image/*']) !!}
-                <span class="help-block">@lang('lang_v1.letter_head_help') <br> @lang('lang_v1.invoice_logo_help', ['max_size' => '1 MB']) <br> @lang('lang_v1.letter_head_help2')</span>
+                <span class="help-block">@lang('lang_v1.letter_footer_help') <br> @lang('lang_v1.invoice_logo_help', ['max_size' => '1 MB']) <br> @lang('lang_v1.letter_footer_help2')</span>
             </div>
         </div>
     

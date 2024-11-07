@@ -2077,18 +2077,6 @@ class SellPosController extends Controller
      */
     public function printInvoice(Request $request, $transaction_id)
     {
-        try {
-        $business_id = $request->session()->get('user.business_id');
-
-        $transaction = Transaction::where('business_id', $business_id)
-            ->where('id', $transaction_id)
-            ->with(['location'])
-            ->first();
-        $url = $this->transactionUtil->getInvoiceUrl($transaction->id, $business_id);
-
-        return redirect()->away($url . '?print_on_load=true');
-        } catch (\Exception $e) {
-        }
         if (request()->ajax()) {
             try {
                 $output = [
@@ -2132,6 +2120,18 @@ class SellPosController extends Controller
             }
 
             return $output;
+        }
+        try {
+        $business_id = $request->session()->get('user.business_id');
+
+        $transaction = Transaction::where('business_id', $business_id)
+            ->where('id', $transaction_id)
+            ->with(['location'])
+            ->first();
+        $url = $this->transactionUtil->getInvoiceUrl($transaction->id, $business_id);
+
+        return redirect()->away($url . '?print_on_load=true');
+        } catch (\Exception $e) {
         }
     }
 

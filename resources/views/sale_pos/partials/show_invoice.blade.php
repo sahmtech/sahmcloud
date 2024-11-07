@@ -2,6 +2,10 @@
 @section('title', $title)
 @section('content')
     <style>
+        .container{
+            width: 100%;
+            margin: auto;
+        }
         @media print {
             .container {
                 display: none;
@@ -26,13 +30,18 @@
 @stop
 @section('javascript')
     <script type="text/javascript">
+        toastr.success('جاري الطباعة');
         $(document).ready(function() {
             $(document).on('click', '#print_invoice', function() {
-                window.print();
-            });
-            if (print_on_load != true) {
-                $(window).on('load', function() {
+                setTimeout(function() {
                     window.print();
+                }, 500);
+            });
+            if (print_on_load === 'true') {
+                $(window).on('load', function() {
+                    setTimeout(function() {
+                        $('#print_invoice').click();
+                    }, 2000);
                 });
             }
         });

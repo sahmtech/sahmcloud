@@ -1,5 +1,29 @@
 <!-- business information here -->
+<style>
+	body {
+        width: 50%;
+        margin: auto;
 
+    }
+
+	table {
+        font-size: 14px;
+    }
+
+	@media print {
+
+        body {
+			width: 96%;
+        	margin: auto;
+        	text-align: center;
+        	line-height: 22px;
+        	font-size: 14px;
+        }
+    }
+</style>
+<body>
+	
+</body>
 <div class="row" style="color: #000000 !important;">
 		<!-- Logo -->
 		@if(empty($receipt_details->letter_head))
@@ -132,7 +156,6 @@
 					<b>{{ $receipt_details->client_id_label }}</b> {{ $receipt_details->client_id }}
 				@endif
 				@if(!empty($receipt_details->customer_tax_label))
-					<br/>
 					<b>{{ $receipt_details->customer_tax_label }}</b> {{ $receipt_details->customer_tax_number }}
 				@endif
 				@if(!empty($receipt_details->customer_custom_fields))
@@ -665,3 +688,4 @@
 		</div>
 	@endif
 </div>
+</body>
