@@ -46,7 +46,8 @@ class AccountingAccountType extends Model
             'asset' => ['label' => __('accounting::lang.asset'), 'GLC' => 1],
             'expenses' => ['label' => __('accounting::lang.expenses'), 'GLC' => 2],
             'income' => ['label' => __('accounting::lang.income'), 'GLC' => 3],
-            'liability' => ['label' => __('accounting::lang.liability'), 'GLC' => 4]
+            'liability' => ['label' => __('accounting::lang.liability'), 'GLC' => 4],
+            'cost_goods_sold' => ['label' => __('accounting::lang.cost_goods_sold'), 'GLC' => 5],
         ];
 
         return $accounting_primary_type;

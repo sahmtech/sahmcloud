@@ -144,7 +144,7 @@ class OpeningStockController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        try {
+        // try {
             $opening_stocks = $request->input('stocks');
             $product_id = $request->input('product_id');
 
@@ -366,9 +366,9 @@ class OpeningStockController extends Controller
                         }
                     }
                 }
-
                 // $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
-                // $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($transaction->id);
+                // return $transaction->id;
+                $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($transaction->id);
 
                 
                 DB::commit();
@@ -378,18 +378,18 @@ class OpeningStockController extends Controller
                 'success' => 1,
                 'msg' => __('lang_v1.opening_stock_added_successfully'),
             ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
-            $output = [
-                'success' => 0,
-                'msg' =>  __('lang_v1.technical_erorr'),
-            ];
+        //     error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+        //     $output = [
+        //         'success' => 0,
+        //         'msg' =>  __('lang_v1.technical_erorr'),
+        //     ];
 
-            return back()->with('status', $output);
-        }
+        //     return back()->with('status', $output);
+        // }
 
         if (request()->ajax()) {
             return $output;

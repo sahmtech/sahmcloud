@@ -340,14 +340,16 @@ class StockTransferController extends Controller
                 ];
                 $this->transactionUtil->mapPurchaseSell($business, $sell_transfer->sell_lines, 'purchase');
             }
-
+//    return [$sell_transfer,$purchase_transfer];
             $this->transactionUtil->activityLog($sell_transfer, 'added');
 
 
-            // $auto_migration = $this->transactionUtil->saveAutoMigration($request, $sell_transfer, $business_id, $user_id);
+            $auto_migration = $this->transactionUtil->saveAutoMigration($request, $sell_transfer, $business_id, $user_id);
+            $auto_migration = $this->transactionUtil->saveAutoMigration($request, $purchase_transfer, $business_id, $user_id);
 
             // event( new StockTransferCreatedOrModified($sell_transfer, 'added'));
 
+            
             $output = [
                 'success' => 1,
                 'msg' => __('lang_v1.stock_transfer_added_successfully'),
