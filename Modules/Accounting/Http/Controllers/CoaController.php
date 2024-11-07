@@ -8,6 +8,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Modules\Accounting\Entities\AccountingAccount;
 use Modules\Accounting\Entities\AccountingAccountsTransaction;
@@ -45,6 +46,31 @@ class CoaController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        $cost_goods_sold_check =  AccountingAccountType::where('name', 'cost_goods_sold')->first();
+        if (!$cost_goods_sold_check) {
+            $cost_goods_sold= AccountingAccountType::create([
+                'name' => 'cost_goods_sold',
+                'created_by' => Auth::user()->id,
+                'account_primary_type' => 'cost_goods_sold',
+                'account_type' => 'sub_type',
+            ]);
+            AccountingAccount::create([
+                'name' => 'cost_goods_sold',
+                'business_id' => $business_id,
+                'account_primary_type' => 'cost_goods_sold',
+                'account_sub_type_id' => $cost_goods_sold->id,
+                'detail_type_id' => null,
+                'gl_code' => '5101',
+                'status' => 'active',
+                'created_by' =>Auth::user()->id,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+
+
+
         $account_types = AccountingAccountType::accounting_primary_type();
 
         $account_GLC = [];
@@ -68,7 +94,9 @@ class CoaController extends Controller
                                         JOIN accounting_accounts AS AA ON AAT.accounting_account_id = AA.id
                                         WHERE AAT.accounting_account_id = accounting_accounts.id) AS balance"), 'accounting_accounts.*']);
                     },
-                    'child_accounts.detail_type', 'detail_type', 'account_sub_type',
+                    'child_accounts.detail_type',
+                    'detail_type',
+                    'account_sub_type',
                     'child_accounts.account_sub_type',
                 ])
                 ->select([
@@ -147,7 +175,15 @@ class CoaController extends Controller
     {
         //check no accounts
         $business_id = request()->session()->get('user.business_id');
-
+        $cost_goods_sold_check =  AccountingAccountType::where('name', 'cost_goods_sold')->first();
+        if (!$cost_goods_sold_check) {
+            AccountingAccountType::create([
+                'name' => 'cost_goods_sold',
+                'created_by' => Auth::user()->id,
+                'account_primary_type' => 'cost_goods_sold',
+                'account_type' => 'sub_type',
+            ]);
+        }
         if (
             !(auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) || auth()->user()->can('superadmin') ||
                 $this->moduleUtil->hasThePermissionInSubscription($business_id, 'accounting_module') ||
@@ -270,7 +306,9 @@ class CoaController extends Controller
             DB::beginTransaction();
 
             $input = $request->only([
-                'name', 'account_category', 'parent_account_id'
+                'name',
+                'account_category',
+                'parent_account_id'
             ]);
             $account_account = AccountingAccount::find($input['parent_account_id']);
             $input['account_primary_type'] = $account_account->account_primary_type;
@@ -327,9 +365,7 @@ class CoaController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($id)
-    {
-    }
+    public function show($id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -394,7 +430,8 @@ class CoaController extends Controller
             DB::beginTransaction();
 
             $input = $request->only([
-                'name', 'account_category'
+                'name',
+                'account_category'
             ]);
 
             // $input['parent_account_id'] = !empty($input['parent_account_id'])
@@ -590,6 +627,75 @@ class CoaController extends Controller
             ->with(compact('account', 'current_bal'));
     }
 
+    public function ledgerPrint($account_id)
+    {
+        $business_id = request()->session()->get('user.business_id');
+
+        $account = AccountingAccount::where('business_id', $business_id)
+            ->with(['account_sub_type', 'detail_type'])
+            ->findorFail($account_id);
+
+        $transactions = AccountingAccountsTransaction::where('accounting_account_id', $account->id)
+            ->leftjoin('accounting_acc_trans_mappings as ATM', 'accounting_accounts_transactions.acc_trans_mapping_id', '=', 'ATM.id')
+            ->leftjoin('transactions as T', 'accounting_accounts_transactions.transaction_id', '=', 'T.id')
+            ->leftjoin('users AS u', 'accounting_accounts_transactions.created_by', 'u.id')
+
+            ->leftjoin('accounting_cost_centers AS cc', 'accounting_accounts_transactions.cost_center_id', 'cc.id')
+            ->select(
+                'accounting_accounts_transactions.operation_date',
+                'accounting_accounts_transactions.sub_type',
+                'accounting_accounts_transactions.type',
+                'ATM.ref_no as ref_no',
+                'ATM.id as id',
+                'cc.ar_name as cost_center_name',
+                'ATM.note',
+                'accounting_accounts_transactions.amount',
+                DB::raw("CONCAT(COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
+                'T.invoice_no',
+
+            )->get();
+
+
+        $current_bal = AccountingAccount::leftjoin(
+            'accounting_accounts_transactions as AAT',
+            'AAT.accounting_account_id',
+            '=',
+            'accounting_accounts.id'
+        )
+            ->where('business_id', $business_id)
+            ->where('accounting_accounts.id', $account->id)
+            ->select([DB::raw($this->accountingUtil->balanceFormula())]);
+        $current_bal = $current_bal->first()->balance;
+
+        $total_debit_bal = AccountingAccount::leftJoin(
+            'accounting_accounts_transactions as AAT',
+            'AAT.accounting_account_id',
+            '=',
+            'accounting_accounts.id'
+        )
+            ->where('business_id', $business_id)
+
+            ->where('accounting_accounts.id', $account->id)
+            ->select(DB::raw("SUM(IF((AAT.type = 'debit'), AAT.amount, 0)) as balance"))
+            ->first();
+        $total_debit_bal = $total_debit_bal->balance;
+
+        $total_credit_bal = AccountingAccount::leftJoin(
+            'accounting_accounts_transactions as AAT',
+            'AAT.accounting_account_id',
+            '=',
+            'accounting_accounts.id'
+        )
+            ->where('business_id', $business_id)
+
+            ->where('accounting_accounts.id', $account->id)
+            ->select(DB::raw("SUM(IF((AAT.type = 'credit'), AAT.amount, 0)) as balance"))
+            ->first();
+
+        $total_credit_bal = $total_credit_bal->balance;
+
+        return view('accounting::report.ledger-print', compact('account', 'transactions', 'current_bal', 'total_debit_bal', 'total_credit_bal'));
+    }
     public function viewImporte_accounts()
     {
         $is_admin = auth()->user()->can('Admin#' . request()->session()->get('user.business_id')) ? true : false;

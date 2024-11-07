@@ -29,7 +29,8 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
     Route::get('create-default-accounts', [\Modules\Accounting\Http\Controllers\CoaController::class, 'createDefaultAccounts'])->name('accounting.create-default-accounts');
     Route::get('importe-accounts', [\Modules\Accounting\Http\Controllers\CoaController::class, 'viewImporte_accounts'] )->name('accounting.viewImporte_accounts');
     Route::post('save-importe-accounts',  [\Modules\Accounting\Http\Controllers\CoaController::class, 'importe_accounts'])->name('accounting.saveImporte_accounts');
-   
+    Route::get('ledger/print/{id}',[\Modules\Accounting\Http\Controllers\CoaController::class, 'ledgerPrint'] );
+
     Route::resource('journal-entry', \Modules\Accounting\Http\Controllers\JournalEntryController::class);
     Route::get('journal-entry/history/{id}', [ \Modules\Accounting\Http\Controllers\JournalEntryController::class,'history_index']);
     Route::get('journal-entry/history-view/{id}',[ \Modules\Accounting\Http\Controllers\JournalEntryController::class,'history_view']);
@@ -56,6 +57,9 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
     Route::get('reports', [\Modules\Accounting\Http\Controllers\ReportController::class, 'index']);
     Route::get('reports/trial-balance', [\Modules\Accounting\Http\Controllers\ReportController::class, 'trialBalance'])->name('accounting.trialBalance');
     Route::get('reports/balance-sheet', [\Modules\Accounting\Http\Controllers\ReportController::class, 'balanceSheet'])->name('accounting.balanceSheet');
+    Route::get('reports/customers-suppliers-statement/{id}', [\Modules\Accounting\Http\Controllers\ReportController::class, 'customersSuppliersStatement'])->name('accounting.customersSuppliersStatement');
+    Route::get('reports/income-statement',[\Modules\Accounting\Http\Controllers\ReportController::class, 'incomeStatement'] )->name('accounting.incomeStatement');
+    
     Route::get(
         'reports/account-receivable-ageing-report',
         [\Modules\Accounting\Http\Controllers\ReportController::class, 'accountReceivableAgeingReport']

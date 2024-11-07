@@ -41,6 +41,11 @@ class Contact extends Authenticatable
         return $query->where('contacts.contact_status', 'active');
     }
 
+    public function transactions()
+    {
+        return $this->hasOne(Transaction::class, 'contact_id');
+    }
+
     /**
      * Filters only own created suppliers or has access to the supplier
      */
@@ -160,6 +165,21 @@ class Contact extends Authenticatable
         return $contacts;
     }
 
+    public static function customersSuppliersDropdown($business_id)
+    {
+        $query = Contact::where('business_id', $business_id)
+            ->whereIn('type', ['customer', 'converted', 'draft', 'qualified', 'supplier'])
+            ->active();
+
+        $query->select(
+            'contacts.id',
+            DB::raw("IF (supplier_business_name IS not null, CONCAT(name, ' (', supplier_business_name, ')'), name) as supplier")
+        );
+
+        $contacts = $query->pluck('supplier', 'contacts.id');
+
+        return $contacts;
+    }
     /**
      * Return list of suppliers dropdown for a business
      *

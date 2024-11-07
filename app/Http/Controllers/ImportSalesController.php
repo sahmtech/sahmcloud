@@ -495,6 +495,7 @@ class ImportSalesController extends Controller
                 'pos_settings' => $pos_settings,
             ];
             $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
+            $this->transactionUtil->createTransactionJournal_entry($transaction->id);
         }
     }
 

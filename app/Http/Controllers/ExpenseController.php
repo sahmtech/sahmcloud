@@ -21,6 +21,11 @@ use App\Events\ExpenseCreatedOrModified;
 
 class ExpenseController extends Controller
 {
+
+    protected $transactionUtil;
+    protected $moduleUtil;
+    protected $cashRegisterUtil;
+    // protected $dummyPaymentLine;
     /**
      * Constructor
      *
