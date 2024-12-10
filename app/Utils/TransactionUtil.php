@@ -1986,9 +1986,6 @@ class TransactionUtil extends Util
         if (in_array('total_tax', $qr_code_fields)) {
             $string .= $this->toHex(5) . $this->toHex(strlen($total_order_tax)) . ($total_order_tax);
         }
-        if (in_array('total_tax', $qr_code_fields)) {
-            $string .= $this->toHex(6) . $this->toHex(strlen($total_order_tax)) . ($total_order_tax);
-        }
 
         return base64_encode($string);
     }
