@@ -52,6 +52,7 @@ use App\Utils\ModuleUtil;
 use App\Utils\NotificationUtil;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
+use App\Utils\Util;
 use App\Variation;
 use App\Warranty;
 use Illuminate\Http\Request;
@@ -82,6 +83,8 @@ class SellPosController extends Controller
     protected $moduleUtil;
 
     protected $notificationUtil;
+    
+    protected $Util;
 
     /**
      * Constructor
@@ -96,7 +99,8 @@ class SellPosController extends Controller
         TransactionUtil $transactionUtil,
         CashRegisterUtil $cashRegisterUtil,
         ModuleUtil $moduleUtil,
-        NotificationUtil $notificationUtil
+        NotificationUtil $notificationUtil,
+        Util $Util
     ) {
         $this->contactUtil = $contactUtil;
         $this->productUtil = $productUtil;
@@ -110,6 +114,8 @@ class SellPosController extends Controller
             'method' => 'cash', 'amount' => 0, 'note' => '', 'card_transaction_number' => '', 'card_number' => '', 'card_type' => '', 'card_holder_name' => '', 'card_month' => '', 'card_year' => '', 'card_security' => '', 'cheque_number' => '', 'bank_account_number' => '',
             'is_return' => 0, 'transaction_no' => '',
         ];
+        $this->Util = $Util;
+
     }
 
     /**
@@ -598,7 +604,7 @@ class SellPosController extends Controller
 
             $this->transactionUtil->activityLog($transaction, 'added');
 
-            $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
+            $auto_migration = $this->Util->saveAutoMigration($request, $transaction, $business_id, $user_id);
 
             DB::commit();
 
@@ -1452,7 +1458,7 @@ class SellPosController extends Controller
                 Media::uploadMedia($business_id, $transaction, $request, 'documents');
 
                 $this->transactionUtil->activityLog($transaction, 'edited', $transaction_before);
-                $auto_migration = $this->transactionUtil->saveAutoMigration($request, $transaction, $business_id, $user_id);
+                $auto_migration = $this->Util->saveAutoMigration($request, $transaction, $business_id, $user_id);
 
                 // SellCreatedOrModified::dispatch($transaction);
 

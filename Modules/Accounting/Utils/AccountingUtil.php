@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use DB;
 use Modules\Accounting\Entities\AccountingAccount;
 use Modules\Accounting\Entities\AccountingAccountsTransaction;
+use Modules\Accounting\Entities\AccountingAccountType;
 use Modules\Accounting\Entities\AccountingMappingSettingAutoMigration;
 
 class AccountingUtil extends Util
@@ -1379,6 +1380,19 @@ class AccountingUtil extends Util
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ),
+            82 =>
+            array(
+                'name' => 'cost_goods_sold',
+                'business_id' => $business_id,
+                'account_primary_type' => 'cost_goods_sold',
+                'account_sub_type_id' => AccountingAccountType::where('name','cost_goods_sold')->first()->id,
+                'detail_type_id' => null,
+                'gl_code' => '5101',
+                'status' => 'active',
+                'created_by' => $user_id,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ),
 
         );
     }
@@ -1394,8 +1408,8 @@ class AccountingUtil extends Util
             'purchase_bill',
             'purchase_return_bill',
             'expens_bill',
-            'sell_transfer',
-            'purchase_transfer',
+            // 'sell_transfer',
+            // 'purchase_transfer',
             'payroll',
 
         ];
@@ -1406,8 +1420,8 @@ class AccountingUtil extends Util
             'purchase',
             'purchase_return',
             'expense',
-            'sell_transfer',
-            'purchase_transfer',
+            // 'sell_transfer',
+            // 'purchase_transfer',
             'payroll',
 
         ];
@@ -1424,6 +1438,7 @@ class AccountingUtil extends Util
             'cheque',
         ];
 
+       
         foreach ($types as $key => $value) {
             foreach ($payment_status as $paymentStatus) {
 
@@ -1456,5 +1471,28 @@ class AccountingUtil extends Util
                 }
             }
         }
+        AccountingMappingSettingAutoMigration::create([
+            'name' => 'purchase_transfer',
+            'type' => 'purchase_transfer',
+            'location_id' => $request->input('business_location_id'),
+            'status' => 'received',
+            'payment_status' => 'paid',
+            'method' => 'other',
+            'created_by' => $user_id,
+            'business_id' => $business_id,
+            'active' => false,
+        ]);
+        AccountingMappingSettingAutoMigration::create([
+            'name' => 'sell_transfer',
+            'type' => 'sell_transfer',
+            'location_id' => $request->input('business_location_id'),
+            'status' => 'final',
+            'payment_status' => 'paid',
+            'method' => 'other',
+            'created_by' => $user_id,
+            'business_id' => $business_id,
+            'active' => false,
+        ]);
+       
     }
 }

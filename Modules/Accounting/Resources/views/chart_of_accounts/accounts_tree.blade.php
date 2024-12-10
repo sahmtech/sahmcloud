@@ -35,7 +35,74 @@
                             @foreach ($account_sub_types->where('account_primary_type', $key)->all() as $sub_type)
                                 <li @if ($loop->index == 0) data-jstree='{ "opened" : true }' @endif>
                                     ({{ $account_GLC[$key] . $loop->index + 1 }})
-                                    - {{ $sub_type->account_type_name }}
+                                     -  @if (app()->getLocale() == 'ar')
+                    
+                                    @lang('accounting::lang.' . $sub_type->name)
+                                @else
+                                    @lang('accounting::lang.' . $sub_type->name) 
+                                @endif
+                                    {{-- - @format_currency($sub_type->balance) --}}
+                                    {{-- @if ($sub_type->status == 'active')
+                                        <span><i class="fas fa-check text-success"
+                                                title="@lang('accounting::lang.active')"></i></span>
+                                    @elseif($sub_type->status == 'inactive')
+                                        <span><i class="fas fa-times text-danger" title="@lang('lang_v1.inactive')"
+                                                style="font-size: 14px;"></i></span>
+                                    @endif --}}
+                                    {{-- <span class="tree-actions">
+                                        @if (
+                                            (auth()->user()->can('Admin#'.request()->session()->get('user.business_id'))||auth()->user()->can('superadmin') ||
+                                                auth()->user()->can('accounting.view_ledger')
+                                            ))
+                                            <a class="btn-modal btn-xs btn-default text-success ledger-link"
+                                                style="margin: 2px;" title="@lang('accounting::lang.ledger')"
+                                                href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@ledger', $sub_type->id) }}">
+                                                <i class="fas fa-file-alt"></i></a>
+                                        @endif
+
+                                        @if (
+                                            (auth()->user()->can('Admin#'.request()->session()->get('user.business_id'))||auth()->user()->can('superadmin') ||
+                                                auth()->user()->can('accounting.edit_accounts')
+                                            ))
+                                            <a class="btn-modal btn-xs btn-default text-primary"
+                                                style="margin: 2px;" title="@lang('messages.edit')"
+                                                href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@edit', $sub_type->id) }}"
+                                                data-href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@edit', $sub_type->id) }}"
+                                                data-container="#create_account_modal">
+                                                <i class="fas fa-edit"></i>
+
+                                            </a>
+                                        @endif
+
+
+                                        @if (
+                                            (auth()->user()->can('Admin#'.request()->session()->get('user.business_id'))||auth()->user()->can('superadmin') ||
+                                                auth()->user()->can('accounting.add_extra_accounts')
+                                            ))
+                                            <a class="btn-modal btn-xs btn-default text-primary"
+                                                style="margin: 2px;" title="@lang('accounting::lang.add_account')"
+                                                href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@open_create_dialog', $sub_type->id) }}"
+                                                data-href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@open_create_dialog', $sub_type->id) }}"
+                                                data-container="#create_account_modal">
+                                                <i class="fas fa-plus"></i>
+                                            </a>
+                                        @endif
+                                        @if (
+                                            (auth()->user()->can('Admin#'.request()->session()->get('user.business_id')) ||
+                                                auth()->user()->can('superadmin') ||
+                                                auth()->user()->can('accounting.active_accounts')
+                                            ))
+                                            <a class="activate-deactivate-btn text-warning  btn-xs btn-default"
+                                                style="margin: 2px;"
+                                                title="@if ($sub_type->status == 'active') @lang('messages.deactivate') @else 
+                                                  @lang('messages.activate') @endif"
+                                                href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@activateDeactivate', $sub_type->id) }}">
+                                                <i class="fas fa-power-off"></i>
+                                            </a>
+                                        @endif
+
+                                    </span> --}}
+
                                     <ul>
                                         @foreach ($accounts->where('account_sub_type_id', $sub_type->id)->sortBy('name')->all() as $account)
                                             <li
@@ -107,7 +174,7 @@
                                                         <a class="activate-deactivate-btn text-warning  btn-xs btn-default"
                                                             style="margin: 2px;"
                                                             title="@if ($account->status == 'active') @lang('messages.deactivate') @else 
-                                            @lang('messages.activate') @endif"
+                                                              @lang('messages.activate') @endif"
                                                             href="{{ action('\Modules\Accounting\Http\Controllers\CoaController@activateDeactivate', $account->id) }}">
                                                             <i class="fas fa-power-off"></i>
                                                         </a>

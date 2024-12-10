@@ -1063,17 +1063,17 @@ class PayrollController extends Controller
 
                     $tp = TransactionPayment::create($input);
                     $input['transaction_type'] = $transaction->type;
-                    
-                  
-                    event(new TransactionPaymentAdded($tp, $input));
-                    $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($input['transaction_id']);
+
+                    //  return $input;
+                     event(new TransactionPaymentAdded($tp, $input));
 
 
                     //update payment status
                     $payment_status = $this->transactionUtil->updatePaymentStatus($input['transaction_id']);
                     $transaction->payment_status = $payment_status;
                     $this->transactionUtil->activityLog($transaction, 'payment_edited', $transaction_before);
-                  
+                    $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($input['transaction_id']);
+                 
                     DB::commit();
 
                     //unset transaction type after insert data
@@ -1082,7 +1082,7 @@ class PayrollController extends Controller
             }
 
             $this->_updatePayrollGroupPaymentStatus($payroll_group_id, $business_id);
-         
+
             $output = [
                 'success' => true,
                 'msg' => __('purchase.payment_added_success'),

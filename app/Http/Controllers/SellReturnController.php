@@ -291,6 +291,7 @@ class SellReturnController extends Controller
 
                 $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
 
+                // return  $sell_return->id;
                 $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($sell_return->id);
 
                 DB::commit();
