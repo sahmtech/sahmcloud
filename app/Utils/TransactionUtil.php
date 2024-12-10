@@ -1605,7 +1605,7 @@ class TransactionUtil extends Util
                     $total_order_tax = $transaction->tax_amount;
                 }
 
-                $qr_code_text = $this->_zatca_qr_text($business_details->name, $business_details->tax_number_1, $transaction->transaction_date, $transaction->final_total, $total_order_tax);
+                $qr_code_text = $this->_zatca_qr_text($total_order_tax, $business_details, $il, $location_details, $transaction);
             } else {
                 $is_label_enabled = !empty($il->common_settings['show_qr_code_label']) ? true : false;
                 $qr_code_details = [];
@@ -1939,7 +1939,7 @@ class TransactionUtil extends Util
      *
      * @return string
      */
-    protected function _zatca_qr_text($seller, $tax_number, $invoice_date, $invoice_total_amount, $invoice_tax_amount)
+    protected function _zatca_qr_text($total_order_tax, $business_details, $il, $location_details, $transaction)
     {
         $string = '';
 
@@ -1949,15 +1949,39 @@ class TransactionUtil extends Util
         //$invoice_total_amount = '100.00';
         //$invoice_tax_amount = '15.00';
 
-        $invoice_total_amount = round($invoice_total_amount, 2);
+        $transaction->final_total = round($transaction->final_total, 2);
         //$invoice_date = \Carbon::parse($invoice_date)->toIso8601ZuluString();
-        $invoice_date = \Carbon::parse($invoice_date)->toIso8601String();
+        $invoice_date = \Carbon::parse($transaction->transaction_date)->toIso8601String();
 
-        $string .= $this->toHex(1) . $this->toHex(strlen($seller)) . ($seller);
-        $string .= $this->toHex(2) . $this->toHex(strlen($tax_number)) . ($tax_number);
-        $string .= $this->toHex(3) . $this->toHex(strlen($invoice_date)) . ($invoice_date);
-        $string .= $this->toHex(4) . $this->toHex(strlen($invoice_total_amount)) . ($invoice_total_amount);
-        $string .= $this->toHex(5) . $this->toHex(strlen($invoice_tax_amount)) . ($invoice_tax_amount);
+        // $string .= $this->toHex(1) . $this->toHex(strlen($business_details->name)) . ($business_details->name);
+        // $string .= $this->toHex(2) . $this->toHex(strlen($business_details->tax_number_1)) . ($business_details->tax_number_1);
+        // $string .= $this->toHex(3) . $this->toHex(strlen($invoice_date)) . ($invoice_date);
+        // $string .= $this->toHex(4) . $this->toHex(strlen($transaction->final_total)) . ($transaction->final_total);
+        // $string .= $this->toHex(5) . $this->toHex(strlen($total_order_tax)) . ($total_order_tax);
+
+
+        $qr_code_fields = !empty($il->qr_code_fields) ? $il->qr_code_fields : [];
+
+        if (in_array('business_name', $qr_code_fields)) {
+            $string .= $this->toHex(1) . $this->toHex(strlen($business_details->name)) . ($business_details->name);
+        }
+        if (in_array('tax_1', $qr_code_fields)) {
+            $string .= $this->toHex(2) . $this->toHex(strlen($business_details->tax_number_1)) . ($business_details->tax_number_1);
+        }
+        if (in_array('tax_2', $qr_code_fields)) {
+            $string .= $this->toHex(2) . $this->toHex(strlen($business_details->tax_number_2)) . ($business_details->tax_number_2);
+        }
+        if (in_array('invoice_datetime', $qr_code_fields)) {
+            $string .= $this->toHex(3) . $this->toHex(strlen($invoice_date)) . ($invoice_date);
+        }
+        
+        if (in_array('total_amount', $qr_code_fields)) {
+            $string .= $this->toHex(4) . $this->toHex(strlen($transaction->final_total)) . ($transaction->final_total);
+        }
+        
+        if (in_array('total_tax', $qr_code_fields)) {
+            $string .= $this->toHex(5) . $this->toHex(strlen($total_order_tax)) . ($total_order_tax);
+        }
 
         return base64_encode($string);
     }
