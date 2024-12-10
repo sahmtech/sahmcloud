@@ -1966,8 +1966,8 @@ class TransactionUtil extends Util
 
         $qr_code_fields = !empty($il->qr_code_fields) ? $il->qr_code_fields : [];
 
-        if (in_array('business_name', $qr_code_fields)) {
-            $string .= $this->toHex(1) . $this->toHex(strlen($business_details->name)) . ($business_details->name);
+        if (in_array('address', $qr_code_fields)) {
+            $string .= $this->toHex(1) . $this->toHex(strlen($location_details->name)) . ($location_details->name);
         }
         if (in_array('tax_1', $qr_code_fields)) {
             $string .= $this->toHex(2) . $this->toHex(strlen($business_details->tax_number_1)) . ($business_details->tax_number_1);
@@ -1985,6 +1985,9 @@ class TransactionUtil extends Util
         
         if (in_array('total_tax', $qr_code_fields)) {
             $string .= $this->toHex(5) . $this->toHex(strlen($total_order_tax)) . ($total_order_tax);
+        }
+        if (in_array('total_tax', $qr_code_fields)) {
+            $string .= $this->toHex(6) . $this->toHex(strlen($total_order_tax)) . ($total_order_tax);
         }
 
         return base64_encode($string);
