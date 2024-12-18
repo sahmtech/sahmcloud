@@ -86,6 +86,7 @@ return [
     'verify_settings' => 'Verify Settings',
     'settings_are_good' => 'Verified and Saved Successfully',
     'settings_are_bad' => 'Settings are invalid',
+    "sell_return" => "Sell Return Zatca",
 
 
 ];

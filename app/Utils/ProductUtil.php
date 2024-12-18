@@ -636,17 +636,17 @@ class ProductUtil extends Util
             return false;
         }
 
-        $output = ['total_before_tax' => 0,'total_inc_tax' => 0, 'tax' => 0, 'discount' => 0, 'final_total' => 0];
+        $output = ['total_before_tax' => 0, 'total_inc_tax' => 0, 'tax' => 0, 'discount' => 0, 'final_total' => 0];
         // dd($products);
 
         //Sub Total
         foreach ($products as $product) {
             $unit_price_inc_tax = $uf_number ? $this->num_uf($product['unit_price_inc_tax']) : $product['unit_price_inc_tax'];
             $quantity = $uf_number ? $this->num_uf($product['quantity']) : $product['quantity'];
-            $unit_price_without_tax = $uf_number ? $this->num_uf($product['unit_price']) : $product['unit_price'];
-            $item_tax = $uf_number ? $this->num_uf($product['item_tax']) : $product['item_tax'];
-          
-            
+            $unit_price_without_tax = $uf_number ? $this->num_uf($product['unit_price'] ?? 0) : $product['unit_price'];
+            $item_tax = $uf_number ? $this->num_uf($product['item_tax'] ?? 0) : $product['item_tax'];
+
+
             // $output['total_before_tax_'] += $quantity * $unit_price_inc_tax;
             $output['total_before_tax'] += $quantity * $unit_price_without_tax;
             // $output['final_total'] += $quantity * $unit_price_inc_tax;
@@ -662,10 +662,9 @@ class ProductUtil extends Util
                     $output['total_before_tax'] += $modifier_total;
                 }
             }
-
         }
         // dd($output['tax'],$output['total_before_tax'],$output['total_inc_tax'],$output['final_total']);
-     
+
         //Calculate discount
         if (is_array($discount)) {
             $discount_amount = $uf_number ? $this->num_uf($discount['discount_amount']) : $discount['discount_amount'];
@@ -687,12 +686,12 @@ class ProductUtil extends Util
             }
         }
 
-     
+
 
         //Calculate total
         $output['final_total'] = $output['total_before_tax'] + $output['tax'] - $output['discount'];
         // dd($output['tax'],$tax_id,$tax_details->amount,($tax_details->amount / 100),$output['total_before_tax'],$output['discount'],$output['final_total']);
-      
+
         return $output;
     }
 
@@ -1630,7 +1629,7 @@ class ProductUtil extends Util
 
             //Search with like condition
             if ($search_type == 'like') {
-                   $query->where(function ($query) use ($search_term, $search_fields) {
+                $query->where(function ($query) use ($search_term, $search_fields) {
                     if (in_array('name', $search_fields)) {
                         $query->where('products.name', 'like', '%' . $search_term . '%');
                     }
@@ -1638,7 +1637,6 @@ class ProductUtil extends Util
                     if (in_array('sku', $search_fields)) {
 
                         $query->orWhere('sku', 'like', '%' . $search_term . '%');
-                        
                     }
 
 
@@ -1712,7 +1710,7 @@ class ProductUtil extends Util
             'U.short_name as unit'
         );
 
-        
+
         if (!empty($price_group_id)) {
             $query->addSelect(DB::raw('IF (VGP.price_type = "fixed", VGP.price_inc_tax, VGP.price_inc_tax * variations.sell_price_inc_tax / 100) as variation_group_price'));
         }
@@ -1727,7 +1725,7 @@ class ProductUtil extends Util
             ->get();
     }
 
-   
+
     public function getProductStockDetails($business_id, $filters, $for)
     {
         $query = Variation::join('products as p', 'p.id', '=', 'variations.product_id')

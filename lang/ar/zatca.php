@@ -9,5 +9,7 @@ return [
     'verify_settings' => 'التحقق من صحة الربط',
     'settings_are_good' => 'تم التحقق وحفظ المعلومات بنجاح',
     'settings_are_bad' => 'المعلومات المدخلة غير صالحة',
+    'printZatcaInvoice' => 'طباعة فاتورة زاتكا',
+    "sell_return" => "مردود مبيعات زاتكا",
 
 ];

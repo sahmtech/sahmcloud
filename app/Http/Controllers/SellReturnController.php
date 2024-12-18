@@ -268,40 +268,41 @@ class SellReturnController extends Controller
      */
     public function store(Request $request)
     {
+
         if (!auth()->user()->can('access_sell_return') && !auth()->user()->can('access_own_sell_return')) {
             abort(403, 'Unauthorized action.');
         }
 
         // try {
-            $input = $request->except('_token');
+        $input = $request->except('_token');
 
-            if (!empty($input['products'])) {
-                $business_id = $request->session()->get('user.business_id');
+        if (!empty($input['products'])) {
+            $business_id = $request->session()->get('user.business_id');
 
-                //Check if subscribed or not
-                if (!$this->moduleUtil->isSubscribed($business_id)) {
-                    return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\SellReturnController::class, 'index']));
-                }
-
-                $user_id = $request->session()->get('user.id');
-
-                DB::beginTransaction();
-
-                $sell_return = $this->transactionUtil->addSellReturn($input, $business_id, $user_id);
-
-                $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
-
-                // return  $sell_return->id;
-                $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($sell_return->id);
-
-                DB::commit();
-
-                $output = [
-                    'success' => 1,
-                    'msg' => __('lang_v1.success'),
-                    'receipt' => $receipt,
-                ];
+            //Check if subscribed or not
+            if (!$this->moduleUtil->isSubscribed($business_id)) {
+                return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\SellReturnController::class, 'index']));
             }
+
+            $user_id = $request->session()->get('user.id');
+
+            DB::beginTransaction();
+
+            $sell_return = $this->transactionUtil->addSellReturn($input, $business_id, $user_id);
+
+            $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
+
+            // return  $sell_return->id;
+            $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($sell_return->id);
+
+            DB::commit();
+
+            $output = [
+                'success' => 1,
+                'msg' => __('lang_v1.success'),
+                'receipt' => $receipt,
+            ];
+        }
         // } catch (\Exception $e) {
         //     DB::rollBack();
 
@@ -515,12 +516,12 @@ class SellReturnController extends Controller
 
             $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type);
 
-            $lines=[];
+            $lines = [];
             foreach ($receipt_details->lines as $line) {
                 if ($line['quantity'] == 0) {
                     continue;
                 }
-                array_push($lines,$line);
+                array_push($lines, $line);
             }
 
             $receipt_details->lines = $lines;
