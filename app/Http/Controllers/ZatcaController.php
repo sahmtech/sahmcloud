@@ -667,17 +667,17 @@ class ZatcaController extends Controller
             $transaction = Transaction::where('id', $transaction_id)->first();
             $output['print_title'] = $transaction->invoice_no;
 
-            // $transaction_sell_lines = TransactionSellLine::where('transaction_id', $transaction->id)
-            //     ->leftjoin('products', 'products.id', '=', 'product_id')
-            //     ->leftjoin('tax_rates', 'tax_rates.id', '=', 'tax_id')
-            //     ->select(
-            //         'products.name as product_name',
-            //         'transaction_sell_lines.*',
-            //         'products.*',
-            //         'tax_rates.amount as tax_percent',
-            //         'tax_rates.*',
-            //     )
-            //     ->get();
+            $transaction_sell_lines = TransactionSellLine::where('transaction_id', $transaction->id)
+                ->leftjoin('products', 'products.id', '=', 'product_id')
+                ->leftjoin('tax_rates', 'tax_rates.id', '=', 'tax_id')
+                ->select(
+                    'products.name as product_name',
+                    'transaction_sell_lines.*',
+                    'products.*',
+                    'tax_rates.amount as tax_percent',
+                    'tax_rates.*',
+                )
+                ->get();
 
             $sell_line_ids = [];
             foreach ($input['products'] as $tmp) {
@@ -714,15 +714,15 @@ class ZatcaController extends Controller
                 $notest[$transaction_sell_line->product_id] =  $transaction_sell_line->sell_line_note;
 
 
-                $discountAmount = round($transaction_sell_line->line_discount_amount * $transaction_sell_line->quantity, 2);
+                $discountAmount = round($transaction_sell_line->line_discount_amount * $transaction_sell_line->quantity_returned, 2);
                 $total_discount += $discountAmount;
-                $priceBeforeDiscount = round($transaction_sell_line->unit_price_before_discount * $transaction_sell_line->quantity, 2);
+                $priceBeforeDiscount = round($transaction_sell_line->unit_price_before_discount * $transaction_sell_line->quantity_returned, 2);
                 $priceAfterDiscount = $priceBeforeDiscount - $discountAmount;
                 $taxAmount = round($transaction_sell_line->tax_percent * $priceAfterDiscount / 100, 2);
                 $invoiceItems[] = new InvoiceItem(
                     $transaction_sell_line->product_id,
                     $transaction_sell_line->product_name,
-                    $transaction_sell_line->quantity,
+                    $transaction_sell_line->quantity_returned,
                     $priceBeforeDiscount,
                     $discountAmount,
                     $taxAmount,
@@ -804,22 +804,23 @@ class ZatcaController extends Controller
             // $toDate = $transaction->custom_field_2;
             /////////
             // create zatca return
-
             $selected_products = [];
             $item_ids = [];
             foreach ($invoice->invoice_items as $item) {
                 $id = $item->id;
                 $item_ids[] =  $id;
-                $selected_products[$id] = [
-                    "name" => $item->product_name,
-                    "quantity" =>  $item->quantity,
-                    "price" => number_format($item->price / $item->quantity, 3, '.', ''),
-                    "discount" => number_format($item->discount, 3, '.', ''),
-                    "tax" => number_format($item->tax / $item->quantity, 3, '.', ''),
-                    "tax_percent" => number_format($item->tax_percent, 3, '.', ''),
-                    "total" => number_format($item->total / $item->quantity, 3, '.', ''),
-                    "note" => $item->discount_reason,
-                ];
+                if ($item->quantity > 0) {
+                    $selected_products[$id] = [
+                        "name" => $item->product_name,
+                        "quantity" =>  $item->quantity,
+                        "price" => number_format($item->price / $item->quantity, 3, '.', ''),
+                        "discount" => number_format($item->discount, 3, '.', ''),
+                        "tax" => number_format($item->tax / $item->quantity, 3, '.', ''),
+                        "tax_percent" => number_format($item->tax_percent, 3, '.', ''),
+                        "total" => number_format($item->total / $item->quantity, 3, '.', ''),
+                        "note" => $item->discount_reason,
+                    ];
+                }
                 // $selected_products[$id] = [
                 //     "name" => $item['product_name'],
                 //     "quantity" =>  $item['quantity'],
@@ -926,63 +927,35 @@ class ZatcaController extends Controller
                 $products_arr = [];
                 $discount = 0;
                 foreach ($products as $key => $product) {
-                    $price = $request->selected_products[$product->product_id]['price'];
-                    $item_tax = (($product->tax) *  $price / 100) ?? 0;
-                    $line_discount_amount = $request->selected_products[$product->product_id]['discount'] ?? 0;
-                    //$line_discount_amount = 0;
-                    $discount += $line_discount_amount;
+                    if (in_array($product->product_id, $selected_products)) {
+                        $price = $request->selected_products[$product->product_id]['price'];
+                        $item_tax = (($product->tax) *  $price / 100) ?? 0;
+                        $line_discount_amount = $request->selected_products[$product->product_id]['discount'] ?? 0;
+                        //$line_discount_amount = 0;
+                        $discount += $line_discount_amount;
 
-                    $unit_price_inc_tax = $request->selected_products[$product->product_id]['price'] - ($request->selected_products[$product->product_id]['discount'] ?? 0) + $item_tax;
-                    $products_arr[$key + 1] = [
-                        'product_type' => $product->type,
-                        "sell_line_note" => $request->selected_products[$product->product_id]['note'] ?? '',
-                        "product_id" => $product->product_id,
-                        "variation_id" => $product->variation_id,
-                        "enable_stock" => $product->enable_stock,
-                        "quantity" => $request->selected_products[$product->product_id]['quantity'],
-                        "product_unit_id" => $product->unit_id,
-                        "sub_unit_id" => $product->unit_id,
-                        "base_unit_multiplier" => $product->base_unit_multiplier ?? 1,
-                        "unit_price" => $price,
-                        "line_discount_amount" => $line_discount_amount,
-                        "line_discount_type" => "fixed",
-                        "item_tax" => $item_tax,
-                        "tax_id" => $product->tax,
-                        "unit_price_inc_tax" => $unit_price_inc_tax,
-                        "warranty_id" => $product->warranty_id,
-                    ];
+                        $unit_price_inc_tax = $request->selected_products[$product->product_id]['price'] - ($request->selected_products[$product->product_id]['discount'] ?? 0) + $item_tax;
+                        $products_arr[$key + 1] = [
+                            'product_type' => $product->type,
+                            "sell_line_note" => $request->selected_products[$product->product_id]['note'] ?? '',
+                            "product_id" => $product->product_id,
+                            "variation_id" => $product->variation_id,
+                            "enable_stock" => $product->enable_stock,
+                            "quantity" => $request->selected_products[$product->product_id]['quantity'],
+                            "product_unit_id" => $product->unit_id,
+                            "sub_unit_id" => $product->unit_id,
+                            "base_unit_multiplier" => $product->base_unit_multiplier ?? 1,
+                            "unit_price" => $price,
+                            "line_discount_amount" => $line_discount_amount,
+                            "line_discount_type" => "fixed",
+                            "item_tax" => $item_tax,
+                            "tax_id" => $product->tax,
+                            "unit_price_inc_tax" => $unit_price_inc_tax,
+                            "warranty_id" => $product->warranty_id,
+                        ];
+                    }
                 }
-                // $invoice_total = [
-                //     "total_before_tax" => $request->total_before_tax,
-                //     "tax" => $request->total_tax,
-                //     "final_total" => $request->final_total,
-                // ];
 
-                // $input = [
-                //     'location_id' => $location_id,
-                //     'contact_id' => $request->buyer_id,
-                //     'status' => $request->status,
-                //     'transaction_date' => $request->invoice_date . ' ' . $request->invoice_time . ':' . $seconds,
-                //     'sell_price_tax' => $request->sell_price_tax,
-                //     'business_enable_inline_tax' => $request->business_enable_inline_tax,
-                //     'products' => (object)$products_arr,
-                //     'final_total' =>  $request->final_total,
-                //     'discount_amount' => $discount,
-                //     'custom_field_1' => $request->invoice_from_date ?? '',
-                //     'custom_field_2' => $request->invoice_to_date ?? '',
-                // ];
-
-
-                // $transaction = $this->transactionUtil->createSellTransaction($business_id, $input, $invoice_total, $user_id);
-                // $this->transactionUtil->createOrUpdateSellLines($transaction, $input['products'], $input['location_id']);
-                // $this->moduleUtil->getModuleData('after_sale_saved', ['transaction' => $transaction, 'input' => $input]);
-                // $this->transactionUtil->activityLog($transaction, 'added');
-
-                // if ($request->invoice_number) {
-                //     $transaction->update([
-                //         'invoice_no' => $request->invoice_number,
-                //     ]);
-                // }
 
 
 
@@ -1078,7 +1051,6 @@ class ZatcaController extends Controller
                         $validatedData['buyer_city'],
                     );
                     $b2b = B2B::make($seller, $invoice, $client)->report();
-
                     $transaction->update([
                         'uuid' =>    $uuid,
                         'qr_code' => $b2b->getQr(),
