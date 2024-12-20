@@ -228,7 +228,7 @@
         <div class="header">
 
             <div class="title">
-                <h1>{{ __('zatca_invoice.refund_invoice') }}</h1>
+                <h1>{{ $debit_title ? $debit_title : __('zatca_invoice.refund_invoice') }}</h1>
                 <h2>{{ __('zatca_invoice.refund_invoice', [], 'en') }}</h2>
             </div>
             <div class="logo">
@@ -242,10 +242,18 @@
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <table class="invoice-details">
                 <tr>
-                    <td class="colored_background">{{ __('zatca_invoice.invoice_number', [], 'en') }}:</td>
+                    <td class="colored_background">{{ __('zatca_invoice.refund_invoice_number', [], 'en') }}:</td>
                     <td class="center-align">{{ $invoice->invoice_number ?? '' }}</td>
+                    <td class="rtl-text colored_background">
+                        {{ $debit_number ? $debit_number : __('zatca_invoice.refund_invoice_number', [], 'ar') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="colored_background">{{ __('zatca_invoice.invoice_number', [], 'en') }}:</td>
+                    <td class="center-align">{{ $parent_invoice_number ?? '' }}</td>
                     <td class="rtl-text colored_background">{{ __('zatca_invoice.invoice_number', [], 'ar') }}</td>
                 </tr>
+
                 <tr>
                     <td class="colored_background">{{ __('zatca_invoice.invoice_issue_date', [], 'en') }}:</td>
                     <td class="center-align">{{ $invoice->invoice_date ?? '' }}</td>
@@ -494,7 +502,7 @@
             <tr>
                 <th class="left-align">{{ __('zatca_invoice.total', [], 'en') }}</th>
                 <td class="center-align">{{ number_format($invoice->total, 2) }}</td>
-                <th class="rtl-text">{{ __('zatca_invoice.total', [], 'ar') }}</th>
+                <th class="rtl-text">{{ $debit_total ? $debit_total : __('zatca_invoice.total', [], 'ar') }}</th>
             </tr>
         </table>
     </div>

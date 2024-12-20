@@ -7,6 +7,7 @@ return [
     'seller_information' => 'Seller Information',
     'buyer_information' => 'Buyer Information',
     'invoice_number' => 'Invoice Number',
+    'refund_invoice_number' => 'Debit Note Number',
     'invoice_issue_date' => 'Invoice Issue Date',
     'from_date' => 'From Date',
     'to_date' => 'To Date',
@@ -36,5 +37,5 @@ return [
     'total_vat' => 'Total VAT',
     'total' => 'Total Amount',
     'total_discount' => 'Total Discount',
-    'refund_invoice' => 'Refund Invoice',
+    'refund_invoice' => 'Debit Note',
 ];

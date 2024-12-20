@@ -6,6 +6,7 @@ return [
     'seller_information' => 'معلومات البائع',
     'buyer_information' => 'معلومات المشتري',
     'invoice_number' => 'رقم الفاتورة',
+    'refund_invoice_number' => 'رقم الاشعار',
     'invoice_issue_date' => 'تاريخ إصدار الفاتورة',
     'from_date' => 'من تاريخ',
     'to_date' => 'إلى تاريخ',

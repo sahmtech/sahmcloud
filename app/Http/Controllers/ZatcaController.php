@@ -1471,8 +1471,15 @@ class ZatcaController extends Controller
         //     'toDate' => $toDate,
         //     'notest' =>   $notest,
         // ];
+        $debit_total = $invoice_layout->cn_amount_label ?? null;
+        $debit_title = $invoice_layout->cn_heading ?? null;
+        $debit_number = $invoice_layout->cn_no_label ?? null;
+
+
+
 
         return view('sell.refund_invoice', [
+            'parent_invoice_number' => $parent_transaction->invoice_no,
             'logo' => $business->logo ?? '',
             'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(220)->generate($transaction->qr_code) :  '',
             'invoice' =>  $invoice,
@@ -1483,6 +1490,9 @@ class ZatcaController extends Controller
             'fromDate' => $fromDate,
             'toDate' => $toDate,
             'notest' =>   $notest,
+            'debit_total' => $debit_total,
+            'debit_title' => $debit_title,
+            'debit_number' => $debit_number,
         ]);
     }
 

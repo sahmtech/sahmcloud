@@ -150,32 +150,25 @@ class SellReturnController extends Controller
                             </span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li><a href="#" class="btn-modal" data-container=".view_modal" data-href="{{action(\'App\Http\Controllers\SellReturnController@show\', [$parent_sale_id])}}"><i class="fas fa-eye" aria-hidden="true"></i>' . __("messages.view") . '</a></li>
-                                                ';
+                            <li><a href="#" class="btn-modal" data-container=".view_modal" data-href="' . action([\App\Http\Controllers\SellReturnController::class, 'show'], [$row->parent_sale_id]) . '"><i class="fas fa-eye" aria-hidden="true"></i>' . __("messages.view") . '</a></li>';
                         $tmp = Transaction::find($row->id);
                         if ($tmp->invoice_type) {
                             $html .=
                                 '<li><a href="' . route('sell.printZatcaRefundInvoice', [$row->id]) . '" target=_blank><i class="fas fa-print" aria-hidden="true"></i> ' . __('zatca.printZatcaRefundInvoice') . '</a></li>';
                         } else {
-                            $html .= ' <li><a href="#" class="print-invoice" data-href="{{action(\'App\Http\Controllers\SellReturnController@printInvoice\', [$id])}}"><i class="fa fa-print" aria-hidden="true"></i> ' . __("messages.print") . '</a></li>';
+                            $html .= ' <li><a href="#" class="print-invoice" data-href="' . action([\App\Http\Controllers\SellReturnController::class, 'printInvoice'], [$row->id]) . '"><i class="fa fa-print" aria-hidden="true"></i> ' . __("messages.print") . '</a></li>';
                         }
                         if ($row->payment_status != "paid") {
                             $html .= '
-                            <li><a href="{{action(\'App\Http\Controllers\TransactionPaymentController@addPayment\', [$id])}}" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.add_payment") . '</a></li>
+                            <li><a href="' . action([\App\Http\Controllers\TransactionPaymentController::class, 'addPayment'], [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.add_payment") . '</a></li>
                         ';
                         }
                         $html .= '
-                        <li><a href="{{action(\'App\Http\Controllers\TransactionPaymentController@show\', [$id])}}" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.view_payments") . '</a></li>
+                        <li><a href="' . action([\App\Http\Controllers\TransactionPaymentController::class, 'show'], [$row->id]) . '" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.view_payments") . '</a></li>
                         </ul>
                         </div>';
                         return $html;
                     }
-
-
-
-
-
-
                 )
                 ->removeColumn('id')
                 ->editColumn(
