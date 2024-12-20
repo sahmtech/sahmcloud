@@ -32,10 +32,12 @@ class InvoiceItem
 
     public $tax_exemption_code;
 
+    public $unit_code;
+
     public function __construct(
         int     $id,
         string  $product_name,
-        int     $quantity,
+        float   $quantity,
         float   $price,
         float   $discount,
         float   $tax,
@@ -44,7 +46,8 @@ class InvoiceItem
         string  $discount_reason = null,
         string  $tax_category_code = TaxCategoryCode::STANDARD_RATE,
         string  $tax_exemption_reason = null,
-        string  $tax_exemption_code = null
+        string  $tax_exemption_code = null,
+        string  $unit_code = 'PCE'
     )
     {
         $this->id                       = $id;
@@ -60,5 +63,13 @@ class InvoiceItem
         $this->tax_category_code        = $tax_category_code;
         $this->tax_exemption_reason     = $tax_exemption_reason;
         $this->tax_exemption_code       = $tax_exemption_code;
+        $this->unit_code                = $unit_code;
+    }
+
+    public function setUnitCode($unit_code): self
+    {
+        $this->unit_code = $unit_code;
+
+        return $this;
     }
 }

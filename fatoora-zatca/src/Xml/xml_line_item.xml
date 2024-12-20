@@ -1,6 +1,6 @@
     <cac:InvoiceLine>
         <cbc:ID>ITEM_ID</cbc:ID>
-        <cbc:InvoicedQuantity unitCode="PCE">ITEM_QTY</cbc:InvoicedQuantity>
+        <cbc:InvoicedQuantity unitCode="UNIT_CODE">ITEM_QTY</cbc:InvoicedQuantity>
         <cbc:LineExtensionAmount currencyID="SET_CURRENCY">ITEM_NET_AMOUNT</cbc:LineExtensionAmount>
         <cac:TaxTotal>
             <cbc:TaxAmount currencyID="SET_CURRENCY">ITEM_TOTAL_TAX</cbc:TaxAmount>

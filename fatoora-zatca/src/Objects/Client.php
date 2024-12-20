@@ -22,6 +22,8 @@ class Client
 
     public $registration_name;
 
+    public $national_id;
+
     public function __construct(
         string $registration_name,
         string $tax_number,
@@ -31,17 +33,19 @@ class Client
         string $plot_identification,
         string $city_subdivision_name,
         string $city,
-        string $country = 'SA'
+        string $country = 'SA',
+        string $national_id = ''
     )
     {
+        $this->registration_name        = $registration_name;
+        $this->tax_number               = $tax_number;
+        $this->postal_number            = $postal_number;
         $this->street_name              = $street_name;
         $this->building_number          = $building_number;
         $this->plot_identification      = $plot_identification;
         $this->city_subdivision_name    = $city_subdivision_name;
         $this->city                     = $city;
         $this->country                  = $country;
-        $this->postal_number            = $postal_number;
-        $this->tax_number               = $tax_number;
-        $this->registration_name        = $registration_name;
+        $this->national_id              = $national_id;
     }
 }

@@ -4,7 +4,9 @@ namespace Bl\FatooraZatca\Contracts;
 
 interface InvoiceContract
 {
-    public function report(): self;
+    // ! remove return type for compatibility with php7.2
+    public function report(); // : self;
 
-    public function calculate(): self;
+    // ! remove return type for compatibility with php7.2
+    public function calculate(); // : self;
 }

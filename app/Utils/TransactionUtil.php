@@ -1450,7 +1450,7 @@ class TransactionUtil extends Util
         $output['tax_label'] .= ':';
         $output['tax'] = ($transaction->tax_amount != 0) ? $this->num_f($transaction->tax_amount, $show_currency, $business_details) : 0;
 
-        if ($transaction->tax_amount != 0 && $tax->is_tax_group) {
+        if ($transaction->tax_amount != 0 && $tax && $tax->is_tax_group) {
             $transaction_group_tax_details = $this->groupTaxDetails($tax, $transaction->tax_amount);
 
             $output['group_tax_details'] = [];
@@ -1978,11 +1978,11 @@ class TransactionUtil extends Util
         if (in_array('invoice_datetime', $qr_code_fields)) {
             $string .= $this->toHex(3) . $this->toHex(strlen($invoice_date)) . ($invoice_date);
         }
-        
+
         if (in_array('total_amount', $qr_code_fields)) {
             $string .= $this->toHex(4) . $this->toHex(strlen($transaction->final_total)) . ($transaction->final_total);
         }
-        
+
         if (in_array('total_tax', $qr_code_fields)) {
             $string .= $this->toHex(5) . $this->toHex(strlen($total_order_tax)) . ($total_order_tax);
         }
@@ -6409,13 +6409,13 @@ class TransactionUtil extends Util
         $method = '';
         if (isset($request->payment['0']['method'])) {
             // $method = $request->payment['0']['method'];
-              $payment_lines = $transaction->payment_lines()->latest('paid_on')->first();
-              $method =  $payment_lines->method;
+            $payment_lines = $transaction->payment_lines()->latest('paid_on')->first();
+            $method =  $payment_lines->method;
         } else {
             $method = 'other';
         }
-        
-       
+
+
         $accountMappingSetting = AccountingMappingSettingAutoMigration::where('type', $transaction->type)
             ->where('payment_status', $transaction->payment_status)
             ->where('method',  $method)
@@ -6485,7 +6485,7 @@ class TransactionUtil extends Util
         } else {
             $method = 'other';
         }
-        
+
         if (count($transaction->payment_lines) > 0) {
             $payment_lines = $transaction->payment_lines[0];
             $accountMappingSetting = AccountingMappingSettingAutoMigration::where('type', $transaction->type)
@@ -6493,7 +6493,7 @@ class TransactionUtil extends Util
                 ->where('method', $method)
                 ->where('business_id', $business_id)
                 ->where('active', true)->first();
-//   return [$transaction->type,$transaction->payment_status, $method,$business_id];
+            //   return [$transaction->type,$transaction->payment_status, $method,$business_id];
             if ($accountMappingSetting) {
                 // find account transaction mapping setting by accounting mapping setting
                 $accTransMappingSetting = AccountingAccTransMappingSettingAutoMigration::where('mapping_setting_id', $accountMappingSetting->id)->get();

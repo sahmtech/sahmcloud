@@ -16,21 +16,21 @@ use Bl\FatooraZatca\Services\Compliants\StandardDebitNoteCompliantService;
 class Cert509Service
 {
     /**
-     * the data of a tax payer.
+     * the settings of a tax payer.
      *
      * @var \Bl\FatooraZatca\Objects\Setting
      */
-    protected $seller;
+    protected $settings;
 
     /**
      * __construct
      *
-     * @param  object $seller
+     * @param  \Bl\FatooraZatca\Objects\Setting|null $settings
      * @return void
      */
-    public function __construct(object $seller)
+    public function __construct(object $settings = null)
     {
-        $this->seller = $seller;
+        $this->settings = $settings;
     }
 
 
@@ -52,16 +52,16 @@ class Cert509Service
 
         // Send the 6 test invoices for the production certificate...
         if(ConfigHelper::hasComplaintsCheck()) {
-            if(InvoiceReportType::isStandard($this->seller->invoiceType)) {
-                StandardCompliantService::verify($this->seller, $privateKey, $certificate, $secret);
-                StandardCreditNoteCompliantService::verify($this->seller, $privateKey, $certificate, $secret);
-                StandardDebitNoteCompliantService::verify($this->seller, $privateKey, $certificate, $secret);
+            if(InvoiceReportType::isStandard($this->settings->invoiceType)) {
+                StandardCompliantService::verify($this->settings, $privateKey, $certificate, $secret);
+                StandardCreditNoteCompliantService::verify($this->settings, $privateKey, $certificate, $secret);
+                StandardDebitNoteCompliantService::verify($this->settings, $privateKey, $certificate, $secret);
             }
 
-            if(InvoiceReportType::isSimplified($this->seller->invoiceType)) {
-                SimplifiedCompliantService::verify($this->seller, $privateKey, $certificate, $secret);
-                SimplifiedCreditNoteCompliantService::verify($this->seller, $privateKey, $certificate, $secret);
-                SimplifiedDebitNoteCompliantService::verify($this->seller, $privateKey, $certificate, $secret);
+            if(InvoiceReportType::isSimplified($this->settings->invoiceType)) {
+                SimplifiedCompliantService::verify($this->settings, $privateKey, $certificate, $secret);
+                SimplifiedCreditNoteCompliantService::verify($this->settings, $privateKey, $certificate, $secret);
+                SimplifiedDebitNoteCompliantService::verify($this->settings, $privateKey, $certificate, $secret);
             }
         }
 
@@ -102,7 +102,7 @@ class Cert509Service
     {
         $data       = $this->getPostData($type, $settings);
 
-        $headers    = $this->getHeaders();
+        $headers    = $this->getHeaders($this->settings->otp);
 
         $route      = $this->getRoute($type);
 
@@ -142,14 +142,15 @@ class Cert509Service
     /**
      * get headers of request.
      *
+     * @param  string $otp
      * @return array
      */
-    protected function getHeaders(): array
+    protected function getHeaders(string $otp): array
     {
         return [
             'Accept: application/json',
             'Content-Type: application/json',
-            'OTP: ' . $this->seller->otp,
+            'OTP: ' . $otp,
             'Accept-Version: V2'
         ];
     }

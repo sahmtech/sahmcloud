@@ -456,7 +456,7 @@ class ZatcaController extends Controller
                     $quantity = $product['quantity'];
                     $discount = $product['discount'] ?? 0;
                     $price = $product['price'];
-                    $taxPercent = $product['tax_percent'];
+                    $taxPercent = $product['tax_percent'] ?? 0;
 
                     // Calculate the total price for the quantity before discount
                     $priceBeforeDiscount = round($price * $quantity, 2);
@@ -628,7 +628,7 @@ class ZatcaController extends Controller
 
     public function storeZatcaSellReturn(Request $request)
     {
-        return $request->all();
+        // return $request->all();
         if (!auth()->user()->can('access_sell_return') && !auth()->user()->can('access_own_sell_return')) {
             abort(403, 'Unauthorized action.');
         }
@@ -649,22 +649,42 @@ class ZatcaController extends Controller
             DB::beginTransaction();
 
             $sell_return = $this->transactionUtil->addSellReturn($input, $business_id, $user_id);
-
             $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
 
             // return  $sell_return->id;
             $saveAutomigration = $this->transactionUtil->createTransactionJournal_entry($sell_return->id);
 
             DB::commit();
-
+            Transaction::where('id', $sell_return->id)->update([
+                'invoice_type' => \Bl\FatooraZatca\Classes\InvoiceType::DEBIT_NOTE,
+                'payment_type' => \Bl\FatooraZatca\Classes\PaymentType::MULTIPLE,
+            ]);
             ////////////////////////////////////////////////////////////////////////////////
             // extract zatca invoice info
-            $transaction_id = $input['transaction_id'];
+            // $transaction_id = $input['transaction_id'];
+            $transaction_id = $sell_return->id;
             $business = Business::where('id',   $business_id)->first();
             $transaction = Transaction::where('id', $transaction_id)->first();
             $output['print_title'] = $transaction->invoice_no;
 
-            $transaction_sell_lines = TransactionSellLine::where('transaction_id', $transaction->id)
+            // $transaction_sell_lines = TransactionSellLine::where('transaction_id', $transaction->id)
+            //     ->leftjoin('products', 'products.id', '=', 'product_id')
+            //     ->leftjoin('tax_rates', 'tax_rates.id', '=', 'tax_id')
+            //     ->select(
+            //         'products.name as product_name',
+            //         'transaction_sell_lines.*',
+            //         'products.*',
+            //         'tax_rates.amount as tax_percent',
+            //         'tax_rates.*',
+            //     )
+            //     ->get();
+
+            $sell_line_ids = [];
+            foreach ($input['products'] as $tmp) {
+                $sell_line_ids[] = $tmp['sell_line_id'];
+            }
+
+            $transaction_sell_lines = TransactionSellLine::whereIn('transaction_sell_lines.id', $sell_line_ids)
                 ->leftjoin('products', 'products.id', '=', 'product_id')
                 ->leftjoin('tax_rates', 'tax_rates.id', '=', 'tax_id')
                 ->select(
@@ -679,7 +699,18 @@ class ZatcaController extends Controller
             $invoiceItems = [];
             $notest = [];
             $total_discount = 0;
+            $total_before_tax = 0;
+            $final_total = 0;
+            $total_tax = 0;
+
+            if ($input['discount_type'] == 'fixed') {
+                $total_discount += (float)$input['discount_amount'];
+            }
+
+            // dd($sell_return, $input, $transaction_sell_lines);
             foreach ($transaction_sell_lines as $index => $transaction_sell_line) {
+                // foreach ($input['products'] as $index => $transaction_sell_line) {
+                $transaction_sell_line = (object)$transaction_sell_line;
                 $notest[$transaction_sell_line->product_id] =  $transaction_sell_line->sell_line_note;
 
 
@@ -698,8 +729,14 @@ class ZatcaController extends Controller
                     $transaction_sell_line->tax_percent,
                     $priceAfterDiscount + $taxAmount,
                 );
+                $total_before_tax += $priceAfterDiscount;
+                $total_tax += $taxAmount;
+                $final_total += ($priceAfterDiscount + $taxAmount);
             }
-
+            if ($input['discount_type'] == 'percentage') {
+                $total_discount += ((float)$input['discount_amount'] / 100) * ($total_before_tax);
+                $final_total -= $total_discount;
+            }
             // return $transaction_sell_lines;
 
             $transaction_date = explode(' ', $transaction->transaction_date);
@@ -712,10 +749,10 @@ class ZatcaController extends Controller
                 $transaction_date[1],
                 $transaction->invoice_type,
                 $transaction->payment_type,
-                $transaction->total_before_tax, // Total before discount
+                $total_before_tax, // Total before discount
                 $total_discount, // Total discount if applicable
-                $transaction->tax_amount, // Total tax
-                $transaction->final_total, // Total after tax
+                $total_tax, // Total tax
+                $final_total, // Total after tax
                 $invoiceItems,
                 null, // Reference to previous invoice if applicable
                 1, // Adjust as needed
@@ -725,7 +762,7 @@ class ZatcaController extends Controller
                 15, // Average VAT percentage if needed
                 $transaction->delivery_date, // Assuming due date is the same as invoice date
             );
-
+            // dd($invoice);
             $contact = Contact::where('id', $transaction->contact_id)->first();
 
             $client = new Client(
@@ -756,36 +793,47 @@ class ZatcaController extends Controller
             );
 
 
-            $location_details = BusinessLocation::find($transaction->location_id);
+            // $location_details = BusinessLocation::find($transaction->location_id);
 
-            $businessUtil = new BusinessUtil();
-            $invoice_layout_id = $location_details->invoice_layout_id;
-            $invoice_layout = $businessUtil->invoiceLayout($business_id, $invoice_layout_id);
-            $footer_text = $invoice_layout->footer_text ?? '';
+            // $businessUtil = new BusinessUtil();
+            // $invoice_layout_id = $location_details->invoice_layout_id;
+            // $invoice_layout = $businessUtil->invoiceLayout($business_id, $invoice_layout_id);
+            // $footer_text = $invoice_layout->footer_text ?? '';
 
-            $fromDate = $transaction->custom_field_1;
-            $toDate = $transaction->custom_field_2;
+            // $fromDate = $transaction->custom_field_1;
+            // $toDate = $transaction->custom_field_2;
             /////////
             // create zatca return
 
             $selected_products = [];
             $item_ids = [];
-            foreach ($invoice_items as $item) {
-                $id = $item['id'];
+            foreach ($invoice->invoice_items as $item) {
+                $id = $item->id;
                 $item_ids[] =  $id;
                 $selected_products[$id] = [
-                    "name" => $item['product_name'],
-                    "quantity" =>  $item['quantity'],
-                    "price" => number_format($item['price'] / $item['quantity'], 3, '.', ''),
-                    "discount" => number_format($item['discount'], 3, '.', ''),
-                    "tax" => number_format($item['tax'] / $item['quantity'], 3, '.', ''),
-                    "tax_percent" => number_format($item['tax_percent'], 3, '.', ''),
-                    "total" => number_format($item['total'] / $item['quantity'], 3, '.', ''),
-                    "note" => $item['discount_reason'],
+                    "name" => $item->product_name,
+                    "quantity" =>  $item->quantity,
+                    "price" => number_format($item->price / $item->quantity, 3, '.', ''),
+                    "discount" => number_format($item->discount, 3, '.', ''),
+                    "tax" => number_format($item->tax / $item->quantity, 3, '.', ''),
+                    "tax_percent" => number_format($item->tax_percent, 3, '.', ''),
+                    "total" => number_format($item->total / $item->quantity, 3, '.', ''),
+                    "note" => $item->discount_reason,
                 ];
+                // $selected_products[$id] = [
+                //     "name" => $item['product_name'],
+                //     "quantity" =>  $item['quantity'],
+                //     "price" => number_format($item['price'] / $item['quantity'], 3, '.', ''),
+                //     "discount" => number_format($item['discount'], 3, '.', ''),
+                //     "tax" => number_format($item['tax'] / $item['quantity'], 3, '.', ''),
+                //     "tax_percent" => number_format($item['tax_percent'], 3, '.', ''),
+                //     "total" => number_format($item['total'] / $item['quantity'], 3, '.', ''),
+                //     "note" => $item['discount_reason'],
+                // ];
             }
 
-            $request = [
+            $request = (object)[
+                'buyer_id' => $transaction->contact_id,
                 'seller_name' => $seller->registration_name,
                 'seller_tax_number' => $seller->tax_number,
                 'buyer_registration_name' => $client->registration_name,
@@ -797,7 +845,7 @@ class ZatcaController extends Controller
                 'buyer_city_subdivision_name' => $client->city_subdivision_name,
                 'buyer_city' => $client->city,
                 'invoice_number' => $invoice->invoice_number,
-                'invoice_type' => 383,
+                'invoice_type' =>   \Bl\FatooraZatca\Classes\InvoiceType::DEBIT_NOTE,
                 'invoice_date' => $invoice->invoice_date,
                 'invoice_time' => $invoice->invoice_time,
                 'payment_type' => $invoice->payment_type,
@@ -811,6 +859,7 @@ class ZatcaController extends Controller
                 'status' => $transaction->status,
                 'item_ids' => $item_ids,
             ];
+
             try {
 
                 // return $request->all();
@@ -821,12 +870,12 @@ class ZatcaController extends Controller
                 $business_id = request()->session()->get('user.business_id');
                 $business = Business::where('id', $business_id)->first();
 
-                $user_id = $request->session()->get('user.id');
+                $user_id = request()->session()->get('user.id');
 
                 if (!$this->moduleUtil->isSubscribed($business_id)) {
                     return $this->moduleUtil->expiredResponse();
                 }
-                $validatedData = $request->all();
+                $validatedData = (array) $request;
                 $seconds = (string) Carbon::now()->format('s');
 
 
@@ -903,11 +952,11 @@ class ZatcaController extends Controller
                         "warranty_id" => $product->warranty_id,
                     ];
                 }
-                $invoice_total = [
-                    "total_before_tax" => $request->total_before_tax,
-                    "tax" => $request->total_tax,
-                    "final_total" => $request->final_total,
-                ];
+                // $invoice_total = [
+                //     "total_before_tax" => $request->total_before_tax,
+                //     "tax" => $request->total_tax,
+                //     "final_total" => $request->final_total,
+                // ];
 
                 // $input = [
                 //     'location_id' => $location_id,
@@ -953,7 +1002,7 @@ class ZatcaController extends Controller
                         $quantity = $product['quantity'];
                         $discount = $product['discount'] ?? 0;
                         $price = $product['price'];
-                        $taxPercent = $product['tax_percent'];
+                        $taxPercent = $product['tax_percent'] ?? 0;
 
                         // Calculate the total price for the quantity before discount
                         $priceBeforeDiscount = round($price * $quantity, 2);
@@ -986,7 +1035,7 @@ class ZatcaController extends Controller
                     // Calculate the total amount with VAT
                     $totalWithVAT = $totalWithoutVAT - $totalDiscount + $totalVAT;
 
-                    $invoiceTime = $validatedData['invoice_time'] . ':' . $seconds;
+                    $invoiceTime = $validatedData['invoice_time'];
 
                     // return $invoiceItems or use them as needed
 
@@ -1083,11 +1132,20 @@ class ZatcaController extends Controller
                 //     $b2b->getQr(),
                 //     $b2b->getInvoiceHash()
                 // );
-
+                $output = [
+                    'success' => 1,
+                    'msg' => __('lang_v1.success'),
+                    'redirect_url' => route('sell.printZatcaRefundInvoice', ['transaction_id' => $transaction->id]),
+                ];
+                // return redirect()->route('sell.printZatcaRefundInvoice', ['transaction_id' => $transaction->id]);
+                // return $output;
+                return response()->json($output);
+                // return redirect()->route('sells.index')->with('status', $output);
                 return redirect()
                     ->action([\App\Http\Controllers\SellController::class, 'index'])
                     ->with('status', $output);
             } catch (\Exception $e) {
+                return 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage();
                 error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
                 $output = ['success' => 0, 'msg' => 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage()];
                 return redirect()->back()->with('status', $output);
@@ -1102,8 +1160,63 @@ class ZatcaController extends Controller
         }
 
 
+        return "test return";
+    }
+
+    private function receiptContent(
+        $business_id,
+        $location_id,
+        $transaction_id,
+        $printer_type = null
+    ) {
+        $output = [
+            'is_enabled' => false,
+            'print_type' => 'browser',
+            'html_content' => null,
+            'printer_config' => [],
+            'data' => [],
+        ];
+
+        $business_details = $this->businessUtil->getDetails($business_id);
+        $location_details = BusinessLocation::find($location_id);
+
+        //Check if printing of invoice is enabled or not.
+        if ($location_details->print_receipt_on_invoice == 1) {
+            //If enabled, get print type.
+            $output['is_enabled'] = true;
+
+            $invoice_layout = $this->businessUtil->invoiceLayout($business_id, $location_details->invoice_layout_id);
+
+            //Check if printer setting is provided.
+            $receipt_printer_type = is_null($printer_type) ? $location_details->receipt_printer_type : $printer_type;
+
+            $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type);
+
+            $lines = [];
+            foreach ($receipt_details->lines as $line) {
+                if ($line['quantity'] == 0) {
+                    continue;
+                }
+                array_push($lines, $line);
+            }
+
+            $receipt_details->lines = $lines;
+
+            //If print type browser - return the content, printer - return printer config data, and invoice format config
+            $output['print_title'] = $receipt_details->invoice_no;
+            if ($receipt_printer_type == 'printer') {
+                $output['print_type'] = 'printer';
+                $output['printer_config'] = $this->businessUtil->printerConfig($business_id, $location_details->printer_id);
+                $output['data'] = $receipt_details;
+            } else {
+                $output['html_content'] = view('sell_return.receipt', compact('receipt_details'))->render();
+            }
+        }
+
         return $output;
     }
+
+
 
 
     /**
@@ -1132,6 +1245,8 @@ class ZatcaController extends Controller
             )
             ->get();
 
+        // dd($transaction_sell_lines);
+
         $invoiceItems = [];
         $notest = [];
         $total_discount = 0;
@@ -1155,7 +1270,6 @@ class ZatcaController extends Controller
                 $priceAfterDiscount + $taxAmount,
             );
         }
-
         // return $transaction_sell_lines;
 
         $transaction_date = explode(' ', $transaction->transaction_date);
@@ -1237,6 +1351,7 @@ class ZatcaController extends Controller
         //     'toDate' => $toDate,
         //     'notest' =>   $notest,
         // ];
+
         return view('sell.invoice', [
             'logo' => $business->logo ?? '',
             'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(220)->generate($transaction->qr_code) :  '',
@@ -1251,6 +1366,153 @@ class ZatcaController extends Controller
         ]);
     }
 
+
+    public function printZatcaRefundInvoice(Request $request, $transaction_id)
+    {
+
+        $business_id = $request->session()->get('user.business_id');
+        $business = Business::where('id',   $business_id)->first();
+        $transaction = Transaction::where('id', $transaction_id)->first();
+        $output['print_title'] = $transaction->invoice_no;
+        $parent_transaction =  Transaction::where('id', $transaction->return_parent_id)->first();
+        $transaction_sell_lines = TransactionSellLine::where('transaction_id', $parent_transaction->id)
+            ->leftjoin('products', 'products.id', '=', 'product_id')
+            ->leftjoin('tax_rates', 'tax_rates.id', '=', 'tax_id')
+            ->select(
+                'products.name as product_name',
+                'transaction_sell_lines.*',
+                'products.*',
+                'tax_rates.amount as tax_percent',
+                'tax_rates.*',
+            )
+            ->get();
+
+        // dd($transaction_sell_lines);
+
+        $invoiceItems = [];
+        $notest = [];
+        $total_discount = 0;
+        $total_before_tax = 0;
+        $total_tax = 0;
+        $final_total = 0;
+        foreach ($transaction_sell_lines as $index => $transaction_sell_line) {
+            $notest[$transaction_sell_line->product_id] =  $transaction_sell_line->sell_line_note;
+
+
+            $discountAmount = round($transaction_sell_line->line_discount_amount * $transaction_sell_line->quantity_returned, 2);
+            $total_discount += $discountAmount;
+            $priceBeforeDiscount = round($transaction_sell_line->unit_price_before_discount * $transaction_sell_line->quantity_returned, 2);
+            $priceAfterDiscount = $priceBeforeDiscount - $discountAmount;
+            $taxAmount = round($transaction_sell_line->tax_percent * $priceAfterDiscount / 100, 2);
+            $invoiceItems[] = new InvoiceItem(
+                $transaction_sell_line->product_id,
+                $transaction_sell_line->product_name,
+                $transaction_sell_line->quantity_returned,
+                $priceBeforeDiscount,
+                $discountAmount,
+                $taxAmount,
+                $transaction_sell_line->tax_percent,
+                $priceAfterDiscount + $taxAmount,
+            );
+            $total_before_tax += $priceAfterDiscount;
+            $total_tax += $taxAmount;
+            $final_total += ($priceAfterDiscount + $taxAmount);
+        }
+        // return $transaction_sell_lines;
+
+        $transaction_date = explode(' ', $transaction->transaction_date);
+
+        $invoice = new Invoice(
+            $transaction->id, // Replace with appropriate ID
+            $transaction->invoice_no,
+            $transaction->uuid ?? '', // Replace with actual UUID or generate dynamically
+            $transaction_date[0],
+            $transaction_date[1],
+            \Bl\FatooraZatca\Classes\InvoiceType::DEBIT_NOTE,
+            $transaction->payment_type,
+            $total_before_tax, // Total before discount
+            $total_discount, // Total discount if applicable
+            $total_tax, // Total tax
+            $final_total, // Total after tax
+            $invoiceItems,
+            null, // Reference to previous invoice if applicable
+            1, // Adjust as needed
+            null, // Additional notes or details if any
+            $transaction->payment_note, // Adjust payment note as needed
+            'SAR',
+            15, // Average VAT percentage if needed
+            $transaction->delivery_date, // Assuming due date is the same as invoice date
+        );
+
+        $contact = Contact::where('id', $transaction->contact_id)->first();
+
+        $client = new Client(
+            $contact->registration_name,
+            $contact->tax_number,
+            $contact->zip_code,
+            $contact->street_name,
+            $contact->building_number,
+            $contact->plot_identification,
+            $contact->city_subdivision_name,
+            $contact->city,
+        );
+
+
+        $seller = new Seller(
+            $business->registration_number,
+            $business->street_name,
+            $business->building_number,
+            $business->plot_identification,
+            $business->city_sub_division,
+            $business->city,
+            $business->postal_number,
+            $business->tax_number_1,
+            $business->organization_name,
+            $business->zatca_private_key,
+            $business->zatca_certificate,
+            $business->zatca_secret,
+        );
+
+
+        $location_details = BusinessLocation::find($transaction->location_id);
+
+        $businessUtil = new BusinessUtil();
+        $invoice_layout_id = $location_details->invoice_layout_id;
+        $invoice_layout = $businessUtil->invoiceLayout($business_id, $invoice_layout_id);
+        $footer_text = $invoice_layout->footer_text ?? '';
+
+        $fromDate = $parent_transaction->custom_field_1;
+        $toDate = $parent_transaction->custom_field_2;
+        // return [
+        //     '1' => $invoice,
+        // ];
+
+        // return [
+        //     'logo' => $business->logo ?? '',
+        //     'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(220)->generate($transaction->qr_code) :  '',
+        //     'invoice' =>  $invoice,
+        //     'seller' =>   $seller,
+        //     'client' => $client,
+        //     'invoiceTypeCode' =>  $business->invoice_type,
+        //     'footer_text' => $footer_text,
+        //     'fromDate' => $fromDate,
+        //     'toDate' => $toDate,
+        //     'notest' =>   $notest,
+        // ];
+
+        return view('sell.refund_invoice', [
+            'logo' => $business->logo ?? '',
+            'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(220)->generate($transaction->qr_code) :  '',
+            'invoice' =>  $invoice,
+            'seller' =>   $seller,
+            'client' => $client,
+            'invoiceTypeCode' =>  $business->invoice_type,
+            'footer_text' => $footer_text,
+            'fromDate' => $fromDate,
+            'toDate' => $toDate,
+            'notest' =>   $notest,
+        ]);
+    }
 
     public function verifySettings(Request $request)
     {

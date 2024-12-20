@@ -34,5 +34,6 @@ return [
     'total_excluding_vat' => 'الإجمالي (باستثناء ضريبة القيمة المضافة)',
     'total_vat' => 'إجمالي ضريبة القيمة المضافة',
     'total' => 'المبلغ الإجمالي',
-	'total_discount' => 'إجمالي الخصم',
+    'total_discount' => 'إجمالي الخصم',
+    'refund_invoice' => 'اشعار دائن',
 ];

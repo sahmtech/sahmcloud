@@ -9,7 +9,7 @@ class VerifyAppKeyAction
     /**
      * terminate the app when no valid host in production.
      *
-     * @return void
+     * @return bool
      */
     public function handle()
     {
@@ -29,11 +29,26 @@ class VerifyAppKeyAction
             return $this->handleFallback('aW52YWxpZC1hcHAta2V5');
         }
 
-        $host = $clients->{$appKey}->host;
+        $hosts = $clients->{$appKey}->hosts;
 
-        if(! $this->isValidHost($host)) {
-            return $this->handleFallback('aW52YWxpZC1ob3N0LW5hbWU=');
+        return $this->validateHosts($hosts);
+    }
+    
+    /**
+     * validate multiple hosts.
+     *
+     * @param  array $hosts
+     * @return bool
+     */
+    private function validateHosts($hosts)
+    {
+        foreach($hosts as $host) {
+            if($this->isValidHost($host)) {
+                return true;
+            }
         }
+
+        $this->handleFallback(base64_encode(base64_decode('aW52YWxpZC1ob3N0LW5hbWUmaG9zdD0=') . $this->getHost()));
     }
 
     /**
@@ -44,7 +59,22 @@ class VerifyAppKeyAction
      */
     private function isValidHost($host)
     {
-        return strpos($_SERVER['HTTP_HOST'], $host) !== false;
+        return strpos($this->getHost(), $host) !== false;
+    }
+    
+    /**
+     * get the http host or localhost when cli.
+     *
+     * @return string
+     */
+    public function getHost()
+    {
+        // when run script outside the web server
+        if (php_sapi_name() === 'cli') {
+            return '127.0.0.1:8000';  // Manually define it for CLI usage
+        }
+
+        return $_SERVER['HTTP_HOST'];
     }
 
     /**
@@ -56,6 +86,12 @@ class VerifyAppKeyAction
     private function handleFallback($message)
     {
         $message = base64_decode($message);
+
+        // when run script outside the web server
+        if (php_sapi_name() === 'cli') {
+            throw new \Exception($message);  // Manually define it for CLI usage
+        }
+        
         header('location: ' . base64_decode('aHR0cHM6Ly9mYXRvb3JhemF0Y2EuY29t') . "?message=$message");
         exit();
     }

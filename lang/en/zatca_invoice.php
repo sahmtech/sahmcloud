@@ -35,5 +35,6 @@ return [
     'total_excluding_vat' => 'Total (Excluding VAT)',
     'total_vat' => 'Total VAT',
     'total' => 'Total Amount',
-	'total_discount' => 'Total Discount',
+    'total_discount' => 'Total Discount',
+    'refund_invoice' => 'Refund Invoice',
 ];

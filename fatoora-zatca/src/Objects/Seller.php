@@ -52,12 +52,12 @@ class Seller
         $this->plot_identification          = $plot_identification;
         $this->city_sub_division            = $city_sub_division;
         $this->city                         = $city;
-        $this->country                      = $country;
         $this->postal_number                = $postal_number;
         $this->tax_number                   = $tax_number;
         $this->registration_name            = $registration_name;
         $this->private_key                  = $private_key;
         $this->certificate                  = $certificate;
         $this->secret                       = $secret;
+        $this->country                      = $country;
     }
 }

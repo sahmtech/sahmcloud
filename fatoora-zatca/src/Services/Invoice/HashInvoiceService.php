@@ -141,8 +141,8 @@ class HashInvoiceService
      */
     protected function setInvoiceDetails(): void
     {
-        $this->setXmlInvoiceItem('SET_INVOICE_SERIAL_NUMBER', $this->invoice->invoice_number);
-        $this->setXmlInvoiceItem('SET_TERMINAL_UUID', $this->invoice->invoice_uuid);
+        $this->setXmlInvoiceItem('SET_INVOICE_SERIAL_NUMBER', htmlspecialchars($this->invoice->invoice_number, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_TERMINAL_UUID', htmlspecialchars($this->invoice->invoice_uuid, ENT_XML1, 'UTF-8'));
         $this->setXmlInvoiceItem('SET_ISSUE_DATE', $this->invoice->invoice_date);
         $this->setXmlInvoiceItem('SET_ISSUE_TIME', $this->invoice->invoice_time . 'Z');
         $this->setXmlInvoiceItem('SET_INVOICE_TYPE', $this->invoice->invoice_type);
@@ -199,16 +199,16 @@ class HashInvoiceService
      */
     protected function setAccountingSupplierParty(): void
     {
-        $this->setXmlInvoiceItem('SET_COMMERCIAL_REGISTRATION_NUMBER', $this->seller->registration_number);
-        $this->setXmlInvoiceItem('SET_STREET_NAME', $this->seller->street_name);
-        $this->setXmlInvoiceItem('SET_BUILDING_NUMBER', $this->seller->building_number);
-        $this->setXmlInvoiceItem('SET_PLOT_IDENTIFICATION', $this->seller->plot_identification);
-        $this->setXmlInvoiceItem('SET_CITY_SUBDIVISION', $this->seller->city_sub_division);
-        $this->setXmlInvoiceItem('SET_CITY', $this->seller->city);
-        $this->setXmlInvoiceItem('SET_POSTAL_NUMBER', $this->seller->postal_number);
-        $this->setXmlInvoiceItem('SET_SUPPLIER_COUNTRY', $this->seller->country);
-        $this->setXmlInvoiceItem('SET_VAT_NUMBER', $this->seller->tax_number);
-        $this->setXmlInvoiceItem('SET_VAT_NAME', $this->seller->registration_name);
+        $this->setXmlInvoiceItem('SET_COMMERCIAL_REGISTRATION_NUMBER', htmlspecialchars($this->seller->registration_number, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_STREET_NAME', htmlspecialchars($this->seller->street_name, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_BUILDING_NUMBER', htmlspecialchars($this->seller->building_number, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_PLOT_IDENTIFICATION', htmlspecialchars($this->seller->plot_identification, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_CITY_SUBDIVISION', htmlspecialchars($this->seller->city_sub_division, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_CITY', htmlspecialchars($this->seller->city, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_POSTAL_NUMBER', htmlspecialchars($this->seller->postal_number, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_SUPPLIER_COUNTRY', htmlspecialchars($this->seller->country, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_VAT_NUMBER', htmlspecialchars($this->seller->tax_number, ENT_XML1, 'UTF-8'));
+        $this->setXmlInvoiceItem('SET_VAT_NAME', htmlspecialchars($this->seller->registration_name, ENT_XML1, 'UTF-8'));
     }
 
     /**
@@ -224,16 +224,31 @@ class HashInvoiceService
 
             $clientContent = GetXmlFileAction::handle('xml_client');
 
-            $clientContent = str_replace('SET_CLIENT_VAT_NUMBER', $this->client->tax_number, $clientContent);
-            $clientContent = str_replace('SET_CLIENT_STREET_NAME', $this->client->street_name, $clientContent);
-            $clientContent = str_replace('SET_CLIENT_BUILDING_NUMBER', $this->client->building_number, $clientContent);
-            $clientContent = str_replace('SET_CLIENT_PLOT_IDENTIFICATION', $this->client->plot_identification, $clientContent);
-            $clientContent = str_replace('SET_CLIENT_SUB_DIVISION_NAME', $this->client->city_subdivision_name, $clientContent);
-            $clientContent = str_replace('SET_CLIENT_CITY_NAME', $this->client->city, $clientContent);
-            $clientContent = str_replace('SET_CLIENT_COUNTRY_NAME', $this->client->country, $clientContent);
-            $clientContent = str_replace('SET_CLIENT_POSTAL_ZONE', $this->client->postal_number, $clientContent);
-            $clientContent = str_replace('SET_CLIENT_REGISTRATION_NAME', $this->client->registration_name, $clientContent);
+            $clientContent = str_replace('SET_CLIENT_NATIONAL_ID', htmlspecialchars($this->client->national_id, ENT_XML1, 'UTF-8'), $clientContent);
+            $clientContent = str_replace('SET_CLIENT_STREET_NAME', htmlspecialchars($this->client->street_name, ENT_XML1, 'UTF-8'), $clientContent);
+            $clientContent = str_replace('SET_CLIENT_BUILDING_NUMBER', htmlspecialchars($this->client->building_number, ENT_XML1, 'UTF-8'), $clientContent);
+            $clientContent = str_replace('SET_CLIENT_PLOT_IDENTIFICATION', htmlspecialchars($this->client->plot_identification, ENT_XML1, 'UTF-8'), $clientContent);
+            $clientContent = str_replace('SET_CLIENT_SUB_DIVISION_NAME', htmlspecialchars($this->client->city_subdivision_name, ENT_XML1, 'UTF-8'), $clientContent);
+            $clientContent = str_replace('SET_CLIENT_CITY_NAME', htmlspecialchars($this->client->city, ENT_XML1, 'UTF-8'), $clientContent);
+            $clientContent = str_replace('SET_CLIENT_COUNTRY_CODE', htmlspecialchars($this->client->country, ENT_XML1, 'UTF-8'), $clientContent);
+            $clientContent = str_replace('SET_CLIENT_POSTAL_ZONE', htmlspecialchars($this->client->postal_number, ENT_XML1, 'UTF-8'), $clientContent);
+            $clientContent = str_replace('SET_CLIENT_REGISTRATION_NAME', htmlspecialchars($this->client->registration_name, ENT_XML1, 'UTF-8'), $clientContent);
 
+            // Set tax number if exists.
+            $clientPartyTaxSchema = '';
+            if(! empty($this->client->tax_number)) {
+                $clientPartyTaxSchema = GetXmlFileAction::handle('xml_client_party_tax_schema');
+                $clientPartyTaxSchema = str_replace('SET_CLIENT_VAT_NUMBER', $this->client->tax_number, $clientPartyTaxSchema);
+            }
+            $clientContent = str_replace('SET_CLIENT_PARTY_TAX_SCHEMA', $clientPartyTaxSchema, $clientContent);
+
+            // Set national id if exists.
+            $clientPartyIdentification = '';
+            if(! empty($this->client->national_id)) {
+                $clientPartyIdentification = GetXmlFileAction::handle('xml_client_party_identification');
+                $clientPartyIdentification = str_replace('SET_CLIENT_NATIONAL_ID', $this->client->national_id, $clientPartyIdentification);
+            }
+            $clientContent = str_replace('SET_CLIENT_PARTY_IDENTIFICATION', $clientPartyIdentification, $clientContent);
         }
 
         $this->setXmlInvoiceItem('SET_CLIENT', $clientContent);
@@ -261,11 +276,11 @@ class HashInvoiceService
 
         $invoiceType = (int) $this->invoice->invoice_type;
 
-        if(in_array($invoiceType, [InvoiceType::REFUND_INVOICE, InvoiceType::CREDIT_NOTE])) {
+        if(in_array($invoiceType, [InvoiceType::CREDIT_NOTE, InvoiceType::DEBIT_NOTE])) {
 
             $invoiceNoteContent = GetXmlFileAction::handle('xml_invoice_note');
 
-            $reason = $this->invoice->invoice_note ?? $this->getDefaultReason($invoiceType);
+            $reason = htmlspecialchars($this->invoice->invoice_note, ENT_XML1, 'UTF-8') ?? $this->getDefaultReason($invoiceType);
 
             $invoiceNoteContent = str_replace('SET_INVOICE_NOTE', $reason, $invoiceNoteContent);
 
@@ -277,7 +292,7 @@ class HashInvoiceService
 
             $paymentNoteContent = GetXmlFileAction::handle('xml_payment_note');
 
-            $paymentNoteContent = str_replace('SET_PAYMENT_NOTE', $this->invoice->payment_note, $paymentNoteContent);
+            $paymentNoteContent = str_replace('SET_PAYMENT_NOTE', htmlspecialchars($this->invoice->payment_note, ENT_XML1, 'UTF-8'), $paymentNoteContent);
 
         }
 
@@ -296,11 +311,11 @@ class HashInvoiceService
      */
     protected function getDefaultReason(int $invoiceType): string
     {
-        if($invoiceType === InvoiceType::REFUND_INVOICE) {
-            return 'Refund Items';
+        if($invoiceType === InvoiceType::CREDIT_NOTE) {
+            return 'Goods or services refund.';
         }
-        else if ($invoiceType === InvoiceType::CREDIT_NOTE) {
-            return 'Credit Invoice';
+        else if ($invoiceType === InvoiceType::DEBIT_NOTE) {
+            return 'Adjustment due to increased quantity of goods or services.';
         }
         else return '';
     }

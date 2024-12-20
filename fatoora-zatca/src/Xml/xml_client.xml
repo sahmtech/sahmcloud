@@ -1,7 +1,5 @@
         <cac:Party>
-            <cac:PartyIdentification>
-                <cbc:ID schemeID="NAT">SET_CLIENT_VAT_NUMBER</cbc:ID>
-            </cac:PartyIdentification>
+SET_CLIENT_PARTY_IDENTIFICATION
             <cac:PostalAddress>
                 <cbc:StreetName>SET_CLIENT_STREET_NAME</cbc:StreetName>
                 <cbc:BuildingNumber>SET_CLIENT_BUILDING_NUMBER</cbc:BuildingNumber>
@@ -11,14 +9,10 @@
                 <cbc:PostalZone>SET_CLIENT_POSTAL_ZONE</cbc:PostalZone>
                 
                 <cac:Country>
-                    <cbc:IdentificationCode>SA</cbc:IdentificationCode>
+                    <cbc:IdentificationCode>SET_CLIENT_COUNTRY_CODE</cbc:IdentificationCode>
                 </cac:Country>
             </cac:PostalAddress>
-            <cac:PartyTaxScheme>
-                <cac:TaxScheme>
-                    <cbc:ID>VAT</cbc:ID>
-                </cac:TaxScheme>
-            </cac:PartyTaxScheme>
+SET_CLIENT_PARTY_TAX_SCHEMA
             <cac:PartyLegalEntity>
                 <cbc:RegistrationName>SET_CLIENT_REGISTRATION_NAME</cbc:RegistrationName>
             </cac:PartyLegalEntity>

@@ -10,6 +10,7 @@ return [
     'settings_are_good' => 'تم التحقق وحفظ المعلومات بنجاح',
     'settings_are_bad' => 'المعلومات المدخلة غير صالحة',
     'printZatcaInvoice' => 'طباعة فاتورة زاتكا',
+    'printZatcaRefundInvoice' => 'طباعة اشعار دائن زاتكا',
     "sell_return" => "مردود مبيعات زاتكا",
 
 ];

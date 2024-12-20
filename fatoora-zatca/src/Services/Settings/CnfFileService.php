@@ -73,31 +73,29 @@ class CnfFileService
         $this->cnf = "
         oid_section = OIDs
         [ OIDs ]
-        certificateTemplateName= 1.3.6.1.4.1.311.20.2
+        certificateTemplateName = 1.3.6.1.4.1.311.20.2
 
         [ req ]
-        default_bits 	= 2048
-        emailAddress 	= {$this->data->emailAddress}
-        req_extensions	= v3_req
+        default_bits 	    = 2048
+        emailAddress 	    = {$this->data->emailAddress}
+        req_extensions	    = v3_req
         x509_extensions 	= v3_ca
-        prompt = no
-        default_md = sha256
-        req_extensions = req_ext
-        distinguished_name = dn
+        prompt              = no
+        default_md          = sha256
+        req_extensions      = req_ext
+        distinguished_name  = dn
 
         [ v3_req ]
-        basicConstraints = CA:FALSE
-        keyUsage = digitalSignature, nonRepudiation, keyEncipherment
+        basicConstraints    = CA:FALSE
+        keyUsage            = digitalSignature, nonRepudiation, keyEncipherment
 
         [req_ext]
         certificateTemplateName = ASN1:PRINTABLESTRING:{$this->certificateTemplateName}
-        subjectAltName = dirName:alt_names
+        subjectAltName          = dirName:alt_names
 
         [ v3_ca ]
 
-
         # Extensions for a typical CA
-
 
         # PKIX recommendation.
 
@@ -105,7 +103,7 @@ class CnfFileService
 
         authorityKeyIdentifier=keyid:always,issuer:always
         [ dn ]
-        CN ={$this->data->commonName}  				                        # Common Name
+        CN={$this->data->commonName}  				                        # Common Name
         C={$this->data->countryName}							            # Country Code e.g SA
         OU={$this->data->organizationalUnitName}							# Organization Unit Name
         O={$this->data->organizationName}							        # Organization Name

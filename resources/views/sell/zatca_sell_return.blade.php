@@ -22,7 +22,8 @@
                 ['transaction_id' => $sell->id],
             ),
             'method' => 'post',
-            'id' => 'sell_return_form',
+            // 'id' => 'sell_return_form',
+            'id' => 'refund_invoice',
         ]) !!}
         {!! Form::hidden('transaction_id', $sell->id) !!}
         <div class="box box-solid">
@@ -211,9 +212,54 @@
     </section>
 @stop
 @section('javascript')
+
     <script src="{{ asset('js/printer.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/sell_return.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const refundForm = document.getElementById('refund_invoice');
+
+            refundForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                const formData = new FormData(refundForm); // Collect form data
+                const actionUrl = refundForm.action; // Get the form action URL
+
+                // Submit the form using AJAX
+                fetch(actionUrl, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success === 1) {
+                            // Open the route in a new tab
+                            if (data.redirect_url) {
+                                window.open(data.redirect_url, '_blank');
+                            }
+
+                            // Redirect to sells.index
+                            const redirectUrl = new URL("{{ route('sells.index') }}");
+                            redirectUrl.searchParams.append('success', data.success);
+                            redirectUrl.searchParams.append('msg', data.msg);
+
+                            window.location.href = redirectUrl.toString();
+                        } else {
+                            alert(data.msg || 'Something went wrong!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    });
+            });
+        });
+
+
+
         $(document).ready(function() {
             $('form#sell_return_form').validate();
             update_sell_return_total();

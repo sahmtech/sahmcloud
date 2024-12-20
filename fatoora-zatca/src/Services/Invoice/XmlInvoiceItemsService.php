@@ -150,13 +150,13 @@ class XmlInvoiceItemsService
 
                 $exemptionReasonAndCodeXml = str_replace(
                     'INVOICE_TAX_EXEMPTION_REASON_CODE',
-                    $exemptionCode,
+                    htmlspecialchars($exemptionCode, ENT_XML1, 'UTF-8'),
                     $exemptionReasonAndCodeXml
                 );
 
                 $exemptionReasonAndCodeXml = str_replace(
                     'INVOICE_TAX_EXEMPTION_REASON',
-                    $exemptionReason,
+                    htmlspecialchars($exemptionReason, ENT_XML1, 'UTF-8'),
                     $exemptionReasonAndCodeXml
                 );
 
@@ -194,11 +194,13 @@ class XmlInvoiceItemsService
 
             $xml = str_replace('ITEM_QTY', $item->quantity, $xml);
 
+            $xml = str_replace('UNIT_CODE', $item->unit_code, $xml);
+
             $itemNetPrice = ($item->price - $item->discount) / $item->quantity;
 
             $xml = str_replace('ITEM_NET_PRICE', PriceFormat::transform($itemNetPrice), $xml);
 
-            $xml = str_replace('ITEM_NAME', $item->product_name, $xml);
+            $xml = str_replace('ITEM_NAME', htmlspecialchars($item->product_name, ENT_XML1, 'UTF-8'), $xml);
 
             $xml = str_replace('ITEM_NET_AMOUNT', PriceFormat::transform($item->sub_total), $xml);
 
@@ -267,9 +269,16 @@ class XmlInvoiceItemsService
     {
             $xml = GetXmlFileAction::handle('xml_line_item_discount');
 
+            $discountReason = '';
+            if($item->discount > 0) {
+                $discountReason = ! empty($item->discount_reason)
+                ? htmlspecialchars($item->discount_reason, ENT_XML1, 'UTF-8')
+                : 'Discount on goods or services';
+            }
+
             $xml  = str_replace(
                 'ITEM_DISCOUNT_REASON',
-                $item->discount > 0 ? ($item->discount_reason ?? 'Discount') : '',
+                $discountReason,
                 $xml
             );
 

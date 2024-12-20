@@ -9,7 +9,7 @@ class KeysService
     /**
      * the private key.
      *
-     * @var string
+     * @var \OpenSSLAsymmetricKey|string
      */
     protected $privateKey;
 

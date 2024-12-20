@@ -14,9 +14,9 @@ return [
      * the mode of zatca app is by default the same as app environment.
      */
     'portals'       => [
-        'local'         => env('ZATCA_LOCAL', 'https://gw-apic-gov.gazt.gov.sa/e-invoicing/developer-portal'),
-        'simulation'    => env('ZATCA_SIMULATION', 'https://gw-apic-gov.gazt.gov.sa/e-invoicing/simulation'),
-        'production'    => env('ZATCA_PRODUCTION', 'https://gw-apic-gov.gazt.gov.sa/e-invoicing/production'),
+        'local'         => env('ZATCA_LOCAL', 'https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal'),
+        'simulation'    => env('ZATCA_SIMULATION', 'https://gw-fatoora.zatca.gov.sa/e-invoicing/simulation'),
+        'production'    => env('ZATCA_PRODUCTION', 'https://gw-fatoora.zatca.gov.sa/e-invoicing/core'),
     ],
     'app' => [
         'environment'   => env('ZATCA_ENVIRONMENT', env('APP_ENV', 'local')), # local|simulation|production

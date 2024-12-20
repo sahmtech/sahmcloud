@@ -8,6 +8,7 @@ $(document).ready(function() {
     if ($('form#sell_return_form').length > 0 || $('form#add_pos_sell_form').length > 0) {
         initialize_printer();
     }
+ 
 
     //Date picker
     $('#transaction_date').datetimepicker({

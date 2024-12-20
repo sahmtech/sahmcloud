@@ -3,12 +3,12 @@
 namespace Bl\FatooraZatca;
 
 use Bl\FatooraZatca\Classes\DocumentType;
-use Bl\FatooraZatca\Helpers\ConfigHelper;
 use Bl\FatooraZatca\Objects\Client;
 use Bl\FatooraZatca\Objects\Invoice;
 use Bl\FatooraZatca\Objects\Seller;
 use Bl\FatooraZatca\Objects\Setting;
 use Bl\FatooraZatca\Services\ReportInvoiceService;
+use Bl\FatooraZatca\Services\Settings\RenewCert509Service;
 use Bl\FatooraZatca\Services\SettingService;
 
 class Zatca
@@ -22,6 +22,18 @@ class Zatca
     public static function generateZatcaSetting(Setting $setting): object
     {
         return (new SettingService($setting))->generate();
+    }
+
+    /**
+     * renew zatca setting
+     *
+     * @param  string $otp
+     * @param  object $setting
+     * @return object
+     */
+    public static function renewZatcaSetting(string $otp, object $setting): object
+    {
+        return (new RenewCert509Service)->renew($otp, $setting);
     }
 
     /**

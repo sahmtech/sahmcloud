@@ -34,7 +34,7 @@ class Invoice
     /**
      * the invoice type.
      * 388 Tax INVOICE
-     * 383 DEBIT_NOTE (refund)
+     * 383 DEBIT_NOTE
      * 381 CREDIT_NOTE
      *
      * @var int
@@ -119,21 +119,21 @@ class Invoice
     {
         $this->id                       = $id;
         $this->invoice_number           = $invoice_number;
-        $this->invoice_billing_id       = $invoice_billing_id;
         $this->invoice_uuid             = $invoice_uuid;
         $this->invoice_date             = $invoice_date;
         $this->invoice_time             = $invoice_time;
         $this->invoice_type             = $invoice_type;
         $this->payment_type             = $payment_type;
-        $this->invoice_note             = $invoice_note;
-        $this->payment_note             = $payment_note;
-        $this->currency                 = $currency;
-        $this->previous_hash            = $previous_hash;
         $this->price                    = $price;
         $this->discount                 = $discount;
         $this->tax                      = $tax;
         $this->total                    = $total;
         $this->invoice_items            = $invoice_items;
+        $this->previous_hash            = $previous_hash;
+        $this->invoice_billing_id       = $invoice_billing_id;
+        $this->invoice_note             = $invoice_note;
+        $this->payment_note             = $payment_note;
+        $this->currency                 = $currency;
         $this->tax_percent              = $tax_percent;
         $this->delivery_date            = $delivery_date ?? $invoice_date;
     }

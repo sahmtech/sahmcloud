@@ -141,24 +141,41 @@ class SellReturnController extends Controller
             return Datatables::of($sells)
                 ->addColumn(
                     'action',
-                    '<div class="btn-group">
-                    <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
-                        data-toggle="dropdown" aria-expanded="false">' .
-                        __('messages.actions') .
-                        '<span class="caret"></span><span class="sr-only">Toggle Dropdown
-                        </span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                        <li><a href="#" class="btn-modal" data-container=".view_modal" data-href="{{action(\'App\Http\Controllers\SellReturnController@show\', [$parent_sale_id])}}"><i class="fas fa-eye" aria-hidden="true"></i> @lang("messages.view")</a></li>
-                                             <li><a href="#" class="print-invoice" data-href="{{action(\'App\Http\Controllers\SellReturnController@printInvoice\', [$id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a></li>
+                    function ($row) {
+                        $html = '<div class="btn-group">
+                        <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
+                            data-toggle="dropdown" aria-expanded="false">' .
+                            __('messages.actions') .
+                            '<span class="caret"></span><span class="sr-only">Toggle Dropdown
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li><a href="#" class="btn-modal" data-container=".view_modal" data-href="{{action(\'App\Http\Controllers\SellReturnController@show\', [$parent_sale_id])}}"><i class="fas fa-eye" aria-hidden="true"></i>' . __("messages.view") . '</a></li>
+                                                ';
+                        $tmp = Transaction::find($row->id);
+                        if ($tmp->invoice_type) {
+                            $html .=
+                                '<li><a href="' . route('sell.printZatcaRefundInvoice', [$row->id]) . '" target=_blank><i class="fas fa-print" aria-hidden="true"></i> ' . __('zatca.printZatcaRefundInvoice') . '</a></li>';
+                        } else {
+                            $html .= ' <li><a href="#" class="print-invoice" data-href="{{action(\'App\Http\Controllers\SellReturnController@printInvoice\', [$id])}}"><i class="fa fa-print" aria-hidden="true"></i> ' . __("messages.print") . '</a></li>';
+                        }
+                        if ($row->payment_status != "paid") {
+                            $html .= '
+                            <li><a href="{{action(\'App\Http\Controllers\TransactionPaymentController@addPayment\', [$id])}}" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.add_payment") . '</a></li>
+                        ';
+                        }
+                        $html .= '
+                        <li><a href="{{action(\'App\Http\Controllers\TransactionPaymentController@show\', [$id])}}" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.view_payments") . '</a></li>
+                        </ul>
+                        </div>';
+                        return $html;
+                    }
 
-                    @if($payment_status != "paid")
-                        <li><a href="{{action(\'App\Http\Controllers\TransactionPaymentController@addPayment\', [$id])}}" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> @lang("purchase.add_payment")</a></li>
-                    @endif
 
-                    <li><a href="{{action(\'App\Http\Controllers\TransactionPaymentController@show\', [$id])}}" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> @lang("purchase.view_payments")</a></li>
-                    </ul>
-                    </div>'
+
+
+
+
                 )
                 ->removeColumn('id')
                 ->editColumn(

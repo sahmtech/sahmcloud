@@ -2,6 +2,8 @@
 
 namespace Bl\FatooraZatca;
 
+use Bl\FatooraZatca\Middleware\SetEnvironmentMiddleware;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class FatooraZatcaServiceProvider extends ServiceProvider
@@ -32,6 +34,17 @@ class FatooraZatcaServiceProvider extends ServiceProvider
     {
         $this->publishes([
             $this->configPath => config_path('zatca.php'),
-         ], 'fatoora-zatca');
+        ], 'fatoora-zatca');
+
+        Route::macro('fatooraZatcaApi', function() {
+            Route::prefix('fatoora-zatca')
+            ->namespace('\Bl\FatooraZatca\Controllers')
+            ->middleware(SetEnvironmentMiddleware::class)->group(function() {
+                Route::post('setting', 'SettingsController');
+                Route::post('renew-setting', 'RenewSettingsController');
+                Route::post('b2c', 'B2cController');
+                Route::post('b2b', 'B2bController');
+            });
+        });
     }
 }

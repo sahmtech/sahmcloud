@@ -17,9 +17,9 @@ class SettingService
 
 
     /**
-     * the data of a tax payer.
+     * the settings of a tax payer.
      *
-     * @var object
+     * @var \Bl\FatooraZatca\Objects\Setting
      */
     protected $data;
 

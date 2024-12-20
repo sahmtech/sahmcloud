@@ -3,6 +3,7 @@
 namespace Bl\FatooraZatca\Actions;
 
 use Bl\FatooraZatca\Helpers\ConfigHelper;
+use Exception;
 
 class PostRequestAction
 {
@@ -37,6 +38,10 @@ class PostRequestAction
 
         // execute!
         $response = curl_exec($ch);
+
+        if(curl_errno($ch)) {
+            throw new Exception('curl error: ' . curl_error($ch));
+        }
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 

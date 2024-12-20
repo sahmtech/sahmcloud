@@ -3,7 +3,6 @@
 namespace Bl\FatooraZatca\Services\Invoice;
 
 use Bl\FatooraZatca\Actions\GetXmlFileAction;
-use Bl\FatooraZatca\Helpers\ConfigHelper;
 use Bl\FatooraZatca\Helpers\InvoiceHelper;
 use Bl\FatooraZatca\Transformers\PriceFormat;
 use Bl\FatooraZatca\Transformers\PublicKey;
