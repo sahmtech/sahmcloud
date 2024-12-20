@@ -24,6 +24,7 @@ Homestead.json
 /storage/framework/views
 /storage/logs
 
+
 # Prevent sensitive files from being committed
 .env
 .env.backup
