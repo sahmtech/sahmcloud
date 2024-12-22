@@ -538,6 +538,7 @@ class ZatcaController extends Controller
                     'qr_code' => $b2b->getQr(),
                     'invoice_type' => $validatedData['invoice_type'],
                     'payment_type' =>   $validatedData['payment_type'],
+                    'payment_status' => 'due',
                     'delivery_date' =>  $validatedData['invoice_date'],
                     'total_before_tax' =>  $totalWithoutVAT + $totalDiscount,
                     'final_total' => $totalWithVAT,
@@ -793,15 +794,6 @@ class ZatcaController extends Controller
             );
 
 
-            // $location_details = BusinessLocation::find($transaction->location_id);
-
-            // $businessUtil = new BusinessUtil();
-            // $invoice_layout_id = $location_details->invoice_layout_id;
-            // $invoice_layout = $businessUtil->invoiceLayout($business_id, $invoice_layout_id);
-            // $footer_text = $invoice_layout->footer_text ?? '';
-
-            // $fromDate = $transaction->custom_field_1;
-            // $toDate = $transaction->custom_field_2;
             /////////
             // create zatca return
             $selected_products = [];
@@ -821,16 +813,6 @@ class ZatcaController extends Controller
                         "note" => $item->discount_reason,
                     ];
                 }
-                // $selected_products[$id] = [
-                //     "name" => $item['product_name'],
-                //     "quantity" =>  $item['quantity'],
-                //     "price" => number_format($item['price'] / $item['quantity'], 3, '.', ''),
-                //     "discount" => number_format($item['discount'], 3, '.', ''),
-                //     "tax" => number_format($item['tax'] / $item['quantity'], 3, '.', ''),
-                //     "tax_percent" => number_format($item['tax_percent'], 3, '.', ''),
-                //     "total" => number_format($item['total'] / $item['quantity'], 3, '.', ''),
-                //     "note" => $item['discount_reason'],
-                // ];
             }
 
             $request = (object)[
@@ -1005,13 +987,9 @@ class ZatcaController extends Controller
                         $totalDiscount += $discountAmount;
                     }
 
-                    // Calculate the total amount with VAT
                     $totalWithVAT = $totalWithoutVAT - $totalDiscount + $totalVAT;
 
                     $invoiceTime = $validatedData['invoice_time'];
-
-                    // return $invoiceItems or use them as needed
-
 
 
                     $uuid = Uuid::uuid4()->toString();
@@ -1056,6 +1034,7 @@ class ZatcaController extends Controller
                         'qr_code' => $b2b->getQr(),
                         'invoice_type' => $validatedData['invoice_type'],
                         'payment_type' =>   $validatedData['payment_type'],
+                        'payment_status' => 'due',
                         'delivery_date' =>  $validatedData['invoice_date'],
                         'total_before_tax' =>  $totalWithoutVAT + $totalDiscount,
                         'final_total' => $totalWithVAT,
@@ -1066,12 +1045,7 @@ class ZatcaController extends Controller
 
                     $output = '';
 
-                    // return   [
-                    //     // '1' => $invoiceItems[0],
-                    //     '2' => $invoice,
-                    //     // '3' => $b2b->getWarningMessages(),
-                    //     // '4' => $b2b->getErrorMessages(),
-                    // ];
+
 
                     if (empty($b2b->getWarningMessages()) & empty($b2b->getErrorMessages())) {
                         $output = ['success' => 1, 'msg' => __('lang_v1.converted_to_invoice_successfully', ['invoice_no' => $transaction->invoice_no])];
@@ -1085,37 +1059,14 @@ class ZatcaController extends Controller
                 } else {
                     $output = ['success' => 1, 'msg' => __('lang_v1.converted_to_invoice_successfully')];
                 }
-                //sell_line_note
 
-
-
-
-                // return \SimpleSoftwareIO\QrCode\Facades\QrCode::size(300)->generate($b2b->getQr());
-                // echo $b2b->getQrImage();
-                // dd(
-                //     // $b2b->getReportingStatus(),
-                //     $b2b->getValidationResults(),
-                //     $b2b->getInfoMessages(),
-                //     $b2b->getWarningMessages(),
-                //     $b2b->getErrorMessages(),
-                //     $b2b->getValidationResultStatus(),
-                //     $b2b->getResult(),
-                //     $b2b->getClearedInvoice(),
-                //     $b2b->getQr(),
-                //     $b2b->getInvoiceHash()
-                // );
                 $output = [
                     'success' => 1,
                     'msg' => __('lang_v1.success'),
                     'redirect_url' => route('sell.printZatcaRefundInvoice', ['transaction_id' => $transaction->id]),
                 ];
-                // return redirect()->route('sell.printZatcaRefundInvoice', ['transaction_id' => $transaction->id]);
-                // return $output;
+
                 return response()->json($output);
-                // return redirect()->route('sells.index')->with('status', $output);
-                return redirect()
-                    ->action([\App\Http\Controllers\SellController::class, 'index'])
-                    ->with('status', $output);
             } catch (\Exception $e) {
                 return 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage();
                 error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
