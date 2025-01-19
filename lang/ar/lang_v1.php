@@ -1419,10 +1419,15 @@ return [
     'Actions' => 'العمليات',
     'enable_fast_store' => 'تفعيل التخزين السريع',
     'technical_erorr' => 'خطأ تقني الرجاء المحاولة مجددا',
-    'no_description'=>' .. لا يوجد وصف للمنتج',
+    'no_description' => ' .. لا يوجد وصف للمنتج',
     'show_letter_footer' => 'إظهار الذيل',
     'show_letter_head' => 'إظهار الرأس',
     'letter_head' => 'صورة الرأس',
     'letter_footer' => 'صورة الذيل',
+    'adjustment_title' => 'عنوان التسوية',
+    'adjustment_amount' => 'قيمة التسوية',
+    'adjustment_default_title' => 'التسوية',
+    'enter_adjustment_title' => 'ادخل عنوان للتسوية',
+    'enter_adjustment_amount' => 'ادخل قيمة للتسوية',
 
 ];

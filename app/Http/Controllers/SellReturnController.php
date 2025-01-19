@@ -278,6 +278,12 @@ class SellReturnController extends Controller
      */
     public function store(Request $request)
     {
+        // error_log($request->adjustment_title);
+        // error_log($request->adjustment_amount);
+
+        // error_log(json_encode($request->except('_token')));
+
+
 
         if (!auth()->user()->can('access_sell_return') && !auth()->user()->can('access_own_sell_return')) {
             abort(403, 'Unauthorized action.');
@@ -300,6 +306,7 @@ class SellReturnController extends Controller
 
             $sell_return = $this->transactionUtil->addSellReturn($input, $business_id, $user_id);
 
+            // dd($input);
             $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
 
             // return  $sell_return->id;
@@ -528,9 +535,9 @@ class SellReturnController extends Controller
 
             $lines = [];
             foreach ($receipt_details->lines as $line) {
-                if ($line['quantity'] == 0) {
-                    continue;
-                }
+                // if ($line['quantity'] == 0) {
+                //     continue;
+                // }
                 array_push($lines, $line);
             }
 

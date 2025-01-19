@@ -1930,7 +1930,9 @@ class TransactionUtil extends Util
             $output['export_custom_fields_info']['export_custom_field_6'] = $export_custom_fields_info['export_custom_field_6'] ?? '';
         }
 
-        $output['design'] = $il->design;
+
+        $output['adjustment_title'] = $transaction->adjustment_title ?? null;
+        $output['adjustment_amount'] = $transaction->adjustment_amount ?? null;
         $output['table_tax_headings'] = !empty($il->table_tax_headings) ? array_filter(json_decode($il->table_tax_headings), 'strlen') : null;
 
         return (object) $output;
@@ -6070,6 +6072,8 @@ class TransactionUtil extends Util
 
         $input['tax_id'] = $input['tax_id'] ?? null;
 
+        // error_log(json_encode($input));
+
         $invoice_total = $productUtil->calculateInvoiceTotal($input['products'], $input['tax_id'], $discount, $uf_number);
 
         //Get parent sale
@@ -6090,7 +6094,9 @@ class TransactionUtil extends Util
             'tax_id' => $input['tax_id'],
             'tax_amount' => $invoice_total['tax'],
             'total_before_tax' => $invoice_total['total_before_tax'],
-            'final_total' => $invoice_total['final_total'],
+            'final_total' => $invoice_total['final_total'] + ($input['adjustment_amount'] ?? 0),
+            'adjustment_title' => $input['adjustment_title'] ?? __('lang_v1.adjustment_default_title'),
+            'adjustment_amount' => $input['adjustment_amount'] ?? 0,
         ];
 
         if (!empty($input['transaction_date'])) {
@@ -6118,6 +6124,7 @@ class TransactionUtil extends Util
 
             $this->activityLog($sell_return, 'added');
         } else {
+
             $sell_return_data['invoice_no'] = $sell_return_data['invoice_no'] ?? $sell_return->invoice_no;
             $sell_return_before = $sell_return->replicate();
 

@@ -65,7 +65,7 @@
 
     .footer-text {
         width: 95%;
-        margin-right: 5px; 
+        margin-right: 5px;
     }
 
     .invoice-info-1 {
@@ -492,6 +492,20 @@
                                                         @endif
                                                     @endif
 
+
+                                                    @if ($receipt_details->adjustment_amount)
+                                                        <tr class="color-555">
+                                                            <td>
+                                                                {!! $receipt_details->adjustment_title !!}:
+                                                            </td>
+
+                                                            <td class="t-start">
+                                                                {{ $receipt_details->adjustment_amount }}
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+
+
                                                     <!-- Total -->
                                                     <tr>
                                                         <th style="background-color: #357ca5 !important; !important"
@@ -503,6 +517,7 @@
                                                             {{ $receipt_details->total }}
                                                         </td>
                                                     </tr>
+
                                                 </tbody>
                                             </table>
                                         </div>
