@@ -71,3 +71,15 @@ Thumbs.db
 # Ignore other files
 /Modules/*/database/seeds
 
+/fatoora-zatca_old
+/fatoora-zatca_old_2
+/fatoora-zatca_old_latest
+
+/fatoora-zatca_old/
+/fatoora-zatca_old_2/
+/fatoora-zatca_old_latest/
+
+./fatoora-zatca_old
+./fatoora-zatca_old_2
+./fatoora-zatca_old_latest
+
