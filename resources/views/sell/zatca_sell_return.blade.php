@@ -40,6 +40,11 @@
                         <strong>@lang('contact.customer'):</strong> {{ $sell->contact->name }} <br>
                         <strong>@lang('purchase.business_location'):</strong> {{ $sell->location->name }}
                     </div>
+                    <div class="col-sm-4">
+                        <strong>@lang('sale.total_amount'):</strong>
+                        <span class="final-total" data-orig-value="{{ $sell->final_total }}">@format_currency($sell->final_total)</span>
+                        <br>
+                    </div>
                 </div>
             </div>
         </div>
@@ -121,7 +126,8 @@
                                             {{ $sell_line->variations->sub_sku }}
                                         </td>
                                         <td><span class="display_currency"
-                                                data-currency_symbol="true">{{ $sell_line->unit_price_inc_tax }}</span></td>
+                                                data-currency_symbol="true">{{ $sell_line->unit_price_inc_tax }}</span>
+                                        </td>
                                         <td>{{ $sell_line->formatted_qty }} {{ $unit_name }}</td>
 
                                         <td>
