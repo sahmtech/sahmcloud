@@ -629,6 +629,7 @@ class ZatcaController extends Controller
 
     public function storeZatcaSellReturn(Request $request)
     {
+
         // return $request->all();
         if (!auth()->user()->can('access_sell_return') && !auth()->user()->can('access_own_sell_return')) {
             abort(403, 'Unauthorized action.');
@@ -636,7 +637,7 @@ class ZatcaController extends Controller
 
         // try {
         $input = $request->except('_token');
-
+        $rounding_amount = $input['adjustment_amount'] ?? 0;
         if (!empty($input['products'])) {
             $business_id = $request->session()->get('user.business_id');
 
@@ -741,6 +742,8 @@ class ZatcaController extends Controller
             // return $transaction_sell_lines;
 
             $transaction_date = explode(' ', $transaction->transaction_date);
+            $final_total += $rounding_amount;
+
 
             $invoice = new Invoice(
                 $transaction->id, // Replace with appropriate ID
@@ -762,6 +765,7 @@ class ZatcaController extends Controller
                 'SAR',
                 15, // Average VAT percentage if needed
                 $transaction->delivery_date, // Assuming due date is the same as invoice date
+                $rounding_amount,
             );
             // dd($invoice);
             $contact = Contact::where('id', $transaction->contact_id)->first();
@@ -990,7 +994,7 @@ class ZatcaController extends Controller
                     $totalWithVAT = $totalWithoutVAT - $totalDiscount + $totalVAT;
 
                     $invoiceTime = $validatedData['invoice_time'];
-
+                    $totalWithVAT += $rounding_amount;
 
                     $uuid = Uuid::uuid4()->toString();
                     $invoice = new Invoice(
@@ -1012,8 +1016,19 @@ class ZatcaController extends Controller
                         $validatedData['payment_note'], // Adjust payment note as needed
                         $validatedData['invoice_currency'],
                         15, // Average VAT percentage if needed
-                        $validatedData['invoice_date'] // Assuming due date is the same as invoice date
+                        $validatedData['invoice_date'], // Assuming due date is the same as invoice date
+                        $rounding_amount
                     );
+
+                    foreach ($invoiceItems as $invoiceItem) {
+                        error_log($invoiceItem->product_name);
+                        error_log($invoiceItem->quantity);
+                        error_log("-----------");
+                    }
+
+                    error_log('total: ' . $invoice->total);
+                    error_log('rounding: ' . $invoice->rounding_amount);
+
 
 
 
@@ -1028,7 +1043,9 @@ class ZatcaController extends Controller
                         $validatedData['buyer_city_subdivision_name'],
                         $validatedData['buyer_city'],
                     );
+
                     $b2b = B2B::make($seller, $invoice, $client)->report();
+
                     $transaction->update([
                         'uuid' =>    $uuid,
                         'qr_code' => $b2b->getQr(),
@@ -1068,7 +1085,7 @@ class ZatcaController extends Controller
 
                 return response()->json($output);
             } catch (\Exception $e) {
-                return 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage();
+                // return 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage();
                 error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
                 $output = ['success' => 0, 'msg' => 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage()];
                 return redirect()->back()->with('status', $output);
@@ -1318,6 +1335,7 @@ class ZatcaController extends Controller
         $total_before_tax = 0;
         $total_tax = 0;
         $final_total = 0;
+        $rounding_amount = $transaction->adjustment_amount ?? 0;
         foreach ($transaction_sell_lines as $index => $transaction_sell_line) {
             $notest[$transaction_sell_line->product_id] =  $transaction_sell_line->sell_line_note;
 
@@ -1342,7 +1360,7 @@ class ZatcaController extends Controller
             $final_total += ($priceAfterDiscount + $taxAmount);
         }
         // return $transaction_sell_lines;
-
+        $final_total += $rounding_amount;
         $transaction_date = explode(' ', $transaction->transaction_date);
 
         $invoice = new Invoice(
@@ -1365,6 +1383,8 @@ class ZatcaController extends Controller
             'SAR',
             15, // Average VAT percentage if needed
             $transaction->delivery_date, // Assuming due date is the same as invoice date
+            $rounding_amount,
+
         );
 
         $contact = Contact::where('id', $transaction->contact_id)->first();

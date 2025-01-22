@@ -46,8 +46,11 @@ class ManageUserController extends Controller
                 ->user()
                 ->where('is_cmmsn_agnt', 0)
                 ->select([
-                    'id', 'username',
-                    DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"), 'email', 'allow_login',
+                    'id',
+                    'username',
+                    DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"),
+                    'email',
+                    'allow_login',
                 ]);
 
             return Datatables::of($users)
@@ -126,6 +129,7 @@ class ManageUserController extends Controller
      */
     public function store(Request $request)
     {
+        error_log("ASdas");
         if (!auth()->user()->can('user.create')) {
             abort(403, 'Unauthorized action.');
         }
@@ -251,11 +255,33 @@ class ManageUserController extends Controller
 
         try {
             $user_data = $request->only([
-                'surname', 'first_name', 'last_name', 'email', 'selected_contacts', 'marital_status',
-                'blood_group', 'contact_number', 'fb_link', 'twitter_link', 'social_media_1',
-                'social_media_2', 'permanent_address', 'current_address',
-                'guardian_name', 'custom_field_1', 'custom_field_2',
-                'custom_field_3', 'custom_field_4', 'id_proof_name', 'id_proof_number', 'cmmsn_percent', 'gender', 'max_sales_discount_percent', 'family_number', 'alt_number', 'is_enable_service_staff_pin'
+                'surname',
+                'first_name',
+                'last_name',
+                'email',
+                'selected_contacts',
+                'marital_status',
+                'blood_group',
+                'contact_number',
+                'fb_link',
+                'twitter_link',
+                'social_media_1',
+                'social_media_2',
+                'permanent_address',
+                'current_address',
+                'guardian_name',
+                'custom_field_1',
+                'custom_field_2',
+                'custom_field_3',
+                'custom_field_4',
+                'id_proof_name',
+                'id_proof_number',
+                'cmmsn_percent',
+                'gender',
+                'max_sales_discount_percent',
+                'family_number',
+                'alt_number',
+                'is_enable_service_staff_pin'
             ]);
 
             $user_data['status'] = !empty($request->input('is_active')) ? 'active' : 'inactive';

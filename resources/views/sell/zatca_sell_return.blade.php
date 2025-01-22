@@ -174,6 +174,28 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            {!! Form::label('adjustment_title', __('lang_v1.adjustment_title') . ':') !!}
+                            {!! Form::text('adjustment_title', $sell->return_parent->adjustment_title ?? null, [
+                                'class' => 'form-control',
+                                'placeholder' => __('lang_v1.enter_adjustment_title'),
+                                'id' => 'adjustment_title',
+                            ]) !!}
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            {!! Form::label('adjustment_amount', __('lang_v1.adjustment_amount') . ':') !!}
+                            {!! Form::text('adjustment_amount', @num_format($sell->return_parent->adjustment_amount ?? 0), [
+                                'class' => 'form-control input_number',
+                                'id' => 'adjustment_amount',
+                                'placeholder' => __('lang_v1.enter_adjustment_amount'),
+                            ]) !!}
+                        </div>
+                    </div>
+                </div>
                 @php
                     $tax_percent = 0;
                     if (!empty($sell->tax)) {
@@ -193,6 +215,10 @@
                                 ({{ $sell->tax->name }} - {{ $sell->tax->amount }}%)
                             @endif : </strong>
                         &nbsp;(+) <span id="total_return_tax"></span>
+                    </div>
+                    <div class="col-sm-12 text-right">
+                        <strong id="adjustment_label">@lang('lang_v1.adjustment_default_title'): </strong>&nbsp;
+                        <span id="adjustment_value">0</span>
                     </div>
                     <div class="col-sm-12 text-right">
                         <strong>@lang('lang_v1.return_total'): </strong>&nbsp;
@@ -224,7 +250,6 @@
 
                 const formData = new FormData(refundForm); // Collect form data
                 const actionUrl = refundForm.action; // Get the form action URL
-
                 // Submit the form using AJAX
                 fetch(actionUrl, {
                         method: 'POST',
@@ -235,6 +260,7 @@
                     })
                     .then(response => response.json())
                     .then(data => {
+
                         if (data.success === 1) {
                             // Open the route in a new tab
                             if (data.redirect_url) {
@@ -269,9 +295,11 @@
             //     format: datepicker_date_format
             // });
         });
-        $(document).on('change', 'input.return_qty, #discount_amount, #discount_type', function() {
-            update_sell_return_total()
-        });
+        $(document).on('change',
+            'input.return_qty, #discount_amount, #discount_type, #adjustment_title, #adjustment_amount',
+            function() {
+                update_sell_return_total()
+            });
 
         function update_sell_return_total() {
             var net_return = 0;
@@ -295,10 +323,20 @@
             var total_tax = __calculate_amount('percentage', tax_percent, discounted_net_return);
             var net_return_inc_tax = total_tax + discounted_net_return;
 
+
+
+            var adjustment_title = $('#adjustment_title').val();
+            var adjustment_amount = __read_number($('#adjustment_amount'));
+
+            $('#adjustment_label').text(adjustment_title ? adjustment_title + ': ' : '@lang('lang_v1.adjustment_default_title')' + ': ');
+            $('#adjustment_value').text(__currency_trans_from_en(adjustment_amount, true));
+
+            var net_return_with_adjustment = net_return_inc_tax + adjustment_amount;
+
             $('input#tax_amount').val(total_tax);
             $('span#total_return_discount').text(__currency_trans_from_en(discount, true));
             $('span#total_return_tax').text(__currency_trans_from_en(total_tax, true));
-            $('span#net_return').text(__currency_trans_from_en(net_return_inc_tax, true));
+            $('span#net_return').text(__currency_trans_from_en(net_return_with_adjustment, true));
         }
     </script>
 @endsection
