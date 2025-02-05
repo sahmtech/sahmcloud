@@ -9,7 +9,6 @@
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 20px;
             font-size: 12px;
             color: #333;
         }

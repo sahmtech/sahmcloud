@@ -1281,7 +1281,7 @@ class ZatcaController extends Controller
 
         // return [
         //     'logo' => $business->logo ?? '',
-        //     'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(220)->generate($transaction->qr_code) :  '',
+        //     'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate($transaction->qr_code) :  '',
         //     'invoice' =>  $invoice,
         //     'seller' =>   $seller,
         //     'client' => $client,
@@ -1294,7 +1294,7 @@ class ZatcaController extends Controller
 
         return view('sell.invoice', [
             'logo' => $business->logo ?? '',
-            'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(220)->generate($transaction->qr_code) :  '',
+            'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate($transaction->qr_code) :  '',
             'invoice' =>  $invoice,
             'seller' =>   $seller,
             'client' => $client,
@@ -1432,7 +1432,7 @@ class ZatcaController extends Controller
 
         // return [
         //     'logo' => $business->logo ?? '',
-        //     'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(220)->generate($transaction->qr_code) :  '',
+        //     'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate($transaction->qr_code) :  '',
         //     'invoice' =>  $invoice,
         //     'seller' =>   $seller,
         //     'client' => $client,
@@ -1452,7 +1452,7 @@ class ZatcaController extends Controller
         return view('sell.refund_invoice', [
             'parent_invoice_number' => $parent_transaction->invoice_no,
             'logo' => $business->logo ?? '',
-            'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(220)->generate($transaction->qr_code) :  '',
+            'Qr' =>  $transaction->qr_code ? \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate($transaction->qr_code) :  '',
             'invoice' =>  $invoice,
             'seller' =>   $seller,
             'client' => $client,
