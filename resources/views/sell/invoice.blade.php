@@ -56,7 +56,7 @@
 
         .section-title {
             background: #e2e2e2;
-            padding: 10px;
+            padding: 6px;
             margin-top: 20px;
             margin-bottom: 10px;
             font-weight: bold;
@@ -89,7 +89,7 @@
         .invoice-items td,
         .invoice-summary th,
         .invoice-summary td {
-            padding: 8px;
+            padding: 4px;
             border: 1px solid #ddd;
             vertical-align: top;
         }
@@ -140,7 +140,7 @@
         }
 
         @media print {
-            body {
+            /* body {
                 font-size: 12pt;
                 color: #000;
             }
@@ -153,7 +153,7 @@
             .title h2 {
                 font-size: 28pt;
 
-            }
+            } */
 
             .invoice-box {
                 max-width: 100vw;
