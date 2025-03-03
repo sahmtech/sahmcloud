@@ -908,7 +908,7 @@ Route::get('fix7', function () {
         }
 
         $transaction->update([
-            'tax_id' =>  50,
+            'tax_id' =>  87,
             'total_before_tax' =>  $total_before_tax,
             'tax_amount' => $transaction->final_total -  $total_before_tax,
         ]);
