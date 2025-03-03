@@ -884,7 +884,7 @@ Route::get('fix7', function () {
             ->get();
         $total_before_tax = 0;
         foreach ($sellLines as  $sellLine) {
-            if ($sellLine->product->tax != null && $sellLine->product->tax == 50) {
+            if ($sellLine->product->tax != null && $sellLine->product->tax == 87) {
 
                 $unit_price = $sellLine->unit_price_inc_tax * (100 / 115);
                 $sellLine->update([
