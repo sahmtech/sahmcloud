@@ -888,7 +888,7 @@ Route::get('fix7', function () {
 
                 $unit_price = $sellLine->unit_price_inc_tax * (100 / 115);
                 $sellLine->update([
-                    'tax_id' => 87,
+                    'tax_id' => null,
                     'unit_price' => $unit_price,
                     'item_tax' => 0,
                 ]);
