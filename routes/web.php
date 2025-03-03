@@ -901,10 +901,10 @@ Route::get('fix7', function () {
                     'tax_id' => 81,
                     'unit_price' => $unit_price,
                     // 'item_tax' => $tax,
-                    'item_tax' => max((float) $tax, 25),
-                    'unit_price_inc_tax' => $unit_price * 2,
+                    'item_tax' => 25,
+                    'unit_price_inc_tax' => $unit_price + 25,
                 ]);
-                $total_before_tax += (($unit_price * 2) * $sellLine->quantity);
+                $total_before_tax += (($unit_price + 25) * $sellLine->quantity);
             }
         }
 
