@@ -875,7 +875,6 @@ Route::get('fix7', function () {
     $transactions3 = Transaction::where('business_id', 84)
         ->where('type', 'sell')
         ->where('transaction_date', '>', '2024-06-30')
-        ->where('tax_amount', 0)
         ->get();
 
 
@@ -889,7 +888,7 @@ Route::get('fix7', function () {
 
                 $unit_price = $sellLine->unit_price_inc_tax * (100 / 115);
                 $sellLine->update([
-                    'tax_id' => null,
+                    'tax_id' => 87,
                     'unit_price' => $unit_price,
                     'item_tax' => 0,
                 ]);
