@@ -833,7 +833,6 @@ Route::get('fix_invoices_6', function () {
 
     $transactions3 = Transaction::where('business_id', 93)
         ->where('type', 'sell')
-        ->where('tax_amount', 0)
         ->get();
     foreach ($transactions3 as $transaction) {
         $sellLines  = TransactionSellLine::with('product')
@@ -876,6 +875,7 @@ Route::get('fix7', function () {
     $transactions3 = Transaction::where('business_id', 84)
         ->where('type', 'sell')
         ->where('transaction_date', '>', '2024-06-30')
+        ->where('tax_amount', 0)
         ->get();
 
 
