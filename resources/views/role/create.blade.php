@@ -438,22 +438,23 @@
               </label>
             </div>
           </div>
-          <div class="col-md-12">
+          {{-- <div class="col-md-12">
             <div class="checkbox">
               <label>
                 {!! Form::checkbox('permissions[]', 'edit_purchase_payment', false,['class' => 'input-icheck']); !!}
                 {{ __('lang_v1.edit_purchase_payment') }}
               </label>
             </div>
-          </div>
-          <div class="col-md-12">
+          </div> --}}
+          {{-- حذف فاتورة --}}
+          {{-- <div class="col-md-12">
             <div class="checkbox">
               <label>
                 {!! Form::checkbox('permissions[]', 'delete_purchase_payment', false,['class' => 'input-icheck']); !!}
                 {{ __('lang_v1.delete_purchase_payment') }}
               </label>
             </div>
-          </div>
+          </div> --}}
           <div class="col-md-12">
             <div class="checkbox">
               <label>
@@ -825,22 +826,23 @@
               </label>
             </div>
           </div>
-          <div class="col-md-12">
+          {{-- <div class="col-md-12">
             <div class="checkbox">
               <label>
                 {!! Form::checkbox('permissions[]', 'edit_sell_payment', false, ['class' => 'input-icheck']); !!}
                 {{ __('lang_v1.edit_sell_payment') }}
               </label>
             </div>
-          </div>
-          <div class="col-md-12">
+          </div> --}}
+           {{-- حذف فاتورة--}}
+          {{-- <div class="col-md-12">
             <div class="checkbox">
               <label>
                 {!! Form::checkbox('permissions[]', 'delete_sell_payment', false, ['class' => 'input-icheck']); !!}
                 {{ __('lang_v1.delete_sell_payment') }}
               </label>
             </div>
-          </div>
+          </div> --}}
           <div class="col-md-12">
             <div class="checkbox">
               <label>
