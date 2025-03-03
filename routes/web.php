@@ -872,7 +872,7 @@ Route::get('fix_invoices_6', function () {
 
 Route::get('fix7', function () {
 
-    $transactions3 = Transaction::where('business_id', 55)
+    $transactions3 = Transaction::where('business_id', 84)
         ->where('type', 'sell')
         ->where('transaction_date', '>', '2024-06-30')
         ->get();
@@ -893,7 +893,7 @@ Route::get('fix7', function () {
                     'item_tax' => 0,
                 ]);
                 $total_before_tax += ($unit_price * $sellLine->quantity);
-            } else if ($sellLine->product->tax != null && ($sellLine->product->tax == 81 || $sellLine->product->tax == 82)) {
+            } else if ($sellLine->product->tax != null && ($sellLine->product->tax == 88 || $sellLine->product->tax == 89)) {
                 $unit_price = ($sellLine->unit_price_inc_tax * 100 / 115) * 100 / 200;
                 $tax = $unit_price;
                 $sellLine->update([
