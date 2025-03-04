@@ -1324,6 +1324,7 @@ return [
     "one_year" => 'سنة',
     "tooltip_proforma_heading" => "يتم استخدام عنوان الفاتورة الأولية أثناء توفير الفاتورة الأولية او الابتدائية للعملاء.",
     "line_taxes" => "ضرائب المنتجات (التبغ)",
+    "tobaco_tax" => "ضريبة التبغ",
     "add_additional_expenses" => "إضافة نفقات إضافية",
     "additional_expense_name" => "اسم حساب إضافي",
     "purchase_additional_expense" => "مصاريف المشتريات الإضافية",
