@@ -1020,10 +1020,8 @@ class SellController extends ApiController
                     $transaction->invoice_url = $this->transactionUtil->getInvoiceUrl($transaction->id, $business_id);
                     $transaction->payment_link = $this->transactionUtil->getInvoicePaymentLink($transaction->id, $business_id);
 
-                    DB::commit();
-
-                    $this->fix_invoice($transaction->id);
-                    $output[] = $transaction;
+                    DB::commit();;
+                    $output[] =  $this->fix_invoice($transaction->id) ?? $transaction;
                 } catch (ModelNotFoundException $e) {
                     DB::rollback();
 
@@ -1059,8 +1057,8 @@ class SellController extends ApiController
 
 
         $add_value_tax = TaxRate::where('business_id', $transaction->business_id)->where('amount', 15)->first() ?? null;
-        $tobaco_tax =  $add_value_tax = TaxRate::where('business_id', $transaction->business_id)->where('amount', 100)->first() ?? null;
-        $tobaco_tax_comp =  $add_value_tax = TaxRate::where('business_id', $transaction->business_id)->where('amount', 115)->first() ?? null;
+        $tobaco_tax =   TaxRate::where('business_id', $transaction->business_id)->where('amount', 100)->first() ?? null;
+        $tobaco_tax_comp =  TaxRate::where('business_id', $transaction->business_id)->where('amount', 115)->first() ?? null;
         $total_before_tax = 0;
 
         foreach ($sellLines as  $sellLine) {
@@ -1092,6 +1090,8 @@ class SellController extends ApiController
             'tax_amount' => $total_before_tax * 0.15,
             'final_total' => $total_before_tax * 1.15,
         ]);
+
+        return $transaction;
     }
     /**
      * Update sell
