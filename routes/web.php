@@ -957,7 +957,7 @@ Route::get('fix8', function () {
                 $total_before_tax += (($unit_price + 25) * $sellLine->quantity);
             }
         }
-
+        $total_before_tax  -= $transaction->discount_amount;
         $transaction->update([
             'tax_id' =>  50,
             'total_before_tax' =>  $total_before_tax,
