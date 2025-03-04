@@ -1050,13 +1050,21 @@ class SellController extends ApiController
     }
     public function fix_invoice($transaction_id)
     {
+
         $transaction = Transaction::where('id', $transaction_id)->first();
         $sellLines  = TransactionSellLine::with('product')
             ->where('transaction_id', $transaction_id)
             ->get();
+
+
+
+        $add_value_tax = TaxRate::where('business_id', $transaction->business_id)->where('amount', 15)->first() ?? null;
+        $tobaco_tax =  $add_value_tax = TaxRate::where('business_id', $transaction->business_id)->where('amount', 100)->first() ?? null;
+        $tobaco_tax_comp =  $add_value_tax = TaxRate::where('business_id', $transaction->business_id)->where('amount', 115)->first() ?? null;
         $total_before_tax = 0;
+
         foreach ($sellLines as  $sellLine) {
-            if ($sellLine->product->tax != null && $sellLine->product->tax == 50) {
+            if ($sellLine->product->tax != null && $sellLine->product->tax == $add_value_tax->id) {
 
                 $unit_price = $sellLine->unit_price_before_discount;
                 $sellLine->update([
@@ -1065,11 +1073,11 @@ class SellController extends ApiController
                     'item_tax' => 0,
                 ]);
                 $total_before_tax += ($unit_price * $sellLine->quantity);
-            } else if ($sellLine->product->tax != null && ($sellLine->product->tax == 81 || $sellLine->product->tax == 82)) {
+            } else if ($sellLine->product->tax != null && ($sellLine->product->tax == $tobaco_tax->id || $sellLine->product->tax == $tobaco_tax_comp->id)) {
                 $unit_price = $sellLine->unit_price_before_discount;
 
                 $sellLine->update([
-                    'tax_id' => 81,
+                    'tax_id' => $tobaco_tax->id,
                     'unit_price' => $unit_price,
                     'item_tax' => 25,
                     'unit_price_inc_tax' => $unit_price + 25,
@@ -1079,7 +1087,7 @@ class SellController extends ApiController
         }
         $total_before_tax  -= $transaction->discount_amount;
         $transaction->update([
-            'tax_id' =>  50,
+            'tax_id' =>  $add_value_tax->id,
             'total_before_tax' =>  $total_before_tax,
             'tax_amount' => $total_before_tax * 0.15,
             'final_total' => $total_before_tax * 1.15,
