@@ -1,7 +1,0 @@
-            <cac:ClassifiedTaxCategory>
-                <cbc:ID>TAX_CATEGORY_ID</cbc:ID>
-                <cbc:Percent>PERCENT_VALUE</cbc:Percent>
-                <cac:TaxScheme>
-                    <cbc:ID>VAT</cbc:ID>
-                </cac:TaxScheme>
-            </cac:ClassifiedTaxCategory>
