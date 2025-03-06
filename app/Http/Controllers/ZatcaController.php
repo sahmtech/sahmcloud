@@ -496,7 +496,12 @@ class ZatcaController extends Controller
                 $discountItems = [
                     new \Bl\FatooraZatca\Objects\DiscountItem('Discount On Invoice', $totalDiscount),
                 ];
-
+                if ($totalDiscount == 0) {
+                    $discountItems = [];
+                }
+                $subtotal = $totalWithoutVAT - $totalVAT - $totalDiscount;
+                $tax = $subtotal * 0.15;
+                $total = $subtotal + $tax;
 
                 $uuid = Uuid::uuid4()->toString();
                 $invoice = new Invoice(
@@ -507,10 +512,10 @@ class ZatcaController extends Controller
                     $invoiceTime,
                     $validatedData['invoice_type'],
                     $validatedData['payment_type'],
-                    $totalWithoutVAT, // Total before discount
+                    $subtotal, // Total before discount
                     $discountItems, // Total discount if applicable
-                    $totalVAT, // Total tax
-                    $totalWithVAT, // Total after tax
+                    $tax, // Total tax
+                    $total, // Total after tax
                     $invoiceItems,
                     null, // Reference to previous invoice if applicable
                     1, // Adjust as needed
