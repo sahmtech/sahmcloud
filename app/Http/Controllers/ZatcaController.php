@@ -485,9 +485,9 @@ class ZatcaController extends Controller
                     $totalVAT += $taxAmount;
                     $totalDiscount += $discountAmount;
                 }
-                $totalWithoutVAT -= $totalDiscount;
+
                 // Calculate the total amount with VAT
-                $totalWithVAT = $totalWithoutVAT + $totalVAT;
+                $totalWithVAT = $totalWithoutVAT - $totalDiscount + $totalVAT;
 
                 $invoiceTime = $validatedData['invoice_time'] . ':' . $seconds;
 
