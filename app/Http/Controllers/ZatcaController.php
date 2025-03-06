@@ -30,7 +30,7 @@ use Bl\FatooraZatca\Classes\TaxCategoryCode;
 use Bl\FatooraZatca\Helpers\ConfigHelper;
 use Bl\FatooraZatca\Invoices\B2B;
 use Bl\FatooraZatca\Objects\Client;
-
+use Bl\FatooraZatca\Objects\Invoice;
 use Bl\FatooraZatca\Objects\InvoiceItem;
 use Bl\FatooraZatca\Objects\Seller;
 use Bl\FatooraZatca\Objects\Setting;
@@ -499,7 +499,7 @@ class ZatcaController extends Controller
 
 
                 $uuid = Uuid::uuid4()->toString();
-                $invoice = new \Bl\FatooraZatca\Objects\Invoice(
+                $invoice = new Invoice(
                     $transaction->id, // Replace with appropriate ID
                     $transaction->invoice_no,
                     $uuid, // Replace with actual UUID or generate dynamically
@@ -595,7 +595,6 @@ class ZatcaController extends Controller
                 ->action([\App\Http\Controllers\SellController::class, 'index'])
                 ->with('status', $output);
         } catch (\Exception $e) {
-            dd('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = ['success' => 0, 'msg' => 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage()];
             return redirect()->back()->with('status', $output);
@@ -749,7 +748,7 @@ class ZatcaController extends Controller
             $final_total += $rounding_amount;
 
 
-            $invoice = new \Bl\FatooraZatca\Objects\Invoice(
+            $invoice = new Invoice(
                 $transaction->id, // Replace with appropriate ID
                 $transaction->invoice_no,
                 $transaction->uuid ?? '', // Replace with actual UUID or generate dynamically
@@ -1001,7 +1000,7 @@ class ZatcaController extends Controller
                     $totalWithVAT += $rounding_amount;
 
                     $uuid = Uuid::uuid4()->toString();
-                    $invoice = new \Bl\FatooraZatca\Objects\Invoice(
+                    $invoice = new Invoice(
                         $transaction->id, // Replace with appropriate ID
                         $transaction->invoice_no,
                         $uuid, // Replace with actual UUID or generate dynamically
@@ -1218,7 +1217,7 @@ class ZatcaController extends Controller
 
         $transaction_date = explode(' ', $transaction->transaction_date);
 
-        $invoice = new \Bl\FatooraZatca\Objects\Invoice(
+        $invoice = new Invoice(
             $transaction->id, // Replace with appropriate ID
             $transaction->invoice_no,
             $transaction->uuid ?? '', // Replace with actual UUID or generate dynamically
@@ -1367,7 +1366,7 @@ class ZatcaController extends Controller
         $final_total += $rounding_amount;
         $transaction_date = explode(' ', $transaction->transaction_date);
 
-        $invoice = new \Bl\FatooraZatca\Objects\Invoice(
+        $invoice = new Invoice(
             $transaction->id, // Replace with appropriate ID
             $transaction->invoice_no,
             $transaction->uuid ?? '', // Replace with actual UUID or generate dynamically
