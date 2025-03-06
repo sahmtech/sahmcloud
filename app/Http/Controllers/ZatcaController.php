@@ -515,7 +515,7 @@ class ZatcaController extends Controller
                     $totalWithoutVAT, // Total before discount
                     $discountItems, // Total discount if applicable
                     $tax, // Total tax
-                    $total, // Total after tax
+                    $totalWithVAT, // Total after tax
                     $invoiceItems,
                     null, // Reference to previous invoice if applicable
                     1, // Adjust as needed
