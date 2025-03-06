@@ -595,6 +595,7 @@ class ZatcaController extends Controller
                 ->action([\App\Http\Controllers\SellController::class, 'index'])
                 ->with('status', $output);
         } catch (\Exception $e) {
+            dd('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = ['success' => 0, 'msg' => 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage()];
             return redirect()->back()->with('status', $output);
