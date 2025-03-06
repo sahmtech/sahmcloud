@@ -512,7 +512,7 @@ class ZatcaController extends Controller
                     $invoiceTime,
                     $validatedData['invoice_type'],
                     $validatedData['payment_type'],
-                    $totalWithoutVAT, // Total before discount
+                    $totalWithoutVAT - $totalDiscount, // Total before discount
                     $discountItems, // Total discount if applicable
                     $tax, // Total tax
                     $total, // Total after tax
