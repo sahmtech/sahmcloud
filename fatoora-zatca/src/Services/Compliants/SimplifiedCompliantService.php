@@ -22,7 +22,7 @@ class SimplifiedCompliantService
 
         $invoice = new \Bl\FatooraZatca\Objects\Invoice(
             1, 'INV100', '42156fac-991b-4a12-a6f0-54c024edd29e', date('Y-m-d'), date('H:i:s'),
-            $invoiceType, $paymentType, 50, 0, 7.5, 57.5, $invoiceItems
+            $invoiceType, $paymentType, 50, [], 7.5, 57.5, $invoiceItems
         );
 
         return \Bl\FatooraZatca\Zatca::reportSimplifiedInvoiceCompliance($seller, $invoice);

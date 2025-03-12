@@ -252,7 +252,7 @@ class SignInvoiceService
             $this->seller->registration_name,
             $this->seller->tax_number,
             (new InvoiceHelper)->getTimestamp($this->invoice),
-            PriceFormat::transform($this->invoice->total),
+            PriceFormat::transform($this->invoice->total + $this->invoice->rounding_amount - $this->invoice->prepaid_amount),
             PriceFormat::transform($this->invoice->tax),
             $this->invoiceHash,
             $this->digitalSignature,

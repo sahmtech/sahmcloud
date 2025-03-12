@@ -54,16 +54,19 @@ SET_CLIENT
         <cbc:ActualDeliveryDate>SET_DELIVERY_DATE</cbc:ActualDeliveryDate>
     </cac:Delivery>
 SET_PAYMENT_TYPE
+SET_ALLOWANCE_CHARGE
+SET_CHARGES
 SET_TAX_TOTALS
     <cac:TaxTotal>
         <cbc:TaxAmount currencyID="SET_CURRENCY">TOTAL_TAX_AMOUNT</cbc:TaxAmount>
     </cac:TaxTotal>
     <cac:LegalMonetaryTotal>
-        <cbc:LineExtensionAmount currencyID="SET_CURRENCY">SET_LINE_EXTENSION_AMOUNT</cbc:LineExtensionAmount>
-        <cbc:TaxExclusiveAmount currencyID="SET_CURRENCY">SET_LINE_EXTENSION_AMOUNT</cbc:TaxExclusiveAmount>
-        <cbc:TaxInclusiveAmount currencyID="SET_CURRENCY">SET_NET_TOTAL</cbc:TaxInclusiveAmount>
-        <cbc:AllowanceTotalAmount currencyID="SET_CURRENCY">0</cbc:AllowanceTotalAmount>
-        <cbc:PrepaidAmount currencyID="SET_CURRENCY">0</cbc:PrepaidAmount>
+        <cbc:LineExtensionAmount currencyID="SET_CURRENCY">SET_EXTENSION_AMOUNT</cbc:LineExtensionAmount>
+        <cbc:TaxExclusiveAmount currencyID="SET_CURRENCY">SET_TAX_EXCLUSIVE_AMOUNT</cbc:TaxExclusiveAmount>
+        <cbc:TaxInclusiveAmount currencyID="SET_CURRENCY">SET_INCLUSIVE_AMOUNT</cbc:TaxInclusiveAmount>
+        <cbc:AllowanceTotalAmount currencyID="SET_CURRENCY">SET_ALLOWANCE_TOTAL_AMOUNT</cbc:AllowanceTotalAmount>
+        <cbc:ChargeTotalAmount currencyID="SET_CURRENCY">SET_CHARGE_TOTAL_AMOUNT</cbc:ChargeTotalAmount>
+        <cbc:PrepaidAmount currencyID="SET_CURRENCY">SET_PREPAID_AMOUNT</cbc:PrepaidAmount>
         <cbc:PayableRoundingAmount currencyID="SET_CURRENCY">SET_PAYABLE_ROUNDING_AMOUNT</cbc:PayableRoundingAmount>
         <cbc:PayableAmount currencyID="SET_CURRENCY">SET_PAYABLE_AMOUNT</cbc:PayableAmount>
     </cac:LegalMonetaryTotal>

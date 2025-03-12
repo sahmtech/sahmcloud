@@ -1075,6 +1075,20 @@ class TransactionUtil extends Util
             $output['tax_info2'] = $business_details->tax_number_2;
         }
 
+        //tobaco_tax
+        $sellLines  = TransactionSellLine::with('product')
+            ->where('transaction_id', $transaction_id)
+            ->get();
+        $tobaco_tax = 0;
+        foreach ($sellLines as  $sellLine) {
+            if ($sellLine->product->tax != null && ($sellLine->product->tax == 81 || $sellLine->product->tax == 82)) {
+                $tobaco_tax += (25 * $sellLine->quantity);
+            }
+        }
+        if ($tobaco_tax && $tobaco_tax > 0) {
+            $output['tobaco_tax'] = $business_details->currency_symbol . ' ' . $tobaco_tax;
+            $output['tobaco_tax_label'] = __('lang_v1.tobaco_tax');
+        }
         //Shop Contact Info
         $output['contact'] = '';
         if ($il->show_mobile_number == 1 && !empty($location_details->mobile)) {

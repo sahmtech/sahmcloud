@@ -78,7 +78,12 @@ class Invoice
 
     public $price;
 
-    public $discount;
+    /**
+     * the discount items.
+     *
+     * @var array<DiscountItem>
+     */
+    public $discount_items;
 
     public $tax;
 
@@ -89,6 +94,15 @@ class Invoice
     public $delivery_date;
 
     public $rounding_amount;
+
+    public $prepaid_amount;
+
+    /**
+     * the charge items.
+     *
+     * @var array<ChargeItem>
+     */
+    public $charge_items;
 
     /**
      * the invoice items.
@@ -106,18 +120,20 @@ class Invoice
         int         $invoice_type,
         int         $payment_type,
         float       $price,
-        float       $discount,
+        array       $discount_items,
         float       $tax,
         float       $total,
         array       $invoice_items,
         string      $previous_hash = null,
-        int         $invoice_billing_id = null,
+        string      $invoice_billing_id = null,
         string      $invoice_note = null,
         string      $payment_note = null,
         string      $currency = 'SAR',
         float       $tax_percent = 15,
         string      $delivery_date = NULL,
-        float       $rounding_amount = 0
+        float       $rounding_amount = 0,
+        float       $prepaid_amount = 0,
+        array       $charge_items = []
     )
     {
         $this->id                       = $id;
@@ -128,7 +144,7 @@ class Invoice
         $this->invoice_type             = $invoice_type;
         $this->payment_type             = $payment_type;
         $this->price                    = $price;
-        $this->discount                 = $discount;
+        $this->discount_items           = $discount_items;
         $this->tax                      = $tax;
         $this->total                    = $total;
         $this->invoice_items            = $invoice_items;
@@ -140,5 +156,7 @@ class Invoice
         $this->tax_percent              = $tax_percent;
         $this->delivery_date            = $delivery_date ?? $invoice_date;
         $this->rounding_amount          = $rounding_amount;
+        $this->prepaid_amount           = $prepaid_amount;
+        $this->charge_items             = $charge_items;
     }
 }

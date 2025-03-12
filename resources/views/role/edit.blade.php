@@ -721,7 +721,8 @@
                             </div>
                         </div>
                     @endif
-                    <div class="col-md-12">
+                    {{-- مبيعات نقاط البيع --}}
+                    {{-- <div class="col-md-12">
                         <div class="checkbox">
                             <label>
                                 {!! Form::checkbox('permissions[]', 'sell.update', in_array('sell.update', $role_permissions), [
@@ -738,7 +739,7 @@
                                 ]) !!} {{ __('role.sell.delete') }}
                             </label>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-12">
                         <div class="checkbox">
                             <label>

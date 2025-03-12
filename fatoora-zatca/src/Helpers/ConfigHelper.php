@@ -94,6 +94,9 @@ class ConfigHelper
             // when codeigniter old versions framework
             return config_item($key);
         }
+        elseif(class_exists('Yii')) {
+            return \Yii::$app->params[$key];
+        }
         else {
             $constant = constant(strtoupper(str_replace('.', '_', $key)));
 
