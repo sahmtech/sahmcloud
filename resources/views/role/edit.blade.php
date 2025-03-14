@@ -975,7 +975,8 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        {{-- حذف البيع --}}
+                        {{-- <div class="col-md-12">
                             <div class="checkbox">
                                 <label>
                                     {!! Form::checkbox('permissions[]', 'direct_sell.delete', in_array('direct_sell.delete', $role_permissions), [
@@ -983,7 +984,7 @@
                                     ]) !!} {{ __('lang_v1.delete_sell') }}
                                 </label>
                             </div>
-                        </div>
+                        </div> --}}
                     @endif
                     <div class="col-md-12">
                         <div class="checkbox">
