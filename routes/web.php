@@ -1041,7 +1041,7 @@ Route::get('fix_unit_price', function () {
             if ($sellLine->product->tax != null && $sellLine->product->tax == 106) {
 
                 $unit_price = $sellLine->unit_price_before_discount;
-                if ($unit_price == 13.25) {
+                if ($unit_price == 13.25 || $unit_price == 13.2500 || $unit_price == "13.25" || $unit_price == "13.2500") {
                     $unit_price = 14.13;
                 }
                 $sellLine->update([
