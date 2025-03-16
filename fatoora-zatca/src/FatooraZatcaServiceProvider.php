@@ -2,7 +2,6 @@
 
 namespace Bl\FatooraZatca;
 
-use Bl\FatooraZatca\Commands\PackageInfoCommand;
 use Bl\FatooraZatca\Middleware\SetEnvironmentMiddleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -36,8 +35,6 @@ class FatooraZatcaServiceProvider extends ServiceProvider
         $this->publishes([
             $this->configPath => config_path('zatca.php'),
         ], 'fatoora-zatca');
-
-        $this->commands(PackageInfoCommand::class);
 
         Route::macro('fatooraZatcaApi', function() {
             Route::prefix('fatoora-zatca')

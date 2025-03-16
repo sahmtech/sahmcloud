@@ -16,10 +16,6 @@ class InvoiceHelper
      */
     public static function getTaxSubTotalGroups(array $invoiceItems): array
     {
-        $invoiceItems = array_filter($invoiceItems, function($item) {
-            return $item instanceof InvoiceItem;
-        });
-
         // for tax category codes...
         $taxCategoryGroups = [];
 
@@ -79,7 +75,7 @@ class InvoiceHelper
      * @param  string $keyName
      * @return float
      */
-    public static function getArrayKeySum(array $invoiceItems, string $keyName): float
+    public static function getTaxSubTotalSum(array $invoiceItems, string $keyName): float
     {
         // get taxable amounts in an array...
         return (float) array_sum(

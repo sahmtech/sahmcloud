@@ -165,10 +165,10 @@ class KeysService
     protected function generateCsr(): void
     {
         $dn = [
-            "commonName"                => htmlspecialchars($this->data->commonName, ENT_XML1, 'UTF-8'),
-            "organizationalUnitName"    => htmlspecialchars($this->data->organizationalUnitName, ENT_XML1, 'UTF-8'),
-            "organizationName"          => htmlspecialchars($this->data->organizationName, ENT_XML1, 'UTF-8'),
-            "countryName"               => htmlspecialchars($this->data->countryName, ENT_XML1, 'UTF-8'),
+            "commonName"                => $this->data->commonName,
+            "organizationalUnitName"    => $this->data->organizationalUnitName,
+            "organizationName"          => $this->data->organizationName,
+            "countryName"               => $this->data->countryName,
         ];
 
         $csr = openssl_csr_new($dn, $this->privateKey, $this->csrOptions);
