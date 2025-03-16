@@ -493,15 +493,15 @@ class ZatcaController extends Controller
 
                 // return $invoiceItems or use them as needed
 
-                $discountItems = [
-                    new \Bl\FatooraZatca\Objects\DiscountItem('Discount On Invoice', $totalDiscount),
-                ];
-                if ($totalDiscount == 0) {
-                    $discountItems = [];
-                }
-                $subtotal = $totalWithoutVAT - $totalVAT - $totalDiscount;
-                $tax = $subtotal * 0.15;
-                $total = $subtotal + $tax;
+                // $discountItems = [
+                //     new \Bl\FatooraZatca\Objects\DiscountItem('Discount On Invoice', $totalDiscount),
+                // ];
+                // if ($totalDiscount == 0) {
+                //     $discountItems = [];
+                // }
+                // $subtotal = $totalWithoutVAT - $totalVAT - $totalDiscount;
+                // $tax = $subtotal * 0.15;
+                // $total = $subtotal + $tax;
 
                 $uuid = Uuid::uuid4()->toString();
                 $invoice = new Invoice(
@@ -513,8 +513,8 @@ class ZatcaController extends Controller
                     $validatedData['invoice_type'],
                     $validatedData['payment_type'],
                     $totalWithoutVAT, // Total before discount
-                    $discountItems, // Total discount if applicable
-                    $tax, // Total tax
+                    $totalDiscount, // Total discount if applicable
+                    $totalVAT, // Total tax
                     $totalWithVAT, // Total after tax
                     $invoiceItems,
                     null, // Reference to previous invoice if applicable
@@ -600,7 +600,7 @@ class ZatcaController extends Controller
                 ->action([\App\Http\Controllers\SellController::class, 'index'])
                 ->with('status', $output);
         } catch (\Exception $e) {
-            dd('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            // dd('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
             $output = ['success' => 0, 'msg' => 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage()];
             return redirect()->back()->with('status', $output);

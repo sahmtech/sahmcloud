@@ -1,5 +1,4 @@
-SET_XML_ENCODING<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2">
-SET_UBL_EXTENSIONS_FOR_SIGNED
+<?xml version="1.0" encoding="UTF-8"?><Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2">
     <cbc:ProfileID>reporting:1.0</cbc:ProfileID>
     <cbc:ID>SET_INVOICE_SERIAL_NUMBER</cbc:ID>
     <cbc:UUID>SET_TERMINAL_UUID</cbc:UUID>
@@ -13,13 +12,17 @@ SET_BILLING_REFERENCE
         <cbc:ID>ICV</cbc:ID>
         <cbc:UUID>SET_INVOICE_COUNTER_NUMBER</cbc:UUID>
     </cac:AdditionalDocumentReference>
+SET_PREVIOUS_INVOICE_HASH
     <cac:AdditionalDocumentReference>
-        <cbc:ID>PIH</cbc:ID>
+        <cbc:ID>QR</cbc:ID>
         <cac:Attachment>
-            <cbc:EmbeddedDocumentBinaryObject mimeCode="text/plain">SET_PREVIOUS_INVOICE_HASH</cbc:EmbeddedDocumentBinaryObject>
+            <cbc:EmbeddedDocumentBinaryObject mimeCode="text/plain">SET_QR_CODE_DATA</cbc:EmbeddedDocumentBinaryObject>
         </cac:Attachment>
     </cac:AdditionalDocumentReference>
-SET_QR_AND_SIGNATURE_FOR_SIGNED
+    <cac:Signature>
+        <cbc:ID>urn:oasis:names:specification:ubl:signature:Invoice</cbc:ID>
+        <cbc:SignatureMethod>urn:oasis:names:specification:ubl:dsig:enveloped:xades</cbc:SignatureMethod>
+    </cac:Signature>
     <cac:AccountingSupplierParty>
         <cac:Party>
             <cac:PartyIdentification>
@@ -33,7 +36,7 @@ SET_QR_AND_SIGNATURE_FOR_SIGNED
                 <cbc:CityName>SET_CITY</cbc:CityName>
                 <cbc:PostalZone>SET_POSTAL_NUMBER</cbc:PostalZone>
                 <cac:Country>
-                    <cbc:IdentificationCode>SET_SUPPLIER_COUNTRY</cbc:IdentificationCode>
+                    <cbc:IdentificationCode>SA</cbc:IdentificationCode>
                 </cac:Country>
             </cac:PostalAddress>
             <cac:PartyTaxScheme>
@@ -50,10 +53,7 @@ SET_QR_AND_SIGNATURE_FOR_SIGNED
     <cac:AccountingCustomerParty>
 SET_CLIENT
     </cac:AccountingCustomerParty>
-    <cac:Delivery>
-        <cbc:ActualDeliveryDate>SET_DELIVERY_DATE</cbc:ActualDeliveryDate>
-    </cac:Delivery>
-SET_PAYMENT_TYPE
+SET_RETURN_REASON
 SET_TAX_TOTALS
     <cac:TaxTotal>
         <cbc:TaxAmount currencyID="SET_CURRENCY">TOTAL_TAX_AMOUNT</cbc:TaxAmount>
@@ -64,8 +64,7 @@ SET_TAX_TOTALS
         <cbc:TaxInclusiveAmount currencyID="SET_CURRENCY">SET_NET_TOTAL</cbc:TaxInclusiveAmount>
         <cbc:AllowanceTotalAmount currencyID="SET_CURRENCY">0</cbc:AllowanceTotalAmount>
         <cbc:PrepaidAmount currencyID="SET_CURRENCY">0</cbc:PrepaidAmount>
-        <cbc:PayableRoundingAmount currencyID="SET_CURRENCY">SET_PAYABLE_ROUNDING_AMOUNT</cbc:PayableRoundingAmount>
-        <cbc:PayableAmount currencyID="SET_CURRENCY">SET_PAYABLE_AMOUNT</cbc:PayableAmount>
+        <cbc:PayableAmount currencyID="SET_CURRENCY">SET_NET_TOTAL</cbc:PayableAmount>
     </cac:LegalMonetaryTotal>
-SET_INVOICE_LINES
+SET_LINE_ITEMS
 </Invoice>
