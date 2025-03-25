@@ -1020,8 +1020,8 @@ class SellController extends ApiController
                     $transaction->invoice_url = $this->transactionUtil->getInvoiceUrl($transaction->id, $business_id);
                     $transaction->payment_link = $this->transactionUtil->getInvoicePaymentLink($transaction->id, $business_id);
 
-                    DB::commit();;
-                    $output[] =  $this->fix_invoice($transaction->id) ?? $transaction;
+                    DB::commit();
+                    $output[] =  $this->fix_invoice($transaction) ?? $transaction;
                 } catch (ModelNotFoundException $e) {
                     DB::rollback();
 
@@ -1046,9 +1046,9 @@ class SellController extends ApiController
 
         return $output;
     }
-    public function fix_invoice($transaction_id)
+    public function fix_invoice($trans)
     {
-
+        $transaction_id = $trans->id;
         $transaction = Transaction::where('id', $transaction_id)->first();
         $sellLines  = TransactionSellLine::with('product')
             ->where('transaction_id', $transaction_id)
@@ -1091,7 +1091,7 @@ class SellController extends ApiController
             'final_total' => $total_before_tax * 1.15,
         ]);
 
-        return $transaction;
+        return $trans;
     }
     /**
      * Update sell
