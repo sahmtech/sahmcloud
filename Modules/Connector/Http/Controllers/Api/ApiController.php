@@ -51,7 +51,7 @@ class ApiController extends Controller
 
     public function otherExceptions($e)
     {
-        $msg = is_object($e) ? $e->getMessage() : $e;
+        $msg = is_object($e) ? 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage() : $e;
 
         return $this->setStatusCode(400)->respondWithError($msg);
 
@@ -77,9 +77,9 @@ class ApiController extends Controller
     {
         $client = request()->user()->token()->client;
 
-        if(!empty($client) && !empty($client->name)){
+        if (!empty($client) && !empty($client->name)) {
             return $client->name;
-        } else{
+        } else {
             return '';
         }
     }
