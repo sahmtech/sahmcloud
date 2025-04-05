@@ -1062,7 +1062,7 @@ class SellController extends ApiController
         $total_before_tax = 0;
 
         foreach ($sellLines as  $sellLine) {
-            if ($sellLine->product->tax != null && $sellLine->product->tax == $add_value_tax->id) {
+            if ($sellLine->product->tax != null && ($add_value_tax && $sellLine->product->tax == $add_value_tax->id)) {
 
                 $unit_price = $sellLine->unit_price_before_discount;
                 $sellLine->update([
