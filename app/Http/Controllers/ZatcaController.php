@@ -1247,6 +1247,7 @@ class ZatcaController extends Controller
 
         $contact = Contact::where('id', $transaction->contact_id)->first();
 
+        $registration_name_en = $contact->custom_field1 ?? '';
         $client = new Client(
             $contact->registration_name,
             $contact->tax_number,
@@ -1307,6 +1308,7 @@ class ZatcaController extends Controller
             'invoice' =>  $invoice,
             'seller' =>   $seller,
             'client' => $client,
+            'registration_name_en' => $registration_name_en,
             'invoiceTypeCode' =>  $business->invoice_type,
             'footer_text' => $footer_text,
             'fromDate' => $fromDate,

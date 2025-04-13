@@ -93,7 +93,20 @@
                         </div>
                     </div>
                 </div>
-
+                <div   div class="col-md-4 business">
+                    <div class="form-group">
+                        {!! Form::label('supplier_business_name_en', __('business.business_name_en') . ':') !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-briefcase"></i>
+                            </span>
+                            {!! Form::text('supplier_business_name_en', null, [
+                                'class' => 'form-control',
+                                'placeholder' => __('business.business_name'),
+                            ]) !!}
+                        </div>
+                    </div>
+                </div>
                 <div class="clearfix"></div>
 
                 <div class="col-md-3 individual" style="display: none;">

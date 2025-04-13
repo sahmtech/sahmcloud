@@ -11,8 +11,8 @@ return [
     "city" => "المدينة",
     "zip_code" => "الرمز البريدي",
     "zip_code_placeholder" => "الرمز البريدي",
-    'sale_receipt_vouchers'=>'سندات القبض',
-    'start_reference_count'=>'يبدأ الترقيم من ',
+    'sale_receipt_vouchers' => 'سندات القبض',
+    'start_reference_count' => 'يبدأ الترقيم من ',
     "landmark" => "العنوان",
     "tax_1_name" => "الاسم الضريبي 1",
     "tax_1_no" => "الرقم الضريبي 1",
@@ -99,4 +99,6 @@ return [
     "is_active" => "نشط",
     "created_by" => "أنشأت بواسطة",
     "zatca" => "هيئة الضريبة والزكاة",
+    'business_name_en' => 'الاسم بالانكليزي',
+
 ];
