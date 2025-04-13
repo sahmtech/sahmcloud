@@ -330,7 +330,8 @@
                 <table class="seller-buyer">
                     <tr>
                         <td class="colored_background">{{ __('zatca_invoice.name', [], 'en') }}:</td>
-                        <td class="center-align">{{ $client->registration_name ?? '' }}</td>
+                        <td class="center-align">{{ $client->registration_name ?? '' }}<br>{{ $registration_name_en ?? '' }}
+                        </td>
                         <td class="rtl-text colored_background">{{ __('zatca_invoice.name', [], 'ar') }}:</td>
                     </tr>
                     <tr>
