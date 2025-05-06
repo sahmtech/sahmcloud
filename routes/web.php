@@ -933,12 +933,14 @@ Route::get('fix8', function () {
             ->where('transaction_id', $transaction->id)
             ->get();
         $total_before_tax = 0;
+        // if ($transaction->id == '189032')
+        //     dd($sellLines);
         foreach ($sellLines as  $sellLine) {
 
             if ($sellLine->product->tax != null && $sellLine->product->tax == 50) {
 
                 // $unit_price = $sellLine->unit_price_before_discount;
-                $unit_price = $sellLine->variations->default_sell_price;
+                $unit_price = $sellLine->variations->default_purchase_price;
                 $sellLine->update([
                     'tax_id' => null,
                     'unit_price' => $unit_price,
@@ -948,7 +950,7 @@ Route::get('fix8', function () {
                 $total_before_tax += ($unit_price * $sellLine->quantity);
             } else if ($sellLine->product->tax != null && ($sellLine->product->tax == 81 || $sellLine->product->tax == 82)) {
                 // $unit_price = $sellLine->unit_price_before_discount;
-                $unit_price = $sellLine->variations->default_sell_price;
+                $unit_price = $sellLine->variations->default_purchase_price;
                 // $unit_price = ($sellLine->unit_price_inc_tax * 100 / 115) * 100 / 200;
                 // $tax = $unit_price;
                 $sellLine->update([
