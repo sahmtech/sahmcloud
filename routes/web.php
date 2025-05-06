@@ -923,7 +923,7 @@ Route::get('fix8', function () {
 
     $transactions3 = Transaction::where('business_id', 55)
         ->where('type', 'sell')
-        ->where('transaction_date', '>', '2024-06-30')
+        ->where('transaction_date', '>', '2025-03-30')
         // ->where('tax_amount', 0)
         ->get();
 
@@ -966,7 +966,7 @@ Route::get('fix8', function () {
         ]);
     }
 
-    dd("fixed from 2024-06-30 to today");
+    dd("fixed from 2025-03-30 to today");
 });
 
 
