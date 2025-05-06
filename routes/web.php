@@ -923,33 +923,40 @@ Route::get('fix8', function () {
 
     $transactions3 = Transaction::where('business_id', 55)
         ->where('type', 'sell')
-        ->where('transaction_date', '>', '2024-06-30')
+        ->where('transaction_date', '>', '2025-03-30')
         // ->where('tax_amount', 0)
         ->get();
 
 
     foreach ($transactions3 as $transaction) {
-        $sellLines  = TransactionSellLine::with('product')
+        $sellLines  = TransactionSellLine::with(['product', 'variations'])
             ->where('transaction_id', $transaction->id)
             ->get();
         $total_before_tax = 0;
+        // if ($transaction->id == '189032')
+        //     dd($sellLines);
         foreach ($sellLines as  $sellLine) {
+
             if ($sellLine->product->tax != null && $sellLine->product->tax == 50) {
 
-                $unit_price = $sellLine->unit_price_before_discount;
+                // $unit_price = $sellLine->unit_price_before_discount;
+                $unit_price = $sellLine->variations->default_purchase_price;
                 $sellLine->update([
                     'tax_id' => null,
                     'unit_price' => $unit_price,
+                    'unit_price_before_discount' => $unit_price,
                     'item_tax' => 0,
                 ]);
                 $total_before_tax += ($unit_price * $sellLine->quantity);
             } else if ($sellLine->product->tax != null && ($sellLine->product->tax == 81 || $sellLine->product->tax == 82)) {
-                $unit_price = $sellLine->unit_price_before_discount;
+                // $unit_price = $sellLine->unit_price_before_discount;
+                $unit_price = $sellLine->variations->default_purchase_price;
                 // $unit_price = ($sellLine->unit_price_inc_tax * 100 / 115) * 100 / 200;
                 // $tax = $unit_price;
                 $sellLine->update([
                     'tax_id' => 81,
                     'unit_price' => $unit_price,
+                    'unit_price_before_discount' => $unit_price,
                     // 'item_tax' => $tax,
                     'item_tax' => 25,
                     'unit_price_inc_tax' => $unit_price + 25,
@@ -966,7 +973,7 @@ Route::get('fix8', function () {
         ]);
     }
 
-    dd("fixed from 2024-06-30 to today");
+    dd("fixed from 2025-03-30 to today");
 });
 
 
