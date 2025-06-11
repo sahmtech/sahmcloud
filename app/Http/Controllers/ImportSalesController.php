@@ -268,234 +268,239 @@ class ImportSalesController extends Controller
         } else {
             $import_batch = $import_batch + 1;
         }
+        try {
+            $now = \Carbon::now()->toDateTimeString();
+            $row_index = 2;
+            foreach ($formated_data as $data) {
+                $order_total = 0;
+                $sell_lines = [];
+                foreach ($data as $line_data) {
+                    if (!empty($line_data['sku'])) {
+                        $variation = Variation::where('sub_sku', $line_data['sku'])->with(['product'])->first();
 
-        $now = \Carbon::now()->toDateTimeString();
-        $row_index = 2;
-        foreach ($formated_data as $data) {
-            $order_total = 0;
-            $sell_lines = [];
-            foreach ($data as $line_data) {
-                if (!empty($line_data['sku'])) {
-                    $variation = Variation::where('sub_sku', $line_data['sku'])->with(['product'])->first();
-
-                    $product = !empty($variation) ? $variation->product : null;
-                } else {
-                    $product = Product::where('business_id', $business_id)
-                        ->where('name', $line_data['product'])
-                        ->with(['variations'])
-                        ->first();
-                    $variation = !empty($product) ? $product->variations->first() : null;
-                }
-
-                if (empty($variation)) {
-                    throw new \Exception(__('lang_v1.import_sale_product_not_found', ['row' => $row_index, 'product_name' => $line_data['product'], 'sku' => $line_data['sku']]));
-                }
-
-                $tax_id = null;
-                $item_tax = 0;
-                $line_discount = !empty($line_data['item_discount']) ? $line_data['item_discount'] : 0;
-
-                $unit_price = $line_data['unit_price'];
-
-                $price_before_tax = $line_data['unit_price'] - $line_discount;
-                $price_inc_tax = $price_before_tax;
-                if (!empty($line_data['item_tax'])) {
-                    $tax = TaxRate::where('business_id', $business_id)
-                        ->where('name', $line_data['item_tax'])
-                        ->first();
-
-                    if (empty($tax)) {
-                        throw new \Exception(__('lang_v1.import_sale_tax_not_found', ['row' => $row_index, 'tax_name' => $line_data['item_tax']]));
-                    }
-                    $tax_id = $tax->id;
-                    $item_tax = $this->transactionUtil->calc_percentage($price_before_tax, $tax->amount);
-                    $price_inc_tax = $price_before_tax + $item_tax;
-                }
-
-                //check if date is correct
-                if (!empty($line_data['date'])) {
-                    try {
-                        \Carbon::parse($line_data['date']);
-                    } catch (\Exception $e) {
-                        throw new \Exception(__('lang_v1.invalid_date_format_at', ['row' => $row_index]));
-                    }
-                }
-
-                $temp = [
-                    'product_id' => $variation->product_id,
-                    'variation_id' => $variation->id,
-                    'quantity' => $line_data['quantity'],
-                    'unit_price' => $unit_price,
-                    'unit_price_inc_tax' => $price_inc_tax,
-                    'line_discount_type' => 'fixed',
-                    'line_discount_amount' => $line_discount,
-                    'item_tax' => $item_tax,
-                    'tax_id' => $tax_id,
-                    'sell_line_note' => $line_data['item_description'],
-                    'product_unit_id' => $product->unit_id,
-                    'enable_stock' => $product->enable_stock,
-                    'type' => $product->type,
-                    'combo_variations' => $product->type == 'combo' ? $variation->combo_variations : [],
-                ];
-
-                $line_quantity = $line_data['quantity'];
-                if (!empty($line_data['unit'])) {
-                    $unit_name = trim($line_data['unit']);
-                    $unit = Unit::where('actual_name', $unit_name)
-                        ->orWhere('short_name', $unit_name)
-                        ->first();
-
-                    if (empty($unit)) {
-                        throw new \Exception(__('lang_v1.import_sale_unit_not_found', ['row' => $row_index, 'unit_name' => $unit_name]));
+                        $product = !empty($variation) ? $variation->product : null;
+                    } else {
+                        $product = Product::where('business_id', $business_id)
+                            ->where('name', $line_data['product'])
+                            ->with(['variations'])
+                            ->first();
+                        $variation = !empty($product) ? $product->variations->first() : null;
                     }
 
-                    //Check if sub unit
-                    if ($unit->id != $product->unit_id) {
-                        $temp['sub_unit_id'] = $unit->id;
-                        $temp['base_unit_multiplier'] = $unit->base_unit_multiplier;
-                        $line_quantity = ($line_quantity * $unit->base_unit_multiplier);
-                    }
-                }
-                $order_total += ($temp['unit_price_inc_tax'] * $line_quantity);
-
-                $sell_lines[] = $temp;
-
-                $row_index++;
-            }
-
-            $first_sell_line = $data[0];
-            //get contact
-            if (!empty($first_sell_line['customer_phone_number'])) {
-                $contact = Contact::where('business_id', $business_id)
-                    ->where('mobile', $first_sell_line['customer_phone_number'])
-                    ->first();
-            } elseif (!empty($first_sell_line['customer_email'])) {
-                $contact = Contact::where('business_id', $business_id)
-                    ->where('email', $first_sell_line['customer_email'])
-                    ->first();
-            }
-            if (empty($contact)) {
-                $customer_name = !empty($first_sell_line['customer_name']) ? $first_sell_line['customer_name'] : $first_sell_line['customer_phone_number'];
-                $contact = Contact::create([
-                    'business_id' => $business_id,
-                    'type' => 'customer',
-                    'name' => $customer_name,
-                    'email' => $first_sell_line['customer_email'],
-                    'mobile' => $first_sell_line['customer_phone_number'],
-                    'created_by' => auth()->user()->id,
-                ]);
-            }
-            error_log($first_sell_line['date']);
-            $sale_data = [
-                'invoice_no' => $first_sell_line['invoice_no'],
-                'location_id' => $location_id,
-                'status' => 'final',
-                'contact_id' => $contact->id,
-                'final_total' => !empty($first_sell_line['order_total']) ? $first_sell_line['order_total'] : $order_total,
-                'transaction_date' => !empty($first_sell_line['date']) ? Carbon::parse(($first_sell_line['date']))->format('Y-m-d H:i:s') : $now,
-                'discount_amount' => 0,
-                'import_batch' => $import_batch,
-                'import_time' => $now,
-                'commission_agent' => null,
-            ];
-
-            $is_types_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
-            if ($is_types_service_enabled && !empty($first_sell_line['types_of_service'])) {
-                $types_of_service = TypesOfService::where('business_id', $business_id)
-                    ->where('name', $first_sell_line['types_of_service'])
-                    ->first();
-
-                if (empty($types_of_service)) {
-                    throw new \Exception(__('lang_v1.types_of_servicet_not_found', ['row' => $row_index, 'types_of_service_name' => $first_sell_line['types_of_service']]));
-                }
-
-                $sale_data['types_of_service_id'] = $types_of_service->id;
-                $sale_data['service_custom_field_1'] = !empty($first_sell_line['service_custom_field1']) ? $first_sell_line['service_custom_field1'] : null;
-                $sale_data['service_custom_field_2'] = !empty($first_sell_line['service_custom_field2']) ? $first_sell_line['service_custom_field2'] : null;
-                $sale_data['service_custom_field_3'] = !empty($first_sell_line['service_custom_field3']) ? $first_sell_line['service_custom_field3'] : null;
-                $sale_data['service_custom_field_4'] = !empty($first_sell_line['service_custom_field4']) ? $first_sell_line['service_custom_field4'] : null;
-            }
-
-            $invoice_total = [
-                'total_before_tax' => !empty($first_sell_line['order_total']) ? $first_sell_line['order_total'] : $order_total,
-                'tax' => 0,
-            ];
-
-            $transaction = $this->transactionUtil->createSellTransaction($business_id, $sale_data, $invoice_total, auth()->user()->id, false);
-
-            $this->transactionUtil->createOrUpdateSellLines($transaction, $sell_lines, $location_id, false, null, [], false);
-
-            foreach ($sell_lines as $line) {
-                if ($line['enable_stock']) {
-                    $this->productUtil->decreaseProductQuantity(
-                        $line['product_id'],
-                        $line['variation_id'],
-                        $location_id,
-                        $line['quantity']
-                    );
-                }
-
-                if ($line['type'] == 'combo') {
-                    $line_total_quantity = $line['quantity'];
-                    if (!empty($line['base_unit_multiplier'])) {
-                        $line_total_quantity = $line_total_quantity * $line['base_unit_multiplier'];
+                    if (empty($variation)) {
+                        error_log($line_data['sku']);
+                        throw new \Exception(__('lang_v1.import_sale_product_not_found', ['row' => $row_index, 'product_name' => $line_data['product'], 'sku' => $line_data['sku']]));
                     }
 
-                    //Decrease quantity of combo as well.
-                    $combo_details = [];
-                    foreach ($line['combo_variations'] as $combo_variation) {
-                        $combo_variation_obj = Variation::find($combo_variation['variation_id']);
+                    $tax_id = null;
+                    $item_tax = 0;
+                    $line_discount = !empty($line_data['item_discount']) ? $line_data['item_discount'] : 0;
 
-                        //Multiply both subunit multiplier of child product and parent product to the quantity
-                        $combo_variation_quantity = $combo_variation['quantity'];
-                        if (!empty($combo_variation['unit_id'])) {
-                            $combo_variation_unit = Unit::find($combo_variation['unit_id']);
-                            if (!empty($combo_variation_unit->base_unit_multiplier)) {
-                                $combo_variation_quantity = $combo_variation_quantity * $combo_variation_unit->base_unit_multiplier;
-                            }
+                    $unit_price = $line_data['unit_price'];
+
+                    $price_before_tax = $line_data['unit_price'] - $line_discount;
+                    $price_inc_tax = $price_before_tax;
+                    if (!empty($line_data['item_tax'])) {
+                        $tax = TaxRate::where('business_id', $business_id)
+                            ->where('name', $line_data['item_tax'])
+                            ->first();
+
+                        if (empty($tax)) {
+                            throw new \Exception(__('lang_v1.import_sale_tax_not_found', ['row' => $row_index, 'tax_name' => $line_data['item_tax']]));
+                        }
+                        $tax_id = $tax->id;
+                        $item_tax = $this->transactionUtil->calc_percentage($price_before_tax, $tax->amount);
+                        $price_inc_tax = $price_before_tax + $item_tax;
+                    }
+
+                    //check if date is correct
+                    if (!empty($line_data['date'])) {
+                        try {
+                            \Carbon::parse($line_data['date']);
+                        } catch (\Exception $e) {
+                            throw new \Exception(__('lang_v1.invalid_date_format_at', ['row' => $row_index]));
+                        }
+                    }
+
+                    $temp = [
+                        'product_id' => $variation->product_id,
+                        'variation_id' => $variation->id,
+                        'quantity' => $line_data['quantity'],
+                        'unit_price' => $unit_price,
+                        'unit_price_inc_tax' => $price_inc_tax,
+                        'line_discount_type' => 'fixed',
+                        'line_discount_amount' => $line_discount,
+                        'item_tax' => $item_tax,
+                        'tax_id' => $tax_id,
+                        'sell_line_note' => $line_data['item_description'],
+                        'product_unit_id' => $product->unit_id,
+                        'enable_stock' => $product->enable_stock,
+                        'type' => $product->type,
+                        'combo_variations' => $product->type == 'combo' ? $variation->combo_variations : [],
+                    ];
+
+                    $line_quantity = $line_data['quantity'];
+                    if (!empty($line_data['unit'])) {
+                        $unit_name = trim($line_data['unit']);
+                        $unit = Unit::where('actual_name', $unit_name)
+                            ->orWhere('short_name', $unit_name)
+                            ->first();
+
+                        if (empty($unit)) {
+                            throw new \Exception(__('lang_v1.import_sale_unit_not_found', ['row' => $row_index, 'unit_name' => $unit_name]));
                         }
 
-                        $combo_details[] = [
-                            'product_id' => $combo_variation_obj->product_id,
-                            'variation_id' => $combo_variation['variation_id'],
-                            'quantity' => $combo_variation_quantity * $line_total_quantity,
-                        ];
+                        //Check if sub unit
+                        if ($unit->id != $product->unit_id) {
+                            $temp['sub_unit_id'] = $unit->id;
+                            $temp['base_unit_multiplier'] = $unit->base_unit_multiplier;
+                            $line_quantity = ($line_quantity * $unit->base_unit_multiplier);
+                        }
+                    }
+                    $order_total += ($temp['unit_price_inc_tax'] * $line_quantity);
+
+                    $sell_lines[] = $temp;
+
+                    $row_index++;
+                }
+
+                $first_sell_line = $data[0];
+                //get contact
+                if (!empty($first_sell_line['customer_phone_number'])) {
+                    $contact = Contact::where('business_id', $business_id)
+                        ->where('mobile', $first_sell_line['customer_phone_number'])
+                        ->first();
+                } elseif (!empty($first_sell_line['customer_email'])) {
+                    $contact = Contact::where('business_id', $business_id)
+                        ->where('email', $first_sell_line['customer_email'])
+                        ->first();
+                }
+                if (empty($contact)) {
+                    $customer_name = !empty($first_sell_line['customer_name']) ? $first_sell_line['customer_name'] : $first_sell_line['customer_phone_number'];
+                    $contact = Contact::create([
+                        'business_id' => $business_id,
+                        'type' => 'customer',
+                        'name' => $customer_name,
+                        'email' => $first_sell_line['customer_email'],
+                        'mobile' => $first_sell_line['customer_phone_number'],
+                        'created_by' => auth()->user()->id,
+                    ]);
+                }
+                error_log($first_sell_line['date']);
+                $sale_data = [
+                    'invoice_no' => $first_sell_line['invoice_no'],
+                    'location_id' => $location_id,
+                    'status' => 'final',
+                    'contact_id' => $contact->id,
+                    'final_total' => !empty($first_sell_line['order_total']) ? $first_sell_line['order_total'] : $order_total,
+                    'transaction_date' => !empty($first_sell_line['date']) ? Carbon::parse(($first_sell_line['date']))->format('Y-m-d H:i:s') : $now,
+                    'discount_amount' => 0,
+                    'import_batch' => $import_batch,
+                    'import_time' => $now,
+                    'commission_agent' => null,
+                ];
+
+                $is_types_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
+                if ($is_types_service_enabled && !empty($first_sell_line['types_of_service'])) {
+                    $types_of_service = TypesOfService::where('business_id', $business_id)
+                        ->where('name', $first_sell_line['types_of_service'])
+                        ->first();
+
+                    if (empty($types_of_service)) {
+                        throw new \Exception(__('lang_v1.types_of_servicet_not_found', ['row' => $row_index, 'types_of_service_name' => $first_sell_line['types_of_service']]));
                     }
 
-                    $this->productUtil
-                        ->decreaseProductQuantityCombo(
-                            $combo_details,
-                            $location_id
-                        );
+                    $sale_data['types_of_service_id'] = $types_of_service->id;
+                    $sale_data['service_custom_field_1'] = !empty($first_sell_line['service_custom_field1']) ? $first_sell_line['service_custom_field1'] : null;
+                    $sale_data['service_custom_field_2'] = !empty($first_sell_line['service_custom_field2']) ? $first_sell_line['service_custom_field2'] : null;
+                    $sale_data['service_custom_field_3'] = !empty($first_sell_line['service_custom_field3']) ? $first_sell_line['service_custom_field3'] : null;
+                    $sale_data['service_custom_field_4'] = !empty($first_sell_line['service_custom_field4']) ? $first_sell_line['service_custom_field4'] : null;
                 }
+
+                $invoice_total = [
+                    'total_before_tax' => !empty($first_sell_line['order_total']) ? $first_sell_line['order_total'] : $order_total,
+                    'tax' => 0,
+                ];
+
+                $transaction = $this->transactionUtil->createSellTransaction($business_id, $sale_data, $invoice_total, auth()->user()->id, false);
+
+                $this->transactionUtil->createOrUpdateSellLines($transaction, $sell_lines, $location_id, false, null, [], false);
+
+
+                foreach ($sell_lines as $line) {
+                    if ($line['enable_stock']) {
+                        $this->productUtil->decreaseProductQuantity(
+                            $line['product_id'],
+                            $line['variation_id'],
+                            $location_id,
+                            $line['quantity']
+                        );
+                    }
+
+                    if ($line['type'] == 'combo') {
+                        $line_total_quantity = $line['quantity'];
+                        if (!empty($line['base_unit_multiplier'])) {
+                            $line_total_quantity = $line_total_quantity * $line['base_unit_multiplier'];
+                        }
+
+                        //Decrease quantity of combo as well.
+                        $combo_details = [];
+                        foreach ($line['combo_variations'] as $combo_variation) {
+                            $combo_variation_obj = Variation::find($combo_variation['variation_id']);
+
+                            //Multiply both subunit multiplier of child product and parent product to the quantity
+                            $combo_variation_quantity = $combo_variation['quantity'];
+                            if (!empty($combo_variation['unit_id'])) {
+                                $combo_variation_unit = Unit::find($combo_variation['unit_id']);
+                                if (!empty($combo_variation_unit->base_unit_multiplier)) {
+                                    $combo_variation_quantity = $combo_variation_quantity * $combo_variation_unit->base_unit_multiplier;
+                                }
+                            }
+
+                            $combo_details[] = [
+                                'product_id' => $combo_variation_obj->product_id,
+                                'variation_id' => $combo_variation['variation_id'],
+                                'quantity' => $combo_variation_quantity * $line_total_quantity,
+                            ];
+                        }
+
+                        $this->productUtil
+                            ->decreaseProductQuantityCombo(
+                                $combo_details,
+                                $location_id
+                            );
+                    }
+                }
+                //payment_paid
+                if (isset($first_sell_line['payment_paid']) && $first_sell_line['payment_paid'] > 0) {
+                    $paymentInput['amount'] = $first_sell_line['payment_paid'];
+                    $paymentInput['method'] = 'cash';
+                    $paymentInput['paid_on'] = !empty($first_sell_line['date']) ? $first_sell_line['date'] : $now;
+                    $paymentInput['created_by'] = auth()->user()->id ?? null;
+                    $paymentInput['transaction_id'] = $transaction->id;
+                    $paymentInput['business_id'] = request()->session()->get('user.business_id');
+                    $ref_count = $this->transactionUtil->setAndGetReferenceCount('purchase_payment');
+                    $paymentInput['payment_ref_no'] = $this->transactionUtil->generateReferenceNumber('purchase_payment', $ref_count);
+                    TransactionPayment::create($paymentInput);
+                }
+
+                //Update payment status
+                $this->transactionUtil->updatePaymentStatus($transaction->id, $transaction->final_total);
+
+                $business_details = $this->businessUtil->getDetails($business_id);
+                $pos_settings = empty($business_details->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business_details->pos_settings, true);
+
+                $business = [
+                    'id' => $business_id,
+                    'accounting_method' => request()->session()->get('business.accounting_method'),
+                    'location_id' => $location_id,
+                    'pos_settings' => $pos_settings,
+                ];
+                $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
+                $this->transactionUtil->createTransactionJournal_entry($transaction->id);
             }
-            //payment_paid
-            if (isset($first_sell_line['payment_paid']) && $first_sell_line['payment_paid'] > 0) {
-                $paymentInput['amount'] = $first_sell_line['payment_paid'];
-                $paymentInput['method'] = 'cash';
-                $paymentInput['paid_on'] = !empty($first_sell_line['date']) ? $first_sell_line['date'] : $now;
-                $paymentInput['created_by'] = auth()->user()->id ?? null;
-                $paymentInput['transaction_id'] = $transaction->id;
-                $paymentInput['business_id'] = request()->session()->get('user.business_id');
-                $ref_count = $this->transactionUtil->setAndGetReferenceCount('purchase_payment');
-                $paymentInput['payment_ref_no'] = $this->transactionUtil->generateReferenceNumber('purchase_payment', $ref_count);
-                TransactionPayment::create($paymentInput);
-            }
-
-            //Update payment status
-            $this->transactionUtil->updatePaymentStatus($transaction->id, $transaction->final_total);
-
-            $business_details = $this->businessUtil->getDetails($business_id);
-            $pos_settings = empty($business_details->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business_details->pos_settings, true);
-
-            $business = [
-                'id' => $business_id,
-                'accounting_method' => request()->session()->get('business.accounting_method'),
-                'location_id' => $location_id,
-                'pos_settings' => $pos_settings,
-            ];
-            $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
-            $this->transactionUtil->createTransactionJournal_entry($transaction->id);
+        } catch (\Exception $e) {
+            error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
         }
     }
 

@@ -218,7 +218,25 @@
                                                     @endif
 
                                                 </h5>
+  @php
+                                $custom_labels = json_decode(session('business.custom_labels'), true);
+                            @endphp
+                            @if (!empty($product->product_custom_field1))
+                             
+                             <h5 style="color: #090329;font-weight: bold;">
 
+                                                    <span class="display_currency"
+                                                        data-currency_symbol="true">{{ $custom_labels['product']['custom_field_1'] ?? __('lang_v1.product_custom_field1') }}</span>
+                                                   {{ $product->product_custom_field1 }}
+
+                                                </h5>
+
+                                    <th>
+                                    </th>
+                                    <td></td>
+                          
+                            @endif
+                                               
                                             </div>
 
                                         </div>
