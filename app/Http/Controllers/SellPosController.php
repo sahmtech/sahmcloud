@@ -83,7 +83,7 @@ class SellPosController extends Controller
     protected $moduleUtil;
 
     protected $notificationUtil;
-    
+
     protected $Util;
 
     /**
@@ -111,11 +111,22 @@ class SellPosController extends Controller
         $this->notificationUtil = $notificationUtil;
 
         $this->dummyPaymentLine = [
-            'method' => 'cash', 'amount' => 0, 'note' => '', 'card_transaction_number' => '', 'card_number' => '', 'card_type' => '', 'card_holder_name' => '', 'card_month' => '', 'card_year' => '', 'card_security' => '', 'cheque_number' => '', 'bank_account_number' => '',
-            'is_return' => 0, 'transaction_no' => '',
+            'method' => 'cash',
+            'amount' => 0,
+            'note' => '',
+            'card_transaction_number' => '',
+            'card_number' => '',
+            'card_type' => '',
+            'card_holder_name' => '',
+            'card_month' => '',
+            'card_year' => '',
+            'card_security' => '',
+            'cheque_number' => '',
+            'bank_account_number' => '',
+            'is_return' => 0,
+            'transaction_no' => '',
         ];
         $this->Util = $Util;
-
     }
 
     /**
@@ -489,7 +500,7 @@ class SellPosController extends Controller
 
             //upload document
             $input['document'] = $this->transactionUtil->uploadFile($request, 'sell_document', 'documents');
-           
+
             $transaction = $this->transactionUtil->createSellTransaction($business_id, $input, $invoice_total, $user_id);
 
             //Upload Shipping documents
@@ -1605,7 +1616,7 @@ class SellPosController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack();
                 \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
-
+                error_log('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
                 $output['success'] = false;
                 $output['msg'] = trans('messages.something_went_wrong');
             }
@@ -2122,15 +2133,15 @@ class SellPosController extends Controller
             return $output;
         }
         try {
-        $business_id = $request->session()->get('user.business_id');
+            $business_id = $request->session()->get('user.business_id');
 
-        $transaction = Transaction::where('business_id', $business_id)
-            ->where('id', $transaction_id)
-            ->with(['location'])
-            ->first();
-        $url = $this->transactionUtil->getInvoiceUrl($transaction->id, $business_id);
+            $transaction = Transaction::where('business_id', $business_id)
+                ->where('id', $transaction_id)
+                ->with(['location'])
+                ->first();
+            $url = $this->transactionUtil->getInvoiceUrl($transaction->id, $business_id);
 
-        return redirect()->away($url . '?print_on_load=true');
+            return redirect()->away($url . '?print_on_load=true');
         } catch (\Exception $e) {
         }
     }
