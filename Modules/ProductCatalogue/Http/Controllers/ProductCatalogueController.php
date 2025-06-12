@@ -50,6 +50,7 @@ class ProductCatalogueController extends Controller
             ->get()
             ->groupBy('category_id');
         $business = Business::with(['currency'])->findOrFail($business_id);
+
         $business_location = BusinessLocation::where('business_id', $business_id)->findOrFail($location_id);
 
         $now = \Carbon::now()->toDateTimeString();
@@ -65,7 +66,7 @@ class ProductCatalogueController extends Controller
         }
 
         $categories = Category::forDropdown($business_id, 'product');
-       
+
         return view('productcatalogue::catalogue.index')->with(compact('products', 'business', 'discounts', 'business_location', 'categories'));
     }
 
