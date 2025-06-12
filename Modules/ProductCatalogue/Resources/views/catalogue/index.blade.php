@@ -161,7 +161,7 @@
                                     data-href="{{ action([\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController::class, 'show'], [$business->id, $product->id]) }}?location_id={{ $business_location->id }}">
 
                                     <div class="row"
-                                        style="    border: 1px solid #b9b9b9ad; min-height: 19rem; border-radius: 13px; margin-bottom: 18px;  max-height: 28rem;height:28rem; ">
+                                        style="    border: 1px solid #b9b9b9ad; min-height: 19rem; border-radius: 13px; margin-bottom: 18px;  max-height: 34rem;height:auto; ">
                                         <div class="col-sm-12 col-xs-12 col-md-12"
                                             style="background-image: url({{ $product->image_url }});    background-repeat: round;background-size: cover;height: 15rem;border-radius: 13px 13px 0px 0px;">
 
