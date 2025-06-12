@@ -219,7 +219,7 @@
 
                                                 </h5>
   @php
-                                $custom_labels = json_decode(session('business.custom_labels'), true);
+                                $custom_labels = json_decode($business->custom_labels, true);
                             @endphp
                             @if (!empty($product->product_custom_field1))
                              
