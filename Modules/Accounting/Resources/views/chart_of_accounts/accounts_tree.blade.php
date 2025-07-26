@@ -112,9 +112,9 @@
                                                         ({{ $account->gl_code }})
                                                         -
                                                     @endif
-                                                    @lang('accounting::lang.accounts_name.' . $account->name)
+                                                     {{$account->name}}
                                                 @else
-                                                    @lang('accounting::lang.accounts_name.' . $account->name) @if (!empty($account->gl_code))
+                                                    {{$account->name}} @if (!empty($account->gl_code))
                                                         - ({{ $account->gl_code }})
                                                     @endif
                                                 @endif
