@@ -760,7 +760,7 @@ class SellPosController extends Controller
 
         $invoice_layout_id = !empty($invoice_layout_id) ? $invoice_layout_id : $location_details->invoice_layout_id;
         $invoice_layout = $this->businessUtil->invoiceLayout($business_id, $invoice_layout_id);
-
+     
         //Check if printer setting is provided.
         $receipt_printer_type = is_null($printer_type) ? $location_details->receipt_printer_type : $printer_type;
 
@@ -792,7 +792,8 @@ class SellPosController extends Controller
             $output['printer_config'] = $this->businessUtil->printerConfig($business_id, $location_details->printer_id);
             $output['data'] = $receipt_details;
         } else {
-            $layout = !empty($receipt_details->design) ? 'sale_pos.receipts.' . $receipt_details->design : 'sale_pos.receipts.classic';
+            // $layout = !empty($receipt_details->design) ? 'sale_pos.receipts.' . $receipt_details->design : 'sale_pos.receipts.classic';
+            $layout = !empty($invoice_layout->design) ? 'sale_pos.receipts.' . $invoice_layout->design : 'sale_pos.receipts.classic';
 
             $output['html_content'] = view($layout, compact('receipt_details'))->render();
         }
@@ -2099,7 +2100,7 @@ class SellPosController extends Controller
 
                 $transaction = Transaction::where('business_id', $business_id)
                     ->where('id', $transaction_id)
-                    ->with(['location'])
+                    ->with(['location', 'contact'])
                     ->first();
 
                 if (empty($transaction)) {
