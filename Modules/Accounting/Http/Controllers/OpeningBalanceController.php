@@ -58,6 +58,11 @@ class OpeningBalanceController extends Controller
         if (request()->ajax()) {
             $openingBalances = AccountingAccountsTransaction::query()->where('sub_type', 'opening_balance')
                 ->orderBy('id');
+            $openingBalances = AccountingAccountsTransaction::where('sub_type', 'opening_balance')
+                ->whereHas('account', function ($query) use ($business_id) {
+                    $query->where('business_id', $business_id);
+                })
+                ->orderBy('id');
             return Datatables::of($openingBalances)
                 ->addColumn(
                     'action',
@@ -221,9 +226,17 @@ class OpeningBalanceController extends Controller
 
     protected function calcEquation()
     {
+        
         $business_id = \request()->session()->get('user.business_id');
-        $credit = AccountingAccountsTransaction::query()->where('sub_type', 'opening_balance')->where('type', 'credit')->sum('amount');
-        $debt = AccountingAccountsTransaction::query()->where('sub_type', 'opening_balance')->where('type', 'debit')->sum('amount');
+            
+        $credit = AccountingAccountsTransaction::query()->where('sub_type', 'opening_balance')->where('type', 'credit')->whereHas('account', function ($query) use ($business_id) {
+                    $query->where('business_id', $business_id);
+                })
+                ->sum('amount');
+        $debt = AccountingAccountsTransaction::query()->where('sub_type', 'opening_balance')->where('type', 'debit')->whereHas('account', function ($query) use ($business_id) {
+                    $query->where('business_id', $business_id);
+                })
+                ->sum('amount');
         return response()->json(['credit' => $credit, 'debt' => $debt]);
     }
 
@@ -254,55 +267,55 @@ class OpeningBalanceController extends Controller
         }
         $openingBalanceBeforImport = OpeningBalance::count();
         try {
-        if ($request->hasFile('opeining_balance_csv')) {
-            $file = $request->file('opeining_balance_csv');
-            $parsed_array = Excel::toArray([], $file);
-            $opeining_balance_csv = array_splice($parsed_array[0], 1);
-            DB::beginTransaction();
-            foreach ($opeining_balance_csv as  $value) {
-                // dd($value[1]);
-                if (!$value[0] || !$value[1] || !$value[2]) {
-                    continue;
-                } else {
-                    $accountsAccount = AccountingAccount::where('name', $value[0])->orWhere('gl_code', $value[0])->first();
-                    if (!$accountsAccount) {
+            if ($request->hasFile('opeining_balance_csv')) {
+                $file = $request->file('opeining_balance_csv');
+                $parsed_array = Excel::toArray([], $file);
+                $opeining_balance_csv = array_splice($parsed_array[0], 1);
+                DB::beginTransaction();
+                foreach ($opeining_balance_csv as  $value) {
+                    // dd($value[1]);
+                    if (!$value[0] || !$value[1] || !$value[2]) {
                         continue;
                     } else {
-                        $transaction = AccountingAccountsTransaction::create([
-                            'accounting_account_id' => $accountsAccount->id, //accounting_account_id
-                            'amount' => $value[2],  //value
-                            'type' => $value[1] == 'credit' ? 'credit' : 'debit', //type
-                            'sub_type' => 'opening_balance'
-                        ]);
+                        $accountsAccount = AccountingAccount::where('name', $value[0])->orWhere('gl_code', $value[0])->first();
+                        if (!$accountsAccount) {
+                            continue;
+                        } else {
+                            $transaction = AccountingAccountsTransaction::create([
+                                'accounting_account_id' => $accountsAccount->id, //accounting_account_id
+                                'amount' => $value[2],  //value
+                                'type' => $value[1] == 'credit' ? 'credit' : 'debit', //type
+                                'sub_type' => 'opening_balance'
+                            ]);
 
-                        OpeningBalance::create([
-                            'year' => date('Y-m-d'),
-                            'business_id' => $business_id,
-                            'type' => $value[1],
-                            'acc_transaction_id' => $transaction->id,
-                            'created_by' => Auth::user()->id
-                        ]);
+                            OpeningBalance::create([
+                                'year' => date('Y-m-d'),
+                                'business_id' => $business_id,
+                                'type' => $value[1],
+                                'acc_transaction_id' => $transaction->id,
+                                'created_by' => Auth::user()->id
+                            ]);
+                        }
                     }
                 }
             }
-        }
-        DB::commit();
-        $openingBalanceAfterImport = OpeningBalance::count();
+            DB::commit();
+            $openingBalanceAfterImport = OpeningBalance::count();
 
 
-        if ($openingBalanceAfterImport > $openingBalanceBeforImport) {
-            return redirect()->back()
-                ->with('status', [
-                    'success' => 1,
-                    'msg' => __('lang_v1.added_success')
-                ]);
-        } else {
-            return redirect()->back()
-                ->with('status', [
-                    'success' => 0,
-                    'msg' => __('messages.something_went_wrong'),
-                ]);
-        }
+            if ($openingBalanceAfterImport > $openingBalanceBeforImport) {
+                return redirect()->back()
+                    ->with('status', [
+                        'success' => 1,
+                        'msg' => __('lang_v1.added_success')
+                    ]);
+            } else {
+                return redirect()->back()
+                    ->with('status', [
+                        'success' => 0,
+                        'msg' => __('messages.something_went_wrong'),
+                    ]);
+            }
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('status', [
