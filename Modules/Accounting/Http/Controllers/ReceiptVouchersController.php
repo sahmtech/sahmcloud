@@ -44,11 +44,11 @@ class ReceiptVouchersController extends Controller
 
         $transactions = TransactionPayment::where('business_id', $business_id)->with('transaction');
 
-            $transactions->where(function ($q) {
-                $q->where('payment_type', 'credit')->orWhereHas('transaction', function ($q) {
-                    $q->where('type', 'sell');
-                });
-            })->orderBy('id');
+        $transactions->where(function ($q) {
+            $q->where('payment_type', 'credit')->orWhereHas('transaction', function ($q) {
+                $q->where('type', 'sell');
+            });
+        })->orderBy('id');
         // error_log($transactions);
         $contacts = Contact::where('business_id', $business_id)->whereNot('id', 1)->where('type', 'customer')->get();
         $transactionUtil = new TransactionUtil();
@@ -71,6 +71,9 @@ class ReceiptVouchersController extends Controller
                     $q->where('payment_status', request()->payment_status);
                 });
             }
+
+            // $transactions->where('business_id', $business_id);
+
             return Datatables::of($transactions)
                 ->addColumn(
                     'action',
@@ -153,7 +156,7 @@ class ReceiptVouchersController extends Controller
                     }
 
                     DB::beginTransaction();
-                    
+
                     $ref_count = $this->transactionUtil->setAndGetReferenceCount_SellPyment($prefix_type);
                     //Generate reference number
                     $inputs['payment_ref_no'] = $this->transactionUtil->generateReferenceNumber($prefix_type, $ref_count);
@@ -256,7 +259,11 @@ class ReceiptVouchersController extends Controller
         if ($request->contact_id) {
             $contact = Contact::query()->where('id', $request->contact_id)->first();
             if ($contact) {
-                $trans = $contact->transactions->where('status', 'final')->whereIn('payment_status', ['due', 'partial'])->toArray();
+                $trans = $contact->transactions()
+                    ->where('status', 'final')
+                    ->whereIn('payment_status', ['due', 'partial'])
+                    ->get()
+                    ->toArray();
                 return response()->json(['success' => true, 'trans' => $trans], 200);
             }
         }

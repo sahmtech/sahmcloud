@@ -56,8 +56,8 @@ class OpeningBalanceController extends Controller
             ];
         }
         if (request()->ajax()) {
-            $openingBalances = AccountingAccountsTransaction::query()->where('sub_type', 'opening_balance')
-                ->orderBy('id');
+            // $openingBalances = AccountingAccountsTransaction::query()->where('sub_type', 'opening_balance')
+            //     ->orderBy('id');
             $openingBalances = AccountingAccountsTransaction::where('sub_type', 'opening_balance')
                 ->whereHas('account', function ($query) use ($business_id) {
                     $query->where('business_id', $business_id);
