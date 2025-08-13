@@ -177,7 +177,7 @@ class InvoiceLayoutController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        try {
+         try {
             $validator = Validator::make($request->all(), [
                 'logo' => 'mimes:jpeg,gif,png|1000',
             ]);
