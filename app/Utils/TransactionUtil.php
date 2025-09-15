@@ -1479,11 +1479,20 @@ class TransactionUtil extends Util
                 $transaction->sell_lines[$key] = $formated_sell_line;
             }
             // dd($$value->tax_id);
+            // if (!empty($taxes[$value->tax_id])) {
+            //     if (isset($line_taxes[$transaction[$value->tax_id]])) {
+            //         $line_taxes[$transaction[$value->tax_id]] += ($value->item_tax * $value->quantity);
+            //     } else {
+            //         $line_taxes[$transaction[$value->tax_id]] = ($value->item_tax * $value->quantity);
+            //     }
+            // }
+
             if (!empty($taxes[$value->tax_id])) {
-                if (isset($line_taxes[$transaction[$value->tax_id]])) {
-                    $line_taxes[$transaction[$value->tax_id]] += ($value->item_tax * $value->quantity);
+                $tax_name = $taxes[$value->tax_id];
+                if (isset($line_taxes[$tax_name])) {
+                    $line_taxes[$tax_name] += ($value->item_tax * $value->quantity);
                 } else {
-                    $line_taxes[$transaction[$value->tax_id]] = ($value->item_tax * $value->quantity);
+                    $line_taxes[$tax_name] = ($value->item_tax * $value->quantity);
                 }
             }
         }
