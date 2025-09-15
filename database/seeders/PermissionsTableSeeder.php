@@ -66,7 +66,7 @@ class PermissionsTableSeeder extends Seeder
             ['name' => 'tax_rate.view'],
             ['name' => 'tax_rate.create'],
             ['name' => 'tax_rate.update'],
-            ['name' => 'tax_rate.delete'],
+            // ['name' => 'tax_rate.delete'],
 
             ['name' => 'unit.view'],
             ['name' => 'unit.create'],
