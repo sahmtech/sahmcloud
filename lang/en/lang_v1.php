@@ -1341,6 +1341,8 @@ return [
     'proforma_heading' => 'Proforma invoice heading',
     'tooltip_proforma_heading' => 'Proforma invoice heading is used while providing Proforma to customers.',
     'line_taxes' => 'Line taxes',
+    "line_taxes" => "Product taxes (tobacco)",
+
     'add_additional_expenses' => 'Add additional expenses',
     'additional_expense_name' => 'Additional expense name',
     'purchase_additional_expense' => 'Purchase additional expenses',

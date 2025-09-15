@@ -646,7 +646,7 @@
                             </tr> --}}
         @if (!empty($receipt_details->line_taxes))
             <div class="flex-box">
-                <p class="width-50 text-right">{{ __('lang_v1.line_taxes') }}:</p>
+                <p class="width-50 text-right">@lang('lang_v1.line_taxes'):</p>
                 <p class="width-50 text-right">
                     @if (!empty($receipt_details->line_taxes))
                         @foreach ($receipt_details->line_taxes as $k => $v)
