@@ -1109,7 +1109,7 @@ class TransactionUtil extends Util
         }
 
 
-   
+
         //Customer show_customer
         $customer = Contact::find($transaction->contact_id);
 
@@ -1468,22 +1468,22 @@ class TransactionUtil extends Util
 
 
 
-          $line_taxes = [];
-                foreach ($transaction->sell_lines as $key => $value) {
-                    if (!empty($value->sub_unit_id)) {
-                        $formated_sell_line = $this->recalculateSellLineTotals($business_id, $value);
-                        $transaction->sell_lines[$key] = $formated_sell_line;
-                    }
+        $line_taxes = [];
+        foreach ($transaction->sell_lines as $key => $value) {
+            if (!empty($value->sub_unit_id)) {
+                $formated_sell_line = $this->recalculateSellLineTotals($business_id, $value);
+                $transaction->sell_lines[$key] = $formated_sell_line;
+            }
 
-                    if (!empty($taxes[$value->tax_id])) {
-                        if (isset($line_taxes[$transaction[$value->tax_id]])) {
-                            $line_taxes[$transaction[$value->tax_id]] += ($value->item_tax * $value->quantity);
-                        } else {
-                            $line_taxes[$transaction[$value->tax_id]] = ($value->item_tax * $value->quantity);
-                        }
-                    }
+            if (!empty($taxes[$value->tax_id])) {
+                if (isset($line_taxes[$transaction[$value->tax_id]])) {
+                    $line_taxes[$transaction[$value->tax_id]] += ($value->item_tax * $value->quantity);
+                } else {
+                    $line_taxes[$transaction[$value->tax_id]] = ($value->item_tax * $value->quantity);
                 }
- $output['line_taxes'] =$line_taxes;
+            }
+        }
+        $output['line_taxes'] = $line_taxes;
         if ($transaction->tax_amount != 0 && $tax && $tax->is_tax_group) {
             $transaction_group_tax_details = $this->groupTaxDetails($tax, $transaction->tax_amount);
 
