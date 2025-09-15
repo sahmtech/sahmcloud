@@ -15,6 +15,7 @@ use App\Exceptions\AdvanceBalanceNotAvailable;
 use App\Exceptions\PurchaseSellMismatch;
 use App\InvoiceScheme;
 use App\Product;
+// use App\TaxRate;
 use App\PurchaseLine;
 use App\Restaurant\ResTable;
 use App\TaxRate;
@@ -1469,12 +1470,15 @@ class TransactionUtil extends Util
 
 
         $line_taxes = [];
+        $business_id = request()->session()->get('user.business_id');
+        $taxes = TaxRate::where('business_id', $business_id)
+            ->pluck('name', 'id');
         foreach ($transaction->sell_lines as $key => $value) {
             if (!empty($value->sub_unit_id)) {
                 $formated_sell_line = $this->recalculateSellLineTotals($business_id, $value);
                 $transaction->sell_lines[$key] = $formated_sell_line;
             }
-
+            // dd($$value->tax_id);
             if (!empty($taxes[$value->tax_id])) {
                 if (isset($line_taxes[$transaction[$value->tax_id]])) {
                     $line_taxes[$transaction[$value->tax_id]] += ($value->item_tax * $value->quantity);
@@ -1484,6 +1488,8 @@ class TransactionUtil extends Util
             }
         }
         $output['line_taxes'] = $line_taxes;
+        //  dd($output['line_taxes']);
+
         if ($transaction->tax_amount != 0 && $tax && $tax->is_tax_group) {
             $transaction_group_tax_details = $this->groupTaxDetails($tax, $transaction->tax_amount);
 
