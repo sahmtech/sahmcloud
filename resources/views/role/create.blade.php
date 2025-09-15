@@ -1172,9 +1172,9 @@
                     </div>
                     <div class="col-md-12">
                         <div class="checkbox">
-                            <label>
+                            {{-- <label>
                                 {!! Form::checkbox('permissions[]', 'tax_rate.delete', false, ['class' => 'input-icheck']) !!} {{ __('role.tax_rate.delete') }}
-                            </label>
+                            </label> --}}
                         </div>
                     </div>
                 </div>

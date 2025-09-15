@@ -1474,13 +1474,13 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <div class="checkbox">
+                        {{-- <div class="checkbox">
                             <label>
                                 {!! Form::checkbox('permissions[]', 'tax_rate.delete', in_array('tax_rate.delete', $role_permissions), [
                                     'class' => 'input-icheck',
                                 ]) !!} {{ __('role.tax_rate.delete') }}
                             </label>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
