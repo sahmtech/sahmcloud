@@ -72,11 +72,11 @@ class DataController extends Controller
                 'label' => __('repair::lang.add_invoice'),
                 'default' => false,
             ],
-            [
-                'value' => 'repair.update',
-                'label' => __('repair::lang.edit_invoice'),
-                'default' => false,
-            ],
+            // [
+            //     'value' => 'repair.update',
+            //     'label' => __('repair::lang.edit_invoice'),
+            //     'default' => false,
+            // ],
             [
                 'value' => 'repair.view',
                 'label' => __('repair::lang.view_all_invoice'),
@@ -91,11 +91,11 @@ class DataController extends Controller
                 'is_radio' => true,
                 'radio_input_name' => 'repair_invoice_view',
             ],
-            [
-                'value' => 'repair.delete',
-                'label' => __('repair::lang.delete_invoice'),
-                'default' => false,
-            ],
+            // [
+            //     'value' => 'repair.delete',
+            //     'label' => __('repair::lang.delete_invoice'),
+            //     'default' => false,
+            // ],
             [
                 'value' => 'repair_status.update',
                 'label' => __('repair::lang.change_invoice_status'),
