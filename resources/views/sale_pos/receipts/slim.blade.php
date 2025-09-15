@@ -644,7 +644,7 @@
                                     @endif
                                 </td>
                             </tr> --}}
-        @if (empty($receipt_details->line_taxes))
+        @if (!empty($receipt_details->line_taxes))
             <div class="flex-box">
                 <p class="width-50 text-right">{{ __('lang_v1.line_taxes') }}:</p>
                 <p class="width-50 text-right">
