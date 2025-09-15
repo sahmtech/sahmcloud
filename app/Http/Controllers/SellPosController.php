@@ -2115,32 +2115,32 @@ class SellPosController extends Controller
                 $is_package_slip = !empty($request->input('package_slip')) ? true : false;
                 $is_delivery_note = !empty($request->input('delivery_note')) ? true : false;
 
-                $order_taxes = [];
-                if (! empty($transaction->tax)) {
-                    if ($transaction->tax->is_tax_group) {
-                        $order_taxes = $this->transactionUtil->sumGroupTaxDetails($this->transactionUtil->groupTaxDetails($transaction->tax, $transaction->tax_amount));
-                    } else {
-                        $order_taxes[$transaction->tax->name] = $transaction->tax_amount;
-                    }
-                }
-                $line_taxes = [];
-                foreach ($transaction->sell_lines as $key => $value) {
-                    if (!empty($value->sub_unit_id)) {
-                        $formated_sell_line = $this->transactionUtil->recalculateSellLineTotals($business_id, $value);
-                        $transaction->sell_lines[$key] = $formated_sell_line;
-                    }
+                // $order_taxes = [];
+                // if (! empty($transaction->tax)) {
+                //     if ($transaction->tax->is_tax_group) {
+                //         $order_taxes = $this->transactionUtil->sumGroupTaxDetails($this->transactionUtil->groupTaxDetails($transaction->tax, $transaction->tax_amount));
+                //     } else {
+                //         $order_taxes[$transaction->tax->name] = $transaction->tax_amount;
+                //     }
+                // }
+                // $line_taxes = [];
+                // foreach ($transaction->sell_lines as $key => $value) {
+                //     if (!empty($value->sub_unit_id)) {
+                //         $formated_sell_line = $this->transactionUtil->recalculateSellLineTotals($business_id, $value);
+                //         $transaction->sell_lines[$key] = $formated_sell_line;
+                //     }
 
-                    if (!empty($taxes[$value->tax_id])) {
-                        if (isset($line_taxes[$transaction[$value->tax_id]])) {
-                            $line_taxes[$transaction[$value->tax_id]] += ($value->item_tax * $value->quantity);
-                        } else {
-                            $line_taxes[$transaction[$value->tax_id]] = ($value->item_tax * $value->quantity);
-                        }
-                    }
-                }
+                //     if (!empty($taxes[$value->tax_id])) {
+                //         if (isset($line_taxes[$transaction[$value->tax_id]])) {
+                //             $line_taxes[$transaction[$value->tax_id]] += ($value->item_tax * $value->quantity);
+                //         } else {
+                //             $line_taxes[$transaction[$value->tax_id]] = ($value->item_tax * $value->quantity);
+                //         }
+                //     }
+                // }
 
-                $receipt['order_taxes'] = $order_taxes;
-                $receipt['line_taxes'] = $line_taxes;
+                // $receipt['order_taxes'] = $order_taxes;
+                // $receipt['line_taxes'] = $line_taxes;
                 $invoice_layout_id = $transaction->is_direct_sale ? $transaction->location->sale_invoice_layout_id : null;
                 $receipt = $this->receiptContent($business_id, $transaction->location_id, $transaction_id, $printer_type, $is_package_slip, false, $invoice_layout_id, $is_delivery_note);
 
