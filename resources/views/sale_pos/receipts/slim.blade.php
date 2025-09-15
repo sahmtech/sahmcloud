@@ -650,7 +650,7 @@
                 <p class="width-50 text-right">
                     @if (!empty($receipt_details->line_taxes))
                         @foreach ($receipt_details->line_taxes as $k => $v)
-                            <strong><small>{{ $k }}</small></strong> - <span
+                            <strong><small>{{ $k->name }}</small></strong> - <span
                                 class="display_currency pull-right"
                                 data-currency_symbol="true">{{ $v }}</span><br>
                         @endforeach
